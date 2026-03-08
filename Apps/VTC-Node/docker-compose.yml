@@ -1,0 +1,94 @@
+name: public-pool-vertcoin
+services:
+  app:
+    cpu_shares: 90
+    command:
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://127.0.0.1:7008
+    - -rpcbind=0.0.0.0
+    - -rpcport=9008
+    - -rpcallowip=0.0.0.0/0
+    - -port=5889
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    container_name: Node-VTC
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    hostname: Node-VTC
+    image: lukechilds/vertcoind:latest
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/vtc.png
+    ports:
+    - target: 7008
+      published: '7008'
+      protocol: tcp
+    - target: 9008
+      published: '9008'
+      protocol: tcp
+    - target: 5889
+      published: '5889'
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/vtc
+      target: /data
+    x-casaos:
+      ports:
+      - container: '7008'
+        description:
+          en_us: 'ZMQ Port: 7008'
+      - container: '9008'
+        description:
+          en_us: 'RPC Port: 9008'
+      - container: '5889'
+        description:
+          en_us: 'P2P Port: 5889'
+      volumes:
+      - container: /data
+        description:
+          en_us: 'Container Path: /data'
+    devices: []
+    cap_add: []
+    environment: []
+    network_mode: bridge
+    networks:
+    - pool_network
+    - default
+
+    privileged: false
+networks:
+  default:
+    name: public-pool-vertcoin_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Vertcoin (VTC) Cryptocurrency Node. Can be used with Miningcore to solo
+      mine.
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/vtc.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9008'
+  scheme: http
+  store_app_id: public-pool-vertcoin
+  tagline:
+    en_us: Vertcoin (VTC) Node.
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/vtc.png
+  title:
+    custom: Vertcoin (VTC) Node
+    en_us: Vertcoin (VTC) Node

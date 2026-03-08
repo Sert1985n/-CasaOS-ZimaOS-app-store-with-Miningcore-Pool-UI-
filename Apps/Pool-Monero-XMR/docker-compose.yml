@@ -1,0 +1,34 @@
+name: pool-monero-xmr
+services:
+  app:
+    container_name: Pool-Monero-XMR
+    image: theretromike/miningcore:legacy
+    restart: always
+    volumes:
+      - /media/ZimaOS-HD/miningcore_legacy/coins.json:/app/build/coins.json
+      - /media/ZimaOS-HD/miningcore_legacy/config.json:/app/config.json
+      - /media/ZimaOS-HD/vtc:/.vertcoin
+    networks:
+      - pool_network
+    ports:
+      - "4001:4001"
+      - "6101-6115:6101-6115"
+      - "6501-6515:6501-6515"
+      - "6601-6615:6601-6615"
+      - "6701-6715:6701-6715"
+x-casaos:
+  architectures:
+    - amd64
+  main: app
+  description:
+    en_us: Miningcore для вторичного пула (Monero и др.). Порт 4001. Используйте Web-UI-Pool-Secondary для панели.
+  tagline:
+    en_us: Пул Monero (XMR)
+  developer: public-pool-btc.ru
+  author: public-pool-btc.ru
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
+  title:
+    en_us: Pool — Monero (XMR)
+  category: Miningcore Pool UI
+  port_map: "8888"

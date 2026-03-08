@@ -1,0 +1,77 @@
+name: public-pool-digibyte
+services:
+  app:
+    cpu_shares: 90
+    image: theretromike/nodes:digibyte
+    container_name: Node-DGB
+    hostname: Node-DGB
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/dgb
+      target: /root/.digibyte
+      bind:
+        create_host_path: true
+    ports:
+    - target: 12024
+      published: '12024'
+      protocol: tcp
+    - target: 9001
+      published: '9001'
+      protocol: tcp
+    - target: 7001
+      published: '7001'
+      protocol: tcp
+    command:
+    - digibyted
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -txindex=0
+    - -port=12024
+    - -zmqpubhashblock=tcp://0.0.0.0:7001
+    - -rpcbind=0.0.0.0
+    - -rpcport=9001
+    - -rpcallowip=192.168.10.0/24
+    - -rpcallowip=172.16.0.0/12
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dgb.png
+    networks:
+    - pool_network
+    - default
+
+    privileged: false
+networks:
+  default:
+    name: public-pool-digibyte_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'DigiByte full node with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/dgb. Ports:
+      P2P 12024, RPC 9001, ZMQ 7001. (If you mine DGB, set algo in digibyte.conf if
+      needed.)'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dgb.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9001'
+  scheme: http
+  store_app_id: public-pool-digibyte
+  title:
+    custom: Digibyte (DGB) Node
+    en_us: Digibyte (DGB) Node

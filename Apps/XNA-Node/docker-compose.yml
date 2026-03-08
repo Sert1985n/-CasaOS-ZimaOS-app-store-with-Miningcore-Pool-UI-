@@ -1,0 +1,77 @@
+name: public-pool-neurai
+services:
+  app:
+    cpu_shares: 90
+    command:
+    - /usr/bin/neuraid
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7011
+    - -rpcbind=0.0.0.0
+    - -rpcport=9011
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    container_name: Node-XNA
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    hostname: Node-XNA
+    image: theretromike/nodes:neurai
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xna.png
+    ports:
+    - mode: ingress
+      target: 7011
+      published: '7011'
+      protocol: tcp
+    - mode: ingress
+      target: 9011
+      published: '9011'
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/xna
+      target: /root/.neurai
+      bind:
+        create_host_path: true
+    devices: []
+    cap_add: []
+    environment: []
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: neurai_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Neurai Cryptocurrency Node. Can be used in conjunction with Miningcore
+      Apps to solo mine.
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xna.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9011'
+  scheme: http
+  store_app_id: public-pool-neurai
+  tagline:
+    en_us: Neurai Cryptocurrency Node.
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xna.png
+  title:
+    custom: ''
+    en_us: NeurAI (XNA) Node

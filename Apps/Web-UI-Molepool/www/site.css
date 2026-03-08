@@ -1,0 +1,49 @@
+/* Molepool.com style — dark sidebar, clean table */
+*{box-sizing:border-box}
+:root{
+  --bg:#0f1419;--sidebar:#1a1f26;--topbar:#15202b;
+  --border:rgba(255,255,255,.1);--text:#e7e9ea;--muted:rgba(255,255,255,.6);
+  --good:#00ba7c;--bad:#f4212e;--link:#1d9bf0;
+}
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--bg);min-height:100vh;display:flex}
+a{color:inherit;text-decoration:none}
+a:hover{color:var(--link)}
+
+.sidebar{width:260px;min-width:260px;background:var(--sidebar);padding:24px 0}
+.sidebar__brand{display:block;font-size:22px;font-weight:700;padding:0 24px 24px;color:#fff;border-bottom:1px solid var(--border);margin-bottom:16px}
+.sidebar__nav{display:flex;flex-direction:column;gap:4px}
+.sidebar__link{padding:12px 24px;color:var(--muted);font-size:15px;transition:all .15s}
+.sidebar__link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.sidebar__link--active{color:#fff;font-weight:600;background:rgba(29,155,240,.15);border-left:3px solid var(--link)}
+.sidebar__features{margin-top:32px;padding:0 24px;font-size:13px;color:var(--muted);line-height:1.6}
+.sidebar__features .feature{margin-bottom:12px;padding-left:12px;border-left:2px solid var(--border)}
+
+.main{flex:1;min-width:0}
+.topbar{background:var(--topbar);padding:20px 24px;border-bottom:1px solid var(--border)}
+.topbar__title{margin:0;font-size:24px;font-weight:700}
+
+.table-wrap{padding:24px;overflow-x:auto}
+.table{width:100%;border-collapse:collapse;background:rgba(0,0,0,.2);border-radius:12px;overflow:hidden}
+.table th,.table td{padding:14px 16px;text-align:left;font-size:14px;border-bottom:1px solid var(--border)}
+.table th{background:var(--topbar);font-weight:600;color:var(--muted)}
+.table tbody tr:hover{background:rgba(255,255,255,.03)}
+.table tbody tr{cursor:pointer}
+.coin-cell{display:flex;align-items:center;gap:10px;font-weight:600}
+.coin-icon-img{width:24px;height:24px;border-radius:6px;object-fit:contain}
+.coin-icon-fallback{width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,.1);display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+.chg.up{color:var(--good)}
+.chg.down{color:var(--bad)}
+
+.coin-page{padding:24px}
+.coin-page h2{margin:0 0 20px;font-size:20px}
+.grid-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{border:1px solid var(--border);border-radius:10px;padding:16px;background:rgba(0,0,0,.2)}
+.stat-card .label{font-size:12px;color:var(--muted);margin-bottom:4px}
+.stat-card .value{font-size:18px;font-weight:700}
+.chart-box{height:280px;border:1px solid var(--border);border-radius:10px;margin-top:20px;background:rgba(0,0,0,.15)}
+
+@media (max-width:768px){
+  .sidebar{position:fixed;left:-260px;z-index:100;height:100vh;transition:left .2s}
+  .sidebar.open{left:0}
+  body{padding-left:0}
+}

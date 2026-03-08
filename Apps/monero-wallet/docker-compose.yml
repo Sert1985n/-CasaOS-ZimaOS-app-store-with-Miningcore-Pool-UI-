@@ -1,0 +1,37 @@
+name: monerowallet
+services:
+  app:
+    container_name: xmr_wallet
+    image: theretromike/nodes:monero
+    restart: always
+    volumes:
+      - /media/ZimaOS-HD/NodeData/xmrwallet:/root/.bitmonero
+    ports:
+      - "18082:18082"
+    command:
+      - /usr/local/bin/monero-wallet-rpc
+      - --wallet-file=/root/.bitmonero/default
+      - --password=poolpassword
+      - --daemon-address=192.168.1.101:9009
+      - --daemon-login=pooluser:poolpassword
+      - --rpc-bind-port=18082
+      - --rpc-bind-ip=0.0.0.0
+      - --confirm-external-bind
+      - --disable-rpc-login
+      - --log-level=1
+x-casaos:
+  architectures:
+    - amd64
+  main: app
+  description:
+    en_us: Monero Cryptocurrency Wallet
+  tagline:
+    en_us: Monero Cryptocurrency Wallet
+  developer: public-pool-btc.ru
+  author: public-pool-btc.ru
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  title:
+    en_us: Monero (XMR) Wallet
+  category: Cryptocurrency Nodes
+  port_map: "8888"

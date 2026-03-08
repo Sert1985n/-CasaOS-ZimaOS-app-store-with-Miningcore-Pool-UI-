@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Solo Pool — Live Dashboard</title>
+  <link rel="icon" href="/favicon.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/site.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <nav class="nav">
+      <a href="#/" class="nav__link">Home</a>
+      <a href="#/connect" class="nav__link">Connect</a>
+      <a href="#/blocks" class="nav__link">Blocks</a>
+      <a href="#/miners" class="nav__link">Miners</a>
+      <a href="#/faq" class="nav__link">FAQ</a>
+    </nav>
+  </header>
+
+  <main class="main" id="mainContent">
+    <div class="coin-selector" id="coinSelector"></div>
+    <h1 class="page-title" id="pageTitle">Select a coin</h1>
+    <div id="dashboardSections">
+
+    <section class="section">
+      <h2>Network Info</h2>
+      <div class="grid-info">
+        <div class="info-item"><span class="info__label">Network Difficulty</span><span class="info__val" id="netDiff">–</span></div>
+        <div class="info-item"><span class="info__label">Network Hashrate</span><span class="info__val" id="netHash">–</span></div>
+        <div class="info-item"><span class="info__label">Last Network Block</span><span class="info__val" id="lastBlock">–</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Current Block Info</h2>
+      <div class="grid-info">
+        <div class="info-item"><span class="info__label">Block Height</span><span class="info__val" id="blockHeight">–</span></div>
+        <div class="info-item"><span class="info__label">Block Reward</span><span class="info__val" id="blockReward">–</span></div>
+        <div class="info-item"><span class="info__label">Pool Fee</span><span class="info__val" id="poolFee">–</span></div>
+        <div class="info-item"><span class="info__label">Minimum Payout</span><span class="info__val" id="minPayout">–</span></div>
+        <div class="info-item"><span class="info__label">Coin Price</span><span class="info__val" id="coinPrice">–</span></div>
+        <div class="info-item"><span class="info__label">Last Update</span><span class="info__val" id="lastUpdate">–</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Pool Info</h2>
+      <div class="grid-info">
+        <div class="info-item"><span class="info__label">Miners</span><span class="info__val" id="miners">–</span></div>
+        <div class="info-item"><span class="info__label">Pool Hashrate</span><span class="info__val" id="poolHash">–</span></div>
+        <div class="info-item"><span class="info__label">Pool Blocks</span><span class="info__val" id="poolBlocks">–</span></div>
+        <div class="info-item"><span class="info__label">Pool Total Mined</span><span class="info__val" id="totalMined">–</span></div>
+        <div class="info-item"><span class="info__label">Uptime</span><span class="info__val" id="uptime">–</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Current Effort</h2>
+      <p class="effort-desc">Collective work submitted relative to expected effort to find a block.</p>
+      <div class="effort-bar"><div class="effort-fill" id="effortFill"></div></div>
+      <div class="effort-label"><span id="effortPct">0%</span> — ETA to 100%: <span id="effortEta">–</span></div>
+    </section>
+
+    <section class="section">
+      <h2>Charts</h2>
+      <h3>Pool Hashrate & Miners (24 hours)</h3>
+      <div class="chart-box" id="chartHashrate"></div>
+      <h3>Network Hashrate & Difficulty (24 hours)</h3>
+      <div class="chart-box" id="chartNetwork"></div>
+    </section>
+    </div>
+    <div id="pageContent" style="display:none"></div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

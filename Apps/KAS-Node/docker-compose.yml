@@ -1,0 +1,55 @@
+name: public-pool-kaspa
+services:
+  app:
+    cpu_shares: 90
+    container_name: KAS-Node
+    image: kaspanet/rusty-kaspad
+    deploy:
+      resources:
+        limits:
+          memory: 8192M
+          cpus: '1'
+    ports:
+    - target: 9061
+      published: '9061'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/kaspa
+      target: /data
+      bind:
+        create_host_path: true
+    restart: unless-stopped
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-kaspa_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: 'Kaspa node (image: kaspanet/rusty-kaspad). Configure as needed; data at
+      /data.'
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/kas.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/kas.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9061'
+  scheme: http
+  store_app_id: public-pool-kaspa
+  tagline:
+    en_us: Kaspa (KAS) Node
+  title:
+    custom: Kaspa (KAS) Node
+    en_us: Kaspa (KAS) Node

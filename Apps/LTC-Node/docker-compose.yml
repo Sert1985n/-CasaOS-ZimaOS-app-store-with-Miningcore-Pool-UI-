@@ -1,0 +1,78 @@
+name: public-pool-litecoin
+services:
+  app:
+    cpu_shares: 90
+    image: theretromike/nodes:litecoin
+    container_name: Node-LTC
+    hostname: Node-LTC
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/ltc
+      target: /root/.litecoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9333
+      published: '9333'
+      protocol: tcp
+    - target: 9020
+      published: '9020'
+      protocol: tcp
+    - target: 7020
+      published: '7020'
+      protocol: tcp
+    command:
+    - litecoind
+    - -printtoconsole
+    - -server
+    - -prune=2200
+    - -txindex=0
+    - -wallet=default
+    - -port=9333
+    - -zmqpubhashblock=tcp://0.0.0.0:7020
+    - -rpcbind=0.0.0.0
+    - -rpcport=9020
+    - -rpcallowip=192.168.10.0/24
+    - -rpcallowip=172.16.0.0/12
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ltc.png
+    networks:
+    - pool_network
+    - default
+
+    privileged: false
+networks:
+  default:
+    name: public-pool-litecoin_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Litecoin full node with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/ltc. Ports:
+      P2P 9333, RPC 9020, ZMQ 7020.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ltc.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ltc.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9020'
+  scheme: http
+  store_app_id: public-pool-litecoin
+  title:
+    custom: Litecoin (LTC) Node
+    en_us: Litecoin (LTC) Node

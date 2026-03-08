@@ -1,0 +1,71 @@
+name: public-pool-monero
+services:
+  app:
+    cpu_shares: 90
+    image: monero:latest
+    container_name: Node-XMR
+    hostname: Node-XMR
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/xmr
+      target: /root/.bitmonero
+      bind:
+        create_host_path: true
+    ports:
+    - target: 18080
+      published: '18080'
+      protocol: tcp
+    - target: 18081
+      published: '18081'
+      protocol: tcp
+    command:
+    - monerod
+    - --data-dir=/root/.bitmonero
+    - --prune-blockchain
+    - --p2p-bind-ip=0.0.0.0
+    - --p2p-bind-port=18080
+    - --rpc-bind-ip=0.0.0.0
+    - --rpc-bind-port=18081
+    - --restricted-rpc
+    - --confirm-external-bind
+    - --rpc-login=pooluser:poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+    networks:
+    - pool_network
+    - default
+
+    privileged: false
+networks:
+  default:
+    name: public-pool-monero_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Monero full node (monerod) with RPC auth. Data: /media/ZimaOS-HD/nodes/xmr.
+      Ports: P2P 18080, RPC 18081 (restricted RPC).'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '18081'
+  scheme: http
+  store_app_id: public-pool-monero
+  title:
+    custom: Monero (XMR) Node
+    en_us: Monero (XMR) Node

@@ -1,0 +1,77 @@
+name: public-pool-peercoin
+services:
+  app:
+    cpu_shares: 90
+    image: theretromike/nodes:peercoin
+    container_name: Node-PPC
+    hostname: Node-PPC
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/ppc
+      target: /data
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9901
+      published: '9901'
+      protocol: tcp
+    - target: 9012
+      published: '9012'
+      protocol: tcp
+    - target: 7012
+      published: '7012'
+      protocol: tcp
+    command:
+    - peercoind
+    - -datadir=/data
+    - -printtoconsole
+    - -server
+    - -wallet=default
+    - -port=9901
+    - -zmqpubhashblock=tcp://0.0.0.0:7012
+    - -rpcbind=0.0.0.0
+    - -rpcport=9012
+    - -rpcallowip=192.168.10.0/24
+    - -rpcallowip=172.16.0.0/12
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ppc.png
+    networks:
+    - pool_network
+    - default
+
+    privileged: false
+networks:
+  default:
+    name: public-pool-peercoin_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Peercoin full node with RPC+ZMQ (prune is NOT supported by this peercoind
+      build). Data: /media/ZimaOS-HD/nodes/ppc. Ports: P2P 9901, RPC 9012, ZMQ 7012.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ppc.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ppc.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9012'
+  scheme: http
+  store_app_id: public-pool-peercoin
+  title:
+    custom: Peercoin (PPC) Node
+    en_us: Peercoin (PPC) Node

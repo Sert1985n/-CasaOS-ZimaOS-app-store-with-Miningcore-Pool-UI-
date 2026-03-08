@@ -1,0 +1,43 @@
+name: public-pool-casaos-icons
+services:
+  app:
+    image: nginx:alpine
+    container_name: CasaOS-icons
+    hostname: CasaOS-icons
+    restart: unless-stopped
+    command:
+    - nginx
+    - -g
+    - daemon off;
+    ports:
+    - target: 80
+      published: '8099'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/icons
+      target: /usr/share/nginx/html
+    labels:
+      icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/casaos.webp
+    cpu_shares: 90
+    deploy:
+      resources:
+        limits:
+          memory: 64220M
+    devices: []
+    cap_add: []
+    network_mode: bridge
+    privileged: false
+    environment: []
+x-casaos:
+  title:
+    custom: CasaOS-icons
+    en_us: CasaOS-icons
+  main: app
+  scheme: http
+  index: /
+  store_app_id: public-pool-casaos-icons
+  icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/casaos.webp
+  author: public-pool-btc.ru
+  developer: public-pool-btc.ru
+  category: Utilities

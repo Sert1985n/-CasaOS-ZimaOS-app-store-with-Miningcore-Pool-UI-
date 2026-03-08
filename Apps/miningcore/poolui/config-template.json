@@ -1,0 +1,54 @@
+{
+  "_comment": "Шаблон Miningcore. Замените 'xxx' на ваш wallet address (вручную или через панель CheckBreak в Web UI).",
+  "pools": [
+    {
+      "id": "btc",
+      "coin": { "type": "BTC", "algorithm": "SHA256d" },
+      "address": "xxx",
+      "daemons": [ { "host": "127.0.0.1", "port": 9332 } ],
+      "ports": { "3333": { "diff": 0.05 }, "3334": { "diff": 1 } }
+    },
+    {
+      "id": "bch",
+      "coin": { "type": "BCH", "algorithm": "SHA256d" },
+      "address": "xxx",
+      "daemons": [ { "host": "127.0.0.1", "port": 9332 } ],
+      "ports": { "3335": { "diff": 0.05 } }
+    },
+    {
+      "id": "xec",
+      "coin": { "type": "XEC", "algorithm": "SHA256d" },
+      "address": "xxx",
+      "daemons": [ { "host": "127.0.0.1", "port": 9007 } ],
+      "ports": { "3336": { "diff": 0.05 } }
+    },
+    {
+      "id": "bc2",
+      "coin": { "type": "BC2", "algorithm": "SHA256d" },
+      "address": "xxx",
+      "daemons": [ { "host": "127.0.0.1", "port": 9332 } ],
+      "ports": { "3337": { "diff": 0.05 } }
+    },
+    {
+      "id": "xohu",
+      "coin": { "type": "XOHU", "algorithm": "SHA256d" },
+      "address": "xxx",
+      "daemons": [ { "host": "127.0.0.1", "port": 9332 } ],
+      "ports": { "3338": { "diff": 0.05 } }
+    },
+    {
+      "id": "doge",
+      "coin": { "type": "DOGE", "algorithm": "Scrypt" },
+      "address": "xxx",
+      "daemons": [ { "host": "127.0.0.1", "port": 22555 } ],
+      "ports": { "3339": { "diff": 0.05 } }
+    },
+    {
+      "id": "ltc",
+      "coin": { "type": "LTC", "algorithm": "Scrypt" },
+      "address": "xxx",
+      "daemons": [ { "host": "127.0.0.1", "port": 9332 } ],
+      "ports": { "3340": { "diff": 0.05 } }
+    }
+  ]
+}

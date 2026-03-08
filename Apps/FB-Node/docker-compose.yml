@@ -1,0 +1,79 @@
+name: public-pool-fractal-bitcoin
+services:
+  app:
+    cpu_shares: 90
+    image: unisat/fractal:v29.1-v0.3.0rc2
+    container_name: Node-FB
+    hostname: Node-FB
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/fb
+      target: /data
+      bind:
+        create_host_path: true
+    ports:
+    - target: 8337
+      published: '8337'
+      protocol: tcp
+    - target: 9021
+      published: '9021'
+      protocol: tcp
+    - target: 7021
+      published: '7021'
+      protocol: tcp
+    command:
+    - bitcoind
+    - -datadir=/data
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -txindex=0
+    - -wallet=default
+    - -port=8337
+    - -zmqpubhashblock=tcp://0.0.0.0:7021
+    - -rpcbind=0.0.0.0
+    - -rpcport=9021
+    - -rpcallowip=192.168.10.0/24
+    - -rpcallowip=172.16.0.0/12
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/FB.png
+    networks:
+    - pool_network
+    - default
+
+    privileged: false
+networks:
+  default:
+    name: public-pool-fractal-bitcoin_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Fractal Bitcoin full node (UniSat image) with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/fb.
+      Ports: P2P 8337, RPC 9021, ZMQ 7021.'
+  hostname: ''
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/FB.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/FB.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9021'
+  scheme: http
+  store_app_id: public-pool-fractal-bitcoin
+  title:
+    custom: Fractal Bitcoin (FB) Node
+    en_us: Fractal Bitcoin (FB) Node

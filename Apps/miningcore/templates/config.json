@@ -1,0 +1,97 @@
+{
+  "logging": {
+    "level": "info",
+    "enableConsoleLog": true,
+    "enableConsoleColors": true
+  },
+  "banning": {
+    "manager": "Integrated",
+    "banOnJunkReceive": true,
+    "banOnInvalidShares": false
+  },
+  "notifications": { "enabled": false },
+  "persistence": {
+    "postgres": {
+      "host": "postgresql",
+      "port": 5432,
+      "user": "miningcore",
+      "password": "miningcore",
+      "database": "miningcore"
+    }
+  },
+  "paymentProcessing": {
+    "enabled": true,
+    "interval": 600,
+    "shareRecoveryFile": "recovered-shares.txt",
+    "coinbaseString": "public-pool-btc.ru"
+  },
+  "api": {
+    "enabled": true,
+    "listenAddress": "*",
+    "port": 4000,
+    "rateLimiting": { "disabled": true }
+  },
+  "pools": [
+    {
+      "id": "rvn",
+      "enabled": true,
+      "coin": "ravencoin",
+      "address": "xxx",
+      "rewardRecipients": [{ "address": "xxx", "percentage": 0.05 }],
+      "ports": {
+        "6010": { "name": "General ASIC (1TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6210": { "name": "Adequate ASIC (120TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6310": { "name": "Rich Boi ASIC (250TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6410": { "name": "NerdMiner", "listenAddress": "0.0.0.0", "difficulty": 0.001, "varDiff": { "minDiff": 0.000001, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } }
+      },
+      "daemons": [{ "host": "rvn", "port": 9010, "user": "pooluser", "password": "poolpassword", "zmqBlockNotifySocket": "tcp://rvn:7010" }],
+      "paymentProcessing": { "enabled": true, "minimumPayment": 0.001, "payoutScheme": "SOLO", "payoutSchemeConfig": { "factor": 2 } }
+    },
+    {
+      "id": "bc2",
+      "enabled": true,
+      "coin": "bitcoin-ii",
+      "address": "xxx",
+      "rewardRecipients": [{ "address": "xxx", "percentage": 0.05 }],
+      "ports": {
+        "6006": { "name": "General ASIC (1TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6206": { "name": "Adequate ASIC (120TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6306": { "name": "Rich Boi ASIC (250TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6406": { "name": "NerdMiner", "listenAddress": "0.0.0.0", "difficulty": 0.001, "varDiff": { "minDiff": 0.000001, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } }
+      },
+      "daemons": [{ "host": "bc2", "port": 9006, "user": "pooluser", "password": "poolpassword", "zmqBlockNotifySocket": "tcp://bc2:7006" }],
+      "paymentProcessing": { "enabled": true, "minimumPayment": 0.001, "payoutScheme": "SOLO", "payoutSchemeConfig": { "factor": 2 } }
+    },
+    {
+      "id": "bch",
+      "enabled": true,
+      "coin": "bitcoin-cash",
+      "address": "xxx",
+      "addressType": "bcash",
+      "rewardRecipients": [{ "address": "xxx", "percentage": 0.05 }],
+      "ports": {
+        "6002": { "name": "General ASIC (1TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6202": { "name": "Adequate ASIC (120TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6302": { "name": "Rich Boi ASIC (250TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6402": { "name": "NerdMiner", "listenAddress": "0.0.0.0", "difficulty": 0.001, "varDiff": { "minDiff": 0.000001, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } }
+      },
+      "daemons": [{ "host": "bch", "port": 9002, "user": "pooluser", "password": "poolpassword", "zmqBlockNotifySocket": "tcp://bch:7002" }],
+      "paymentProcessing": { "enabled": true, "minimumPayment": 0.001, "payoutScheme": "SOLO", "payoutSchemeConfig": { "factor": 2 } }
+    },
+    {
+      "id": "xec",
+      "enabled": true,
+      "coin": "ecash",
+      "address": "xxx",
+      "rewardRecipients": [{ "address": "xxx", "percentage": 0.05 }],
+      "ports": {
+        "6007": { "name": "General ASIC (1TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6207": { "name": "Adequate ASIC (120TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6307": { "name": "Rich Boi ASIC (250TH)", "listenAddress": "0.0.0.0", "difficulty": 1024, "varDiff": { "minDiff": 1, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } },
+        "6407": { "name": "NerdMiner", "listenAddress": "0.0.0.0", "difficulty": 0.001, "varDiff": { "minDiff": 0.000001, "targetTime": 15, "retargetTime": 90, "variancePercent": 30 } }
+      },
+      "daemons": [{ "host": "xec", "port": 9007, "user": "pooluser", "password": "poolpassword", "zmqBlockNotifySocket": "tcp://xec:7007" }],
+      "paymentProcessing": { "enabled": true, "minimumPayment": 0.001, "payoutScheme": "SOLO", "payoutSchemeConfig": { "factor": 2 } }
+    }
+  ]
+}

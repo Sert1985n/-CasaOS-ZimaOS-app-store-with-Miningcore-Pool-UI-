@@ -1,0 +1,55 @@
+name: public-pool-btc.ru
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-ZEPH
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+    image: alpine:3.20
+    command:
+    - sh
+    - -lc
+    - echo 'Skeleton container for ZEPH. Replace image/command with real node daemon.'
+      && sleep infinity
+    ports:
+    - target: 7040
+      published: '7040'
+      protocol: tcp
+    - target: 9040
+      published: '9040'
+      protocol: tcp
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-btc.ru_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Skeleton node app for Zephyr (ZEPH). Replace container image with real
+      daemon.
+  developer: public-pool-btc.ru
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zeph.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zeph.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9040'
+  scheme: http
+  store_app_id: public-pool-node-zeph
+  tagline:
+    en_us: ZEPH Node (skeleton)
+  title:
+    custom: Zephyr (ZEPH) Node
+    en_us: Zephyr (ZEPH) Node

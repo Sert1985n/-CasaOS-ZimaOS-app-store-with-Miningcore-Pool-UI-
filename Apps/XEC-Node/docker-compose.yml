@@ -1,0 +1,79 @@
+name: public-pool-ecash
+services:
+  app:
+    cpu_shares: 90
+    image: theretromike/nodes:ecash
+    container_name: Node-XEC
+    hostname: Node-XEC
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/xec
+      target: /root/.bitcoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 8336
+      published: '8336'
+      protocol: tcp
+    - target: 9007
+      published: '9007'
+      protocol: tcp
+    - target: 7007
+      published: '7007'
+      protocol: tcp
+    command:
+    - bitcoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -txindex=0
+    - -wallet=default
+    - -port=8336
+    - -zmqpubhashblock=tcp://0.0.0.0:7007
+    - -rpcbind=0.0.0.0
+    - -rpcport=9007
+    - -rpcallowip=192.168.10.0/24
+    - -rpcallowip=172.16.0.0/12
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    - --usecashaddr=0
+    labels:
+      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/xec.png
+    networks:
+    - pool_network
+    - default
+
+    privileged: false
+networks:
+  default:
+    name: public-pool-ecash_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Bitcoin ABC (eCash) full node with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/xec.
+      Ports: P2P 8336, RPC 9007, ZMQ 7007.'
+  hostname: ''
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/xec.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/xec.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9007'
+  scheme: http
+  store_app_id: public-pool-ecash
+  title:
+    custom: eCash (XEC) Node
+    en_us: eCash (XEC) Node

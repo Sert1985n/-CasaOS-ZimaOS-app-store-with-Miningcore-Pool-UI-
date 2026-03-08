@@ -1,0 +1,241 @@
+{
+  "brand": "public-pool-btc.ru",
+  "poolFeePercent": 0.05,
+  "miningcore": {
+    "container": "miningcore",
+    "apiPort": 4000
+  },
+  "postgres": {
+    "host": "postgresql",
+    "port": 5432,
+    "user": "miningcore",
+    "password": "miningcore",
+    "database": "miningcore"
+  },
+  "coins": [
+    {
+      "id": "btc",
+      "coin": "bitcoin",
+      "stratum": 6004,
+      "rpcPort": 9004,
+      "zmqPort": 7004,
+      "addressType": ""
+    },
+    {
+      "id": "bch",
+      "coin": "bitcoin-cash",
+      "stratum": 6002,
+      "rpcPort": 9002,
+      "zmqPort": 7002,
+      "addressType": "bcash"
+    },
+    {
+      "id": "bc2",
+      "coin": "bitcoin-ii",
+      "stratum": 6006,
+      "rpcPort": 9006,
+      "zmqPort": 7006,
+      "addressType": ""
+    },
+    {
+      "id": "bsv",
+      "coin": "bitcoin-sv",
+      "stratum": 6005,
+      "rpcPort": 9005,
+      "zmqPort": 7005,
+      "addressType": ""
+    },
+    {
+      "id": "dgb",
+      "coin": "digibyte-sha256",
+      "stratum": 6001,
+      "rpcPort": 9001,
+      "zmqPort": 7001,
+      "addressType": ""
+    },
+    {
+      "id": "doge",
+      "coin": "dogecoin",
+      "stratum": 6003,
+      "rpcPort": 9003,
+      "zmqPort": 7003,
+      "addressType": ""
+    },
+    {
+      "id": "xec",
+      "coin": "ecash",
+      "stratum": 6007,
+      "rpcPort": 9007,
+      "zmqPort": 7007,
+      "addressType": ""
+    },
+    {
+      "id": "xna",
+      "coin": "neurai",
+      "stratum": 6011,
+      "rpcPort": 9011,
+      "zmqPort": 7011,
+      "addressType": ""
+    },
+    {
+      "id": "ppc",
+      "coin": "peercoin",
+      "stratum": 6012,
+      "rpcPort": 9012,
+      "zmqPort": 7012,
+      "addressType": ""
+    },
+    {
+      "id": "rvn",
+      "coin": "ravencoin",
+      "stratum": 6010,
+      "rpcPort": 9010,
+      "zmqPort": 7010,
+      "addressType": ""
+    },
+    {
+      "id": "vtc",
+      "coin": "vertcoin",
+      "stratum": 6008,
+      "rpcPort": 9008,
+      "zmqPort": 7008,
+      "addressType": ""
+    },
+    {
+      "id": "ltc",
+      "coin": "litecoin",
+      "stratum": 6020,
+      "rpcPort": 9020,
+      "zmqPort": 7020,
+      "addressType": ""
+    },
+    {
+      "id": "grs",
+      "coin": "groestlcoin",
+      "stratum": 6013,
+      "rpcPort": 9013,
+      "zmqPort": 7013,
+      "addressType": "bechSegwit"
+    },
+    {
+      "id": "fb",
+      "coin": "fractalbitcoin-sha",
+      "stratum": 6014,
+      "rpcPort": 9021,
+      "zmqPort": 7013,
+      "addressType": ""
+    },
+    {
+      "id": "xmr",
+      "coin": "monero",
+      "stratum": 6009,
+      "rpcPort": 18081,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "erg",
+      "coin": "ergo",
+      "stratum": 6015,
+      "rpcPort": 9050,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "etc",
+      "coin": "ethereumclassic",
+      "stratum": 6016,
+      "rpcPort": 8545,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "ethw",
+      "coin": "ethereumpow",
+      "stratum": 6017,
+      "rpcPort": 8546,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "zeph",
+      "coin": "zephyr",
+      "stratum": 6018,
+      "rpcPort": 38081,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "space",
+      "coin": "spacecoin",
+      "stratum": 6019,
+      "rpcPort": 9133,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "xel",
+      "coin": "xelis",
+      "stratum": 6021,
+      "rpcPort": 8080,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "octa",
+      "coin": "octaspace",
+      "stratum": 6022,
+      "rpcPort": 8547,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "zec",
+      "coin": "zcash",
+      "stratum": 6023,
+      "rpcPort": 8232,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "zen",
+      "coin": "horizen",
+      "stratum": 6024,
+      "rpcPort": 8231,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "flux",
+      "coin": "flux",
+      "stratum": 6025,
+      "rpcPort": 16124,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "firo",
+      "coin": "firo",
+      "stratum": 6026,
+      "rpcPort": 8888,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "kas",
+      "coin": "kaspa",
+      "stratum": 6027,
+      "rpcPort": 16110,
+      "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "nexa",
+      "coin": "nexa",
+      "stratum": 6028,
+      "rpcPort": 7227,
+      "zmqPort": 0,
+      "addressType": ""
+    }
+  ]
+}

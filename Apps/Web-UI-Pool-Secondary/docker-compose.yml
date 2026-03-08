@@ -1,0 +1,41 @@
+name: web-ui-pool-secondary
+services:
+  app:
+    container_name: Web-UI-Pool-Secondary
+    image: theretromike/miningcorewebui:latest
+    restart: always
+    volumes:
+      - /media/ZimaOS-HD/miningcore_legacy:/app/miningcore
+    ports:
+      - "85:8080"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - SERVER_IP=${SERVER_IP:-host.docker.internal}
+      - API_BASE_URL=http://${SERVER_IP:-host.docker.internal}:4001/api
+      - MININGCORE_HOST=${SERVER_IP:-host.docker.internal}
+      - PLATFORM=ZIMAOS_LEGACY
+      - POOL_NAME=public-pool-btc.ru
+      - POSTGRES_DATABASE=zimaos
+      - POSTGRES_HOST=${SERVER_IP:-host.docker.internal}
+      - POSTGRES_PASSWORD=P@ssw0rd
+      - POSTGRES_USER=admin
+      - PUID=1000
+      - STRATUM_HOST=public-pool-btc.ru
+x-casaos:
+  architectures:
+    - amd64
+  main: app
+  description:
+    en_us: Веб-панель только для пула Monero (XMR). Статистика, сложность, цена, выплаты. Порт 85. Используйте вместе с Pool-Monero-XMR.
+  tagline:
+    en_us: Панель Monero (XMR) — порт 85
+  developer: public-pool-btc.ru
+  author: public-pool-btc.ru
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
+  store_app_id: public-pool-miningcore-webui-xmr
+  title:
+    en_us: Web UI — Вторичный пул — порт 85
+  category: Miningcore Pool UI
+  port_map: "85"

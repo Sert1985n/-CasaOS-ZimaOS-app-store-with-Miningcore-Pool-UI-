@@ -1,0 +1,38 @@
+/* solopool.org style — news + table */
+*{box-sizing:border-box}
+:root{
+  --bg:#0a0e14;--card:#111820;--border:#1c2530;
+  --text:#e6edf3;--muted:#7d8590;--link:#539bf5;
+}
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:var(--text);background:var(--bg);min-height:100vh}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--card);border-top:1px solid var(--border);z-index:100}
+.cookie-banner.hidden{display:none}
+.cookie-btn{padding:8px 20px;background:var(--link);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+
+.header{text-align:center;padding:48px 24px 24px}
+.logo{margin:0;font-size:32px;font-weight:700;letter-spacing:.1em}
+.tagline{margin:8px 0 0;color:var(--muted);font-size:18px}
+
+.news{max-width:900px;margin:0 auto 32px;padding:0 24px}
+.news h2{margin:0 0 16px;font-size:20px}
+.news-item{margin-bottom:16px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--muted)}
+.news-item em{color:var(--link)}
+
+.main{max-width:1200px;margin:0 auto;padding:0 24px 48px}
+.section-title{margin:0 0 24px;font-size:24px}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:14px 16px;text-align:left;font-size:14px;border-bottom:1px solid var(--border)}
+.table th{background:rgba(0,0,0,.3);font-weight:600;color:var(--muted)}
+.table tbody tr:hover{background:rgba(255,255,255,.02)}
+.table tbody tr{cursor:pointer}
+.coin-cell{display:flex;align-items:center;gap:10px;font-weight:600}
+.coin-icon-img{width:24px;height:24px;border-radius:6px;object-fit:contain}
+.coin-icon-fallback{width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,.1);display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+
+.footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);color:var(--muted);font-size:14px}
+.footer p{margin:8px 0}
+.footer a{color:var(--link)}

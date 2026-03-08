@@ -1,0 +1,55 @@
+name: public-pool-ergo
+services:
+  app:
+    cpu_shares: 90
+    container_name: ERG-Node
+    image: ergoplatform/ergo
+    deploy:
+      resources:
+        limits:
+          memory: 8192M
+          cpus: '1'
+    ports:
+    - target: 9050
+      published: '9050'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/erg
+      target: /data
+      bind:
+        create_host_path: true
+    restart: unless-stopped
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-ergo_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: 'Ergo node container (image: ergoplatform/ergo). Configure as needed; data
+      at /data.'
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/erg.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/erg.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9050'
+  scheme: http
+  store_app_id: public-pool-ergo
+  tagline:
+    en_us: Ergo (ERG) Node
+  title:
+    custom: Ergo (ERG) Node
+    en_us: Ergo (ERG) Node

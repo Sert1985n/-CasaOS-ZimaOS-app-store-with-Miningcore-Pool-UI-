@@ -1,0 +1,67 @@
+name: public-pool-dozzle
+services:
+  app:
+    cpu_shares: 90
+    command: []
+    container_name: Dozzle
+    deploy:
+      resources:
+        limits:
+          memory: 64220M
+    hostname: Dozzle
+    image: amir20/dozzle:v9.0.2
+    labels:
+      icon: https://cdn.jsdelivr.net/gh/bigbeartechworld/big-bear-universal-apps/apps/dozzle/logo.png
+    ports:
+    - mode: ingress
+      target: 8080
+      published: '8888'
+      protocol: tcp
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+      bind:
+        create_host_path: true
+    x-casaos:
+      ports:
+      - container: '8080'
+        description:
+          en_us: 'Container Port: 8080'
+      volumes:
+      - container: /var/run/docker.sock
+        description:
+          en_us: 'Container Path: /var/run/docker.sock'
+    devices: []
+    cap_add: []
+    environment: []
+    networks:
+    - default
+    privileged: false
+networks:
+  default:
+    name: dozzle_default
+x-casaos:
+  architectures:
+  - amd64
+  - arm64
+  author: public-pool-btc.ru
+  category: Utilities
+  description:
+    en_us: Dozzle is a real-time log viewer for docker containers.
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/gh/bigbeartechworld/big-bear-universal-apps/apps/dozzle/logo.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '8888'
+  scheme: http
+  store_app_id: public-pool-dozzle
+  tagline:
+    en_us: Dozzle is a real-time log viewer for docker containers.
+  thumbnail: https://cdn.jsdelivr.net/gh/bigbeartechworld/big-bear-universal-apps/apps/dozzle/logo.png
+  title:
+    custom: ''
+    en_us: Dozzle

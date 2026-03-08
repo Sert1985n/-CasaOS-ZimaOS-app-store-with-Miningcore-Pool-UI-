@@ -1,0 +1,28 @@
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0f1115;color:#e9eef7}
+body{margin:0}
+.bar{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.brand strong{display:block;font-size:15px}
+.muted{opacity:.7;font-size:12px}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+.card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:12px;padding:14px 14px;margin:12px 0}
+h2{margin:0 0 10px;font-size:15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:12px;opacity:.9}
+input{width:100%;margin-top:6px;padding:10px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);color:inherit}
+.coins{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.coin{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(0,0,0,.18)}
+.coin .meta{display:flex;flex-direction:column;gap:2px}
+.coin .meta b{font-size:13px}
+.coin .meta span{font-size:11px;opacity:.7}
+.coin .row{margin-top:6px}
+.coin .row label{font-size:11px}
+.coin .row input{font-size:12px;max-width:140px}
+.coin .actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.coin .badge{font-size:10px;padding:2px 6px;border-radius:6px}
+.coin .badge.on{background:rgba(0,200,100,.25);color:#0c8}
+.coin .badge.off{background:rgba(255,100,0,.2);color:#f80}
+button{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:inherit;cursor:pointer}
+button:hover{background:rgba(255,255,255,.12)}
+.chk{margin-top:10px;display:flex;align-items:center;gap:10px}
+.log{min-height:140px;max-height:360px;overflow:auto;background:rgba(0,0,0,.25);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,.10)}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}

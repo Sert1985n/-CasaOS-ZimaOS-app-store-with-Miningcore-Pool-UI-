@@ -1,0 +1,188 @@
+{
+  "clusterName": "public-pool-btc.ru",
+  "pools": [
+    {
+      "id": "bc2",
+      "enabled": true,
+      "coin": "bitcoin-ii",
+      "address": "1B9QRMwSx7v9hrqzz34NvuLH19BzbyyXoP",
+      "feePercent": 0.05,
+      "ports": {
+        "6006": {
+          "name": "General ASIC (1TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6206": {
+          "name": "Adequate ASIC (120TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6306": {
+          "name": "Rich Boi ASIC (250TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6406": {
+          "name": "NerdMiner",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 0.001,
+          "varDiff": {
+            "minDiff": 0.000001,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        }
+      },
+      "paymentProcessing": {
+        "enabled": true,
+        "minimumPayment": 0.001,
+        "payoutScheme": "SOLO",
+        "payoutSchemeConfig": {
+          "factor": 2
+        }
+      }
+    },
+    {
+      "id": "xec",
+      "enabled": true,
+      "coin": "ecash",
+      "address": "ecash:qp3fpvnyqfdddfpsxkz458pckmvz5r7htu7txsfuwq",
+      "feePercent": 0.05,
+      "ports": {
+        "6007": {
+          "name": "General ASIC (1TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6207": {
+          "name": "Adequate ASIC (120TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6307": {
+          "name": "Rich Boi ASIC (250TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6407": {
+          "name": "NerdMiner",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 0.001,
+          "varDiff": {
+            "minDiff": 0.000001,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        }
+      },
+      "paymentProcessing": {
+        "enabled": true,
+        "minimumPayment": 0.001,
+        "payoutScheme": "SOLO",
+        "payoutSchemeConfig": {
+          "factor": 2
+        }
+      }
+    },
+    {
+      "id": "bch",
+      "enabled": true,
+      "coin": "bitcoin-cash",
+      "address": "bitcoincash:qre9ja7c67w24d8j5wjcjuw4znx4jzz82vavpe33m4",
+      "feePercent": 0.05,
+      "ports": {
+        "6002": {
+          "name": "General ASIC (1TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6202": {
+          "name": "Adequate ASIC (120TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6302": {
+          "name": "Rich Boi ASIC (250TH)",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 1024,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        },
+        "6402": {
+          "name": "NerdMiner",
+          "listenAddress": "0.0.0.0",
+          "difficulty": 0.001,
+          "varDiff": {
+            "minDiff": 0.000001,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          }
+        }
+      },
+      "paymentProcessing": {
+        "enabled": true,
+        "minimumPayment": 0.001,
+        "payoutScheme": "SOLO",
+        "payoutSchemeConfig": {
+          "factor": 2
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+/* PP_PATCH_BAND_2026 — вертикальная полоса при наведении на график */
+:root { --crossBand: rgba(255, 255, 255, .08); }
+:root[data-theme="light"] { --crossBand: rgba(0, 0, 0, .08); }

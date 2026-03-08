@@ -1,0 +1,70 @@
+name: public-pool-btc.ru
+services:
+  app:
+    container_name: Mining-Pool-Configuration
+    image: node:20-alpine
+    working_dir: /app
+    command:
+    - sh
+    - -lc
+    - apk add --no-cache docker-cli 2>/dev/null; npm install --omit=dev && node server.js
+    environment:
+    - PORT=4050
+    - DATA_DIR=/data
+    - MININGCORE_CONFIG=/data/config.json
+    - MININGCORE_COINS=/data/coins.json
+    - MC_CONFIG=/data/config.json
+    - MC_COINS=/data/coins.json
+    - COINS_MAP_PATH=/data/coins-map.json
+    - DEFAULTS=/app/files/coins.defaults.json
+    - MC_CONTAINER=miningcore
+    - MININGCORE_HOST=${SERVER_IP:-host.docker.internal}
+    - POOL_NAME=public-pool-btc.ru
+    - STRATUM_HOST=public-pool-btc.ru
+    - POOL_FEE_PERCENT=1.5
+    - POOL_FEE_PCT=1.5
+    ports:
+    - target: 4050
+      published: '4050'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/miningcore
+      target: /data
+      bind:
+        create_host_path: true
+    - type: bind
+      source: .
+      target: /app
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+    restart: always
+    networks:
+      - pool_network
+networks:
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Miningcore Pool UI
+  description:
+    en_us: Создание wallet, вкл/выкл монет, config.json, coins.json. Генерация адресов. Min payout, Pool Fee 1.5%. Порт 4050.
+  developer: public-pool-btc.ru
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-config.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-config.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '4050'
+  scheme: http
+  store_app_id: public-pool-mining-pool-configuration
+  tagline:
+    en_us: Wallet, монеты, config — порт 4050
+  title:
+    custom: Pool Configuration — Wallet (порт 4050)
+    en_us: Pool Configuration — Wallet (порт 4050)

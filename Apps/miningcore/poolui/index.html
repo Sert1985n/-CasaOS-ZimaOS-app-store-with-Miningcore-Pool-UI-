@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>public-pool-btc.ru — Mining Pools</title>
+  <link rel="icon" type="image/png" href="/favicon.png?v=2026-03-07"/>
+  <link rel="apple-touch-icon" href="/favicon.png?v=2026-03-07"/>
+  <link rel="stylesheet" href="/site.css?v=20260307"/>
+</head>
+<body class="layout-sidebar">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand" onclick="location.hash='#/'">
+      <strong>public-pool-btc.ru</strong>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="sidebar__link sidebar__link--active" href="#/" data-page="pools">
+        <span class="sidebar__icon">≡</span> Mining Pools
+      </a>
+      <a class="sidebar__link" href="#/referral" data-page="referral">
+        <span class="sidebar__icon">↗</span> Referral Links
+      </a>
+      <a class="sidebar__link" href="#/support" data-page="support">
+        <span class="sidebar__icon">♥</span> Support Me
+      </a>
+      <a class="sidebar__link sidebar__link--config" href="#" id="poolConfigLink" target="_blank" rel="noopener">
+        <span class="sidebar__icon">⚙</span> Pool Configuration
+      </a>
+    </nav>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <button class="topbar__menu" id="menuBtn" type="button" aria-label="Menu">
+        <svg viewBox="0 0 24 24" class="ico"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      </button>
+      <h1 class="topbar__title">Mining Pools</h1>
+      <nav class="topbar__breadcrumb">
+        <a href="#/">Home</a> / <span>Mining Pools</span>
+      </nav>
+    </header>
+
+    <main class="content wrap">
+      <div id="app"></div>
+    </main>
+  </div>
+
+  <script>
+    (function(){
+      var a = document.getElementById('poolConfigLink');
+      if(a) a.href = window.location.protocol + '//' + window.location.hostname + ':4050';
+    })();
+    document.getElementById('menuBtn').onclick = function(){
+      document.getElementById('sidebar').classList.toggle('sidebar--open');
+    };
+  </script>
+  <script src="/app.js?v=20260307"></script>
+</body>
+</html>

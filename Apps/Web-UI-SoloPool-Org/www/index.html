@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SoloPool.org — Solo Mining Pools</title>
+  <link rel="icon" href="/favicon.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/site.css"/>
+</head>
+<body>
+  <div class="cookie-banner" id="cookieBanner">
+    <p>This site uses cookies. <a href="#privacy">Privacy Policy</a></p>
+    <button class="cookie-btn" id="cookieAccept">Accept</button>
+  </div>
+
+  <header class="header">
+    <h1 class="logo">SOLOPOOL.ORG</h1>
+    <p class="tagline">Solo Mining Pools For Professional Miners</p>
+  </header>
+
+  <section class="news">
+    <h2>News</h2>
+    <article class="news-item"><em>Latest</em> — Pool is ready. Add your pools in Pool Configuration.</article>
+    <article class="news-item"><em>Setup</em> — Install PostgreSQL, Miningcore, then this Web UI. Connect to pool_network.</article>
+  </section>
+
+  <main class="main" id="mainArea">
+    <div id="poolsView">
+      <h2 class="section-title">Mining Pools</h2>
+      <div class="table-wrap">
+        <table class="table" id="poolsTable">
+          <thead>
+            <tr>
+              <th>Pool</th>
+              <th>Pool Hashrate</th>
+              <th>Blocks Found</th>
+              <th>Pool Luck</th>
+              <th>Network Hashrate</th>
+              <th>Network Difficulty</th>
+              <th>Coin Price</th>
+              <th>Block Reward</th>
+              <th>Min Payout</th>
+              <th>Pool Fee</th>
+            </tr>
+          </thead>
+          <tbody id="poolsBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="coinView" style="display:none"></div>
+  </main>
+
+  <footer class="footer">
+    <p>All pools compatible with Miningcore. Compatible with NiceHash, MiningRigRentals.</p>
+    <p><a href="mailto:support@pool.local">Mailto</a> • <a href="#">Telegram</a> • <a href="#">Twitter</a></p>
+    <p>© 2026 SoloPool • <a href="#privacy">Privacy Policy</a> • <a href="#terms">Terms</a></p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

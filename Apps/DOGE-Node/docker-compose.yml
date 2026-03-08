@@ -1,0 +1,65 @@
+name: public-pool-dogecoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: DOGE-Node
+    image: nandubatchu/dogecoind
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    command:
+    - dogecoind
+    - -printtoconsole
+    - -rpcbind=0.0.0.0
+    - -rpcallowip=0.0.0.0/0
+    - -rpcport=9003
+    - -zmqpubhashblock=tcp://0.0.0.0:7003
+    - -datadir=/data
+    ports:
+    - target: 9003
+      published: '9003'
+      protocol: tcp
+    - target: 7003
+      published: '7003'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/doge
+      target: /data
+      bind:
+        create_host_path: true
+    restart: unless-stopped
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-dogecoin_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Dogecoin (DOGE) Node full node (Docker).
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9003'
+  scheme: http
+  store_app_id: public-pool-dogecoin
+  tagline:
+    en_us: Dogecoin (DOGE) Node
+  title:
+    custom: Dogecoin (DOGE) Node
+    en_us: Dogecoin (DOGE) Node

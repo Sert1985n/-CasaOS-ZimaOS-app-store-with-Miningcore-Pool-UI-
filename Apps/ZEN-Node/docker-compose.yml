@@ -1,0 +1,55 @@
+name: zen-node
+services:
+  app:
+    cpu_shares: 90
+    container_name: ZEN-Node
+    deploy:
+      resources:
+        limits:
+          memory: 8192M
+          cpus: '1'
+    image: zencash/zen-node
+    ports:
+    - target: 9033
+      published: '9033'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/zen
+      target: /data
+      bind:
+        create_host_path: true
+    restart: unless-stopped
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: zen-node_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: 'Horizen zend node (image: zencash/zen-node). Configure as needed; data
+      at /data.'
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zen.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zen.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9033'
+  scheme: http
+  store_app_id: zen-node
+  tagline:
+    en_us: Horizen (ZEN) Node
+  title:
+    custom: Horizen (ZEN) Node
+    en_us: Horizen (ZEN) Node

@@ -1,0 +1,159 @@
+name: public-pool-miningcore
+services:
+  app:
+    cpu_shares: 90
+    command: []
+    container_name: miningcore
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4096M
+    hostname: miningcore
+    image: theretromike/miningcore:latest
+    labels:
+      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-main.png
+    ports:
+    - mode: ingress
+      target: 4000
+      published: '4000'
+      protocol: tcp
+    - mode: ingress
+      target: 6001
+      published: '6001'
+      protocol: tcp
+    - mode: ingress
+      target: 6002
+      published: '6002'
+      protocol: tcp
+    - mode: ingress
+      target: 6003
+      published: '6003'
+      protocol: tcp
+    - mode: ingress
+      target: 6004
+      published: '6004'
+      protocol: tcp
+    - mode: ingress
+      target: 6005
+      published: '6005'
+      protocol: tcp
+    - mode: ingress
+      target: 6006
+      published: '6006'
+      protocol: tcp
+    - mode: ingress
+      target: 6007
+      published: '6007'
+      protocol: tcp
+    - mode: ingress
+      target: 6008
+      published: '6008'
+      protocol: tcp
+    - mode: ingress
+      target: 6009
+      published: '6009'
+      protocol: tcp
+    - mode: ingress
+      target: 6011
+      published: '6011'
+      protocol: tcp
+    - mode: ingress
+      target: 6012
+      published: '6012'
+      protocol: tcp
+    - mode: ingress
+      target: 6013
+      published: '6013'
+      protocol: tcp
+    - mode: ingress
+      target: 6014
+      published: '6014'
+      protocol: tcp
+    - mode: ingress
+      target: 6015
+      published: '6015'
+      protocol: tcp
+    - target: 6020
+      published: '6020'
+      protocol: tcp
+    - target: 6021
+      published: '6021'
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/miningcore/coins.json
+      target: /app/build/coins.json
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /media/ZimaOS-HD/miningcore/config.json
+      target: /app/config.json
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/vtc
+      target: /.vertcoin
+      bind:
+        create_host_path: true
+    devices: []
+    cap_add: []
+    environment: []
+    networks:
+    - pool_network
+    - default
+    privileged: false
+
+  webui:
+    image: nginx:alpine
+    container_name: miningcore-webui
+    hostname: miningcore-webui
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - mode: ingress
+        target: 80
+        published: '81'
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: ./poolui
+        target: /usr/share/nginx/html
+        read_only: true
+      - type: bind
+        source: ./poolui/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+    networks:
+      - default
+      - pool_network
+
+networks:
+  default:
+    name: miningcore_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Miningcore Pool UI
+  description:
+    en_us: Miningcore Mining Pool + your Pool UI (from www/poolui). Web UI installs with the app.
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-main.png
+  index: /
+  is_uncontrolled: false
+  main: webui
+  port_map: '81'
+  scheme: http
+  store_app_id: public-pool-miningcore
+  tagline:
+    en_us: Пул + панель — порт 81 • Diff, Price, Reward, Min Payout, 1.5%
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-main.png
+  title:
+    custom: Miningcore + Pool UI (порт 81) — основная панель
+    en_us: Miningcore + Pool UI (порт 81) — основная панель

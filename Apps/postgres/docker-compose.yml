@@ -1,0 +1,64 @@
+name: retro-mike-postgresql
+services:
+  app:
+    container_name: postgresql
+    image: postgres:17.4
+    restart: always
+    volumes:
+      - /media/ZimaOS-HD/postgres:/var/lib/postgresql/data
+      - ./init-miningcore.sh:/docker-entrypoint-initdb.d/02-miningcore.sh:ro
+    ports:
+      - "5432:5432"
+    environment:
+      - PGID=1000
+      - POSTGRES_DB=zimaos
+      - POSTGRES_PASSWORD=P@ssw0rd
+      - POSTGRES_USER=admin
+      - PUID=1000
+      - TZ=America/Chicago
+    networks:
+      - pool_network
+  init-miningcore-dir:
+    image: busybox:latest
+    container_name: init-miningcore-dir
+    depends_on:
+      - app
+    volumes:
+      - /media/ZimaOS-HD/miningcore:/data
+      - ./templates:/tmpl:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        mkdir -p /data
+        if [ ! -f /data/config.json ]; then
+          if [ -f /tmpl/config.json ]; then cp /tmpl/config.json /data/config.json; else echo '{"clusterName":"public-pool-btc.ru","logging":{"level":"info"},"api":{"enabled":true,"listenAddress":"0.0.0.0","port":4000},"persistence":{"postgres":{"host":"postgresql","port":5432,"user":"miningcore","password":"miningcore","database":"miningcore"}},"pools":[]}' > /data/config.json; fi
+        fi
+        if [ ! -f /data/coins.json ]; then
+          if [ -f /tmpl/coins.json ]; then cp /tmpl/coins.json /data/coins.json; else echo '[]' > /data/coins.json; fi
+        fi
+        if [ ! -f /data/coins-map.json ]; then
+          if [ -f /tmpl/coins-map.json ]; then cp /tmpl/coins-map.json /data/coins-map.json; fi
+        fi
+        echo "miningcore dir + config.json + coins.json + coins-map.json ready"
+    restart: "no"
+networks:
+  pool_network:
+    name: pool_network
+x-casaos:
+  architectures:
+    - amd64
+    - arm
+    - arm64
+  main: app
+  description:
+    en_us: Postgresql Database Engine
+  tagline:
+    en_us: Postgresql Database Engine
+  developer: public-pool-btc.ru
+  author: public-pool-btc.ru
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/PostgreSQL/icon.png
+  thumbnail: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/PostgreSQL/icon.png
+  title:
+    en_us: Postgresql
+  category: Miningcore Pool UI
+  port_map: "8888"

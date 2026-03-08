@@ -1,0 +1,41 @@
+name: retro-mike-miningcore-webui
+services:
+  app:
+    container_name: miningcorewebui
+    image: theretromike/miningcorewebui:latest
+    restart: always
+    volumes:
+      - /media/ZimaOS-HD/miningcore:/app/miningcore
+    ports:
+      - "81:8080"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - SERVER_IP=${SERVER_IP:-host.docker.internal}
+      - API_BASE_URL=http://${SERVER_IP:-host.docker.internal}:4000/api
+      - MININGCORE_HOST=${SERVER_IP:-host.docker.internal}
+      - PLATFORM=ZIMAOS
+      - POOL_NAME=public-pool-btc.ru
+      - POSTGRES_DATABASE=zimaos
+      - POSTGRES_HOST=${SERVER_IP:-host.docker.internal}
+      - POSTGRES_PASSWORD=P@ssw0rd
+      - POSTGRES_USER=admin
+      - PUID=1000
+      - STRATUM_HOST=public-pool-btc.ru
+x-casaos:
+  architectures:
+    - amd64
+  main: app
+  description:
+    en_us: Веб-панель пула (отдельное приложение, порт 81)
+  tagline:
+    en_us: Веб-панель Miningcore
+  developer: public-pool-btc.ru
+  author: public-pool-btc.ru
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+  store_app_id: retro-mike-miningcore-webui
+  title:
+    en_us: Miningcore Web UI
+  category: Miningcore Pool UI
+  port_map: "81"

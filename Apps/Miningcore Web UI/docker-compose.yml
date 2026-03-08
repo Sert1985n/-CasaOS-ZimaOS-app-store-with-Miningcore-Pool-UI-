@@ -1,0 +1,82 @@
+name: public-pool-btc.ru
+services:
+  app:
+    cpu_shares: 90
+    command: []
+    container_name: Miningcore-Web-UI
+    deploy:
+      resources:
+        limits:
+          memory: 64220M
+    environment:
+    - SERVER_IP=${SERVER_IP:-host.docker.internal}
+    - API_BASE_URL=http://${SERVER_IP:-host.docker.internal}:4000/api
+    - MININGCORE_HOST=${SERVER_IP:-host.docker.internal}
+    - PLATFORM=ZIMAOS
+    - POOL_NAME=public-pool-btc.ru
+    - POSTGRES_DATABASE=zimaos
+    - POSTGRES_HOST=${SERVER_IP:-host.docker.internal}
+    - POSTGRES_PASSWORD=P@ssw0rd
+    - POSTGRES_USER=admin
+    - PUID=1000
+    - STRATUM_HOST=public-pool-btc.ru
+    hostname: Miningcore-Web-UI
+    image: theretromike/miningcorewebui:latest
+    labels:
+      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+    ports:
+    - mode: ingress
+      target: 8080
+      published: '81'
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/miningcore
+      target: /app/miningcore
+      bind:
+        create_host_path: true
+    - type: bind
+      source: ./overrides/index.html
+      target: /app/wwwroot/index.html
+      read_only: true
+    - type: bind
+      source: ./overrides/css/site.css
+      target: /app/wwwroot/css/site.css
+      read_only: true
+    - type: bind
+      source: ./overrides/js/site.js
+      target: /app/wwwroot/js/site.js
+      read_only: true
+    devices: []
+    cap_add: []
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    networks:
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-miningcore-webui_default
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Miningcore Pool UI
+  description:
+    en_us: "Web UI for Miningcore. POOL_NAME/STRATUM_HOST=public-pool-btc.ru. Set SERVER_IP to your server IP for MININGCORE_HOST, POSTGRES_HOST, API_BASE_URL (default: host.docker.internal)."
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '81'
+  scheme: http
+  store_app_id: public-pool-miningcore-webui
+  tagline:
+    en_us: Веб-панель Miningcore
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+  title:
+    custom: Miningcore Web UI
+    en_us: Miningcore Web UI

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>public-pool-btc.ru — Pools :85</title>
+  <link rel="stylesheet" href="site.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <div class="brand" onclick="location.reload()">
+        <div class="brand__dot"></div>
+        <div class="brand__txt">
+          <div class="brand__title">public-pool-btc.ru</div>
+          <div class="brand__sub">Pool Panel :85 — управление пулами</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="pill" href="/" target="_self">Panel :85</a>
+        <a class="pill" href="http://host.docker.internal:81/" target="_blank">WebUI :81</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="card">
+      <div class="card__h">
+        <div>
+          <div class="h1">Pools</div>
+          <div class="muted" id="metaLine">Загрузка...</div>
+        </div>
+        <button id="btnReload" class="btn">Обновить</button>
+      </div>
+      <div id="grid" class="grid"></div>
+    </div>
+  </main>
+  <script>window.__API_BASE__="/api";</script>
+  <script src="site.js"></script>
+</body>
+</html>

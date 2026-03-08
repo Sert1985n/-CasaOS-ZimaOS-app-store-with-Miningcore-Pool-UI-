@@ -1,0 +1,55 @@
+name: public-pool-btc.ru
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-SPACE
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+    image: alpine:3.20
+    command:
+    - sh
+    - -lc
+    - echo 'Skeleton container for SPACE. Replace image/command with real node daemon.'
+      && sleep infinity
+    ports:
+    - target: 7041
+      published: '7041'
+      protocol: tcp
+    - target: 9041
+      published: '9041'
+      protocol: tcp
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-btc.ru_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Skeleton node app for Spacecoin (SPACE). Replace container image with real
+      daemon.
+  developer: public-pool-btc.ru
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/space.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/space.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9041'
+  scheme: http
+  store_app_id: public-pool-node-space
+  tagline:
+    en_us: SPACE Node (skeleton)
+  title:
+    custom: Spacecoin (SPACE) Node
+    en_us: Spacecoin (SPACE) Node

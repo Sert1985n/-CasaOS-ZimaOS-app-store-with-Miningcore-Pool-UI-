@@ -1,0 +1,54 @@
+name: public-pool-btc.ru
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-FLUX
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+    image: alpine:3.20
+    command:
+    - sh
+    - -lc
+    - echo 'Skeleton container for FLUX. Replace image/command with real node daemon.'
+      && sleep infinity
+    ports:
+    - target: 7033
+      published: '7033'
+      protocol: tcp
+    - target: 9033
+      published: '9033'
+      protocol: tcp
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-btc.ru_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Skeleton node app for Flux (FLUX). Replace container image with real daemon.
+  developer: public-pool-btc.ru
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/flux.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/flux.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9033'
+  scheme: http
+  store_app_id: public-pool-node-flux
+  tagline:
+    en_us: FLUX Node (skeleton)
+  title:
+    custom: Flux (FLUX) Node
+    en_us: Flux (FLUX) Node

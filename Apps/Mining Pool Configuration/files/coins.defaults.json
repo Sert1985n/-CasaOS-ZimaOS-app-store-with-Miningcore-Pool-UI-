@@ -1,0 +1,162 @@
+{
+  "coins": [
+    "BTC",
+    "FB",
+    "BCH",
+    "BC2",
+    "BSV",
+    "XEC",
+    "LTC",
+    "DOGE",
+    "ETC",
+    "ETHW",
+    "RVN",
+    "ERG",
+    "XMR",
+    "ZEPH",
+    "VTC",
+    "XNA",
+    "PPC",
+    "SPACE",
+    "XEL",
+    "OCTA",
+    "ZEC",
+    "ZEN",
+    "FLUX",
+    "FIRO",
+    "KAS",
+    "NEXA"
+  ],
+  "ports": {
+    "BTC": {
+      "stratum": 6101,
+      "rpc": 9101,
+      "zmq": null
+    },
+    "FB": {
+      "stratum": 6102,
+      "rpc": 9102,
+      "zmq": null
+    },
+    "BCH": {
+      "stratum": 6103,
+      "rpc": 9103,
+      "zmq": null
+    },
+    "BC2": {
+      "stratum": 6104,
+      "rpc": 9104,
+      "zmq": null
+    },
+    "BSV": {
+      "stratum": 6105,
+      "rpc": 9105,
+      "zmq": null
+    },
+    "XEC": {
+      "stratum": 6106,
+      "rpc": 9106,
+      "zmq": null
+    },
+    "LTC": {
+      "stratum": 6107,
+      "rpc": 9107,
+      "zmq": null
+    },
+    "DOGE": {
+      "stratum": 6108,
+      "rpc": 9108,
+      "zmq": null
+    },
+    "ETC": {
+      "stratum": 6109,
+      "rpc": 9109,
+      "zmq": null
+    },
+    "ETHW": {
+      "stratum": 6110,
+      "rpc": 9110,
+      "zmq": null
+    },
+    "RVN": {
+      "stratum": 6111,
+      "rpc": 9111,
+      "zmq": null
+    },
+    "ERG": {
+      "stratum": 6112,
+      "rpc": 9112,
+      "zmq": null
+    },
+    "XMR": {
+      "stratum": 6113,
+      "rpc": 9113,
+      "zmq": null
+    },
+    "ZEPH": {
+      "stratum": 6114,
+      "rpc": 9114,
+      "zmq": null
+    },
+    "VTC": {
+      "stratum": 6115,
+      "rpc": 9115,
+      "zmq": null
+    },
+    "XNA": {
+      "stratum": 6116,
+      "rpc": 9116,
+      "zmq": null
+    },
+    "PPC": {
+      "stratum": 6117,
+      "rpc": 9117,
+      "zmq": null
+    },
+    "SPACE": {
+      "stratum": 6118,
+      "rpc": 9118,
+      "zmq": null
+    },
+    "XEL": {
+      "stratum": 6119,
+      "rpc": 9119,
+      "zmq": null
+    },
+    "OCTA": {
+      "stratum": 6120,
+      "rpc": 9120,
+      "zmq": null
+    },
+    "ZEC": {
+      "stratum": 6121,
+      "rpc": 9121,
+      "zmq": null
+    },
+    "ZEN": {
+      "stratum": 6122,
+      "rpc": 9122,
+      "zmq": null
+    },
+    "FLUX": {
+      "stratum": 6123,
+      "rpc": 9123,
+      "zmq": null
+    },
+    "FIRO": {
+      "stratum": 6124,
+      "rpc": 9124,
+      "zmq": null
+    },
+    "KAS": {
+      "stratum": 6125,
+      "rpc": 9125,
+      "zmq": null
+    },
+    "NEXA": {
+      "stratum": 6126,
+      "rpc": 9126,
+      "zmq": null
+    }
+  }
+}

@@ -1,0 +1,39 @@
+name: solo-pool-dashboard-ui
+services:
+  app:
+    container_name: Solo-Pool-Dashboard-UI
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "83:80"
+    volumes:
+      - ./www:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - pool_network
+networks:
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+    - amd64
+    - arm
+    - arm64
+  author: public-pool-btc.ru
+  category: Miningcore Pool UI
+  description:
+    en_us: Панель Solo-Pool. Network Diff, Hashrate, Block Reward, Price, Min Payout, Pool Fee 1.5%, Effort, Charts. Порт 83. pool_network + Miningcore.
+  developer: public-pool-btc.ru
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-solopool-dashboard.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-solopool-dashboard.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '83'
+  scheme: http
+  store_app_id: solo-pool-dashboard-ui
+  tagline:
+    en_us: Solo-Pool Dashboard — порт 83
+  title:
+    custom: Web UI Solo-Pool Dashboard (порт 83)
+    en_us: Web UI Solo-Pool Dashboard (порт 83)

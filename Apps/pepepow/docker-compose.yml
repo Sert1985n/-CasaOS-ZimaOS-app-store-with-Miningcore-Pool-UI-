@@ -1,0 +1,28 @@
+name: retro-mike-pepepow
+services:
+  app:
+    container_name: pepew
+    image: theretromike/nodes:pepew
+    restart: always
+    volumes:
+      - /media/ZimaOS-HD/pepew:/root/.PEPEPOWcore
+    ports:
+      - "7014:7014"
+      - "9014:9014"
+    command: "/app/PEPEPOWd -printtoconsole -server -wallet=default -zmqpubhashblock=tcp://127.0.0.1:7014 -rpcbind=0.0.0.0 -rpcport=9014 -rpcallowip=0.0.0.0/0 -rpcuser=pooluser -rpcpassword=poolpassword"
+x-casaos:
+  architectures:
+    - amd64
+  main: app
+  description:
+    en_us: PepePOW Cryptocurrency Node. Can be used in conjunction with Miningcore Apps to solo mine.
+  tagline:
+    en_us: PepePOW Cryptocurrency Node.
+  developer: public-pool-btc.ru
+  author: public-pool-btc.ru
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
+  title:
+    en_us: PepePOW (PEPEW) Node
+  category: Cryptocurrency Nodes
+  port_map: "8888"

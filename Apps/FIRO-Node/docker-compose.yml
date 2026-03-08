@@ -1,0 +1,55 @@
+name: public-pool-firo
+services:
+  app:
+    cpu_shares: 90
+    container_name: FIRO-Node
+    deploy:
+      resources:
+        limits:
+          memory: 8192M
+          cpus: '1'
+    image: firoorg/firod
+    ports:
+    - target: 9044
+      published: '9044'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/firo
+      target: /data
+      bind:
+        create_host_path: true
+    restart: unless-stopped
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-firo_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: 'Firo daemon (image: firoorg/firod). Configure RPC/P2P as needed; data
+      at /data.'
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/firo.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/firo.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9044'
+  scheme: http
+  store_app_id: public-pool-firo
+  tagline:
+    en_us: Firo (FIRO) Node
+  title:
+    custom: Firo (FIRO) Node
+    en_us: Firo (FIRO) Node

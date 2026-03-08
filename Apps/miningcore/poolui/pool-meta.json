@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-03-06T00:00:00Z",
+  "pools": {
+    "bc2": {
+      "poolFeePercent": 0.05
+    },
+    "xec": {
+      "poolFeePercent": 0.05
+    },
+    "bch": {
+      "poolFeePercent": 0.05
+    },
+    "fb": {
+      "poolFeePercent": 0.05
+    }
+  }
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Miningcore Pool UI",
+    "font": "server",
+    "description": "Пул майнинга, веб-панель, настройка конфига, панель :85, PostgreSQL"
+  },
+  {
+    "name": "Cryptocurrency Nodes",
+    "font": "currency-usd",
+    "description": "Ноды монет для пула (BTC, LTC, XMR, RVN и др.)"
+  },
+  {
+    "name": "Utilities",
+    "font": "toolbox-outline",
+    "description": "Утилиты"
+  }
+]

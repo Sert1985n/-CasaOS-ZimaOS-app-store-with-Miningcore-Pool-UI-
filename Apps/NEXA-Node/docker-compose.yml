@@ -1,0 +1,55 @@
+name: public-pool-nexa
+services:
+  app:
+    cpu_shares: 90
+    container_name: NEXA-Node
+    image: bchunlimited/nexad-rostrum
+    deploy:
+      resources:
+        limits:
+          memory: 8192M
+          cpus: '1'
+    ports:
+    - target: 9077
+      published: '9077'
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/nexa
+      target: /data
+      bind:
+        create_host_path: true
+    restart: unless-stopped
+    networks:
+    - pool_network
+    - default
+
+networks:
+  default:
+    name: public-pool-nexa_default
+  pool_network:
+    external: true
+
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: 'Nexa node/rostrum container (image: bchunlimited/nexad-rostrum). Configure
+      as needed; data at /data.'
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/nexa.png
+  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/nexa.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9077'
+  scheme: http
+  store_app_id: public-pool-nexa
+  tagline:
+    en_us: Nexa (NEXA) Node
+  title:
+    custom: Nexa (NEXA) Node
+    en_us: Nexa (NEXA) Node

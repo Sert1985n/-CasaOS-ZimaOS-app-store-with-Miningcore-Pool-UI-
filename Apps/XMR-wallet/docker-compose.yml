@@ -1,0 +1,57 @@
+name: public-pool-monero-wallet
+services:
+  app:
+    cpu_shares: 90
+    image: monero:latest
+    container_name: Wallet-XMR
+    hostname: Wallet-XMR
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64220M
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/xmr-wallet
+      target: /wallet
+      bind:
+        create_host_path: true
+    ports:
+    - target: 18083
+      published: '18083'
+      protocol: tcp
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    command:
+    - monero-wallet-rpc
+    - --wallet-dir=/wallet
+    - --daemon-address=host.docker.internal:18081
+    - --rpc-bind-ip=0.0.0.0
+    - --rpc-bind-port=18083
+    - --confirm-external-bind
+    - --rpc-login=walletuser:walletpass
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+    privileged: false
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: Monero wallet RPC (monero-wallet-rpc). Stores wallets in /media/ZimaOS-HD/nodes/xmr-wallet.
+      Connects to Monero daemon via host.docker.internal:18081. Exposes wallet RPC
+      on 18083 (auth enabled).
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '18083'
+  scheme: http
+  store_app_id: public-pool-monero-wallet
+  title:
+    custom: Monero (XMR) Wallet RPC
+    en_us: Monero (XMR) Wallet RPC

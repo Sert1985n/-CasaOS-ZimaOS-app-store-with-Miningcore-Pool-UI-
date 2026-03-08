@@ -1,0 +1,97 @@
+name: public-pool-bitcoin
+services:
+  app:
+    cpu_shares: 90
+    command:
+    - /usr/bin/bitcoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://127.0.0.1:7004
+    - -rpcbind=0.0.0.0
+    - -rpcport=9004
+    - -rpcallowip=0.0.0.0/0
+    - -port=8333
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    container_name: Node-BTC
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    hostname: Node-BTC
+    image: theretromike/nodes:bitcoin
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/btc.png
+    ports:
+    - mode: ingress
+      target: 7004
+      published: '7004'
+      protocol: tcp
+    - mode: ingress
+      target: 9004
+      published: '9004'
+      protocol: tcp
+    - mode: ingress
+      target: 8333
+      published: '8333'
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/btc
+      target: /root/.bitcoin
+      bind:
+        create_host_path: true
+    x-casaos:
+      ports:
+      - container: '7004'
+        description:
+          en_us: 'Container Port: 7004'
+      - container: '9004'
+        description:
+          en_us: 'Container Port: 9004'
+      - container: '8333'
+        description:
+          en_us: 'Container Port: 8333'
+      volumes:
+      - container: /root/.bitcoin
+        description:
+          en_us: 'Container Path: /root/.bitcoin'
+    devices: []
+    cap_add: []
+    environment: []
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-bitcoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Bitcoin Cryptocurrency Node. Can be used in conjunction with Miningcore
+      Apps to solo mine.
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/btc.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9004'
+  scheme: http
+  store_app_id: public-pool-bitcoin
+  tagline:
+    en_us: Bitcoin Cryptocurrency Node.
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/btc.png
+  title:
+    custom: Bitcoin (BTC) Node
+    en_us: Bitcoin (BTC) Node

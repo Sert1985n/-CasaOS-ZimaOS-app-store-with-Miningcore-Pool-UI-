@@ -1,0 +1,77 @@
+name: public-pool-bitcoin-ii
+services:
+  app:
+    cpu_shares: 90
+    command:
+    - /usr/bin/bitcoinIId
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://127.0.0.1:7006
+    - -rpcbind=0.0.0.0
+    - -rpcport=9006
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    container_name: Node-BC2
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    hostname: Node-BC2
+    image: theretromike/nodes:bitcoinii
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/btc.png
+    ports:
+    - mode: ingress
+      target: 7006
+      published: '7006'
+      protocol: tcp
+    - mode: ingress
+      target: 9006
+      published: '9006'
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/bc2
+      target: /root/.bitcoinII
+      bind:
+        create_host_path: true
+    devices: []
+    cap_add: []
+    environment: []
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-bitcoin-ii_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: BitcoinII Cryptocurrency Node. Can be used in conjunction with Miningcore
+      Apps to solo mine.
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/btc.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9006'
+  scheme: http
+  store_app_id: public-pool-bitcoin-ii
+  tagline:
+    en_us: BitcoinII Cryptocurrency Node.
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/btc.png
+  title:
+    custom: BitcoinII (BC2) Node
+    en_us: BitcoinII (BC2) Node

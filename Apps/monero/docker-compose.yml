@@ -1,0 +1,37 @@
+name: monero
+services:
+  app:
+    container_name: xmr
+    image: theretromike/nodes:monero
+    restart: always
+    volumes:
+      - /media/ZimaOS-HD/NodeData/xmr:/root/.bitmonero
+    ports:
+      - "9009:9009"
+      - "7009:7009"
+    command:
+      - /usr/local/bin/monerod
+      - --non-interactive
+      - --confirm-external-bind
+      - --out-peers=32
+      - --p2p-bind-ip=0.0.0.0
+      - --p2p-bind-port=18080
+      - --rpc-bind-ip=0.0.0.0
+      - --rpc-bind-port=9009
+      - --prune-blockchain
+x-casaos:
+  architectures:
+    - amd64
+  main: app
+  description:
+    en_us: Monero Cryptocurrency Node.
+  tagline:
+    en_us: Monero Cryptocurrency Node
+  developer: public-pool-btc.ru
+  author: public-pool-btc.ru
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  title:
+    en_us: Monero (XMR) Node
+  category: Cryptocurrency Nodes
+  port_map: "8888"

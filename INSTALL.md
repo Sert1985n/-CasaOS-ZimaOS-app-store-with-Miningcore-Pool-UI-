@@ -79,9 +79,9 @@
 
 | Приложение | Назначение |
 |------------|------------|
-| **Web-UI-Molepool** | Панель molepool.com, порт 82. Diff, Price, Block Reward, Min Payout, Pool Fee 1.5%. |
-| **Web-UI-SoloPool-Dashboard** | Панель Solo-Pool, порт 83. Network Info, Block Info, Pool Info, Effort. |
-| **Web-UI-SoloPool-Org** | Панель solopool.org, порт 84. Таблица пулов. |
+| **Web-UI-Molepool** | Панель molepool.com, порт 82. Diff, Price, Block Reward, Min Payout, Pool Fee 1.5%. Требует `docker compose build`. |
+| **Web-UI-SoloPool-Dashboard** | Панель Solo-Pool, порт 83. Network Info, Block Info, Pool Info, Effort. Требует `docker compose build`. |
+| **Web-UI-SoloPool-Org** | Панель solopool.org, порт 84. Таблица пулов. Требует `docker compose build`. |
 | **Pool-Monero-XMR** | Вторичный пул (Monero и др.), порт 4001. |
 | **Web-UI-Pool-Secondary** | Панель для вторичного пула, порт 85. |
 
@@ -219,6 +219,9 @@
 
 - **Конфликт портов**  
   Не ставьте одновременно две ноды на один и тот же порт (например ZEN-Node и FLUX-Node оба используют 9033). При необходимости измените `published` в `docker-compose.yml` одной из нод.
+
+- **Web UI (Molepool, Solo-Pool, SoloPool) в статусе "Created", не запускаются**  
+  Эти приложения собирают образ через `build`. Если CasaOS не выполнил сборку, сделайте вручную по SSH: перейдите в папку приложения (например `Apps/Web-UI-SoloPool-Dashboard`) и выполните `docker compose build && docker compose up -d`.
 
 ---
 

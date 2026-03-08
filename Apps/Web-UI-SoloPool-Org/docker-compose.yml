@@ -2,13 +2,11 @@ name: solopool-web-ui
 services:
   app:
     container_name: SoloPool-Web-UI
-    image: nginx:alpine
+    build: .
+    image: public-pool/solopool-web-ui:latest
     restart: unless-stopped
     ports:
       - "84:80"
-    volumes:
-      - ./www:/usr/share/nginx/html:ro
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - pool_network
 networks:

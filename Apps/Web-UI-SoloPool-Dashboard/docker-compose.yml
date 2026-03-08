@@ -2,13 +2,11 @@ name: solo-pool-dashboard-ui
 services:
   app:
     container_name: Solo-Pool-Dashboard-UI
-    image: nginx:alpine
+    build: .
+    image: public-pool/solo-pool-dashboard-ui:latest
     restart: unless-stopped
     ports:
       - "83:80"
-    volumes:
-      - ./www:/usr/share/nginx/html:ro
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - pool_network
 networks:

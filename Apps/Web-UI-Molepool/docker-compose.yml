@@ -2,11 +2,19 @@ name: molepool-web-ui
 services:
   app:
     container_name: Molepool-Web-UI
-    build: .
-    image: public-pool/molepool-web-ui:latest
+    image: alpine:3.19
     restart: unless-stopped
     ports:
       - "82:80"
+    command: >
+      sh -c 'apk add --no-cache nginx wget
+      && B=https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/Web-UI-Molepool
+      && mkdir -p /usr/share/nginx/html /run/nginx
+      && wget -q $$B/nginx.conf -O /etc/nginx/http.d/default.conf
+      && wget -q $$B/www/index.html -O /usr/share/nginx/html/index.html
+      && wget -q $$B/www/app.js -O /usr/share/nginx/html/app.js
+      && wget -q $$B/www/site.css -O /usr/share/nginx/html/site.css
+      && exec nginx -g "daemon off;"'
     networks:
       - pool_network
 networks:

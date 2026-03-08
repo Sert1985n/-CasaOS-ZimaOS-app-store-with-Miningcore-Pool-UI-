@@ -220,12 +220,11 @@
 - **Конфликт портов**  
   Не ставьте одновременно две ноды на один и тот же порт (например ZEN-Node и FLUX-Node оба используют 9033). При необходимости измените `published` в `docker-compose.yml` одной из нод.
 
-- **Web UI (Molepool, Solo-Pool, SoloPool) в статусе "Created", не запускаются**  
-  Выполните один скрипт (вставит путь и всё сделает):
+- **Web UI (Molepool, Solo-Pool, SoloPool) в статусе "Created" или ошибка mount nginx.conf**  
+  Панели качают файлы с GitHub при старте (без volume). Обновите compose и перезапустите:
   ```bash
-  curl -sL https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/install-all.sh | bash
+  sudo bash -c 'B=https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps; curl -sL $$B/Web-UI-SoloPool-Dashboard/docker-compose.yml -o /var/lib/casaos/apps/solo-pool-dashboard-ui/docker-compose.yml; curl -sL $$B/Web-UI-SoloPool-Org/docker-compose.yml -o /var/lib/casaos/apps/solopool-web-ui/docker-compose.yml; curl -sL $$B/Web-UI-Molepool/docker-compose.yml -o /var/lib/casaos/apps/molepool-web-ui/docker-compose.yml; for d in /var/lib/casaos/apps/solo-pool-dashboard-ui /var/lib/casaos/apps/solopool-web-ui /var/lib/casaos/apps/molepool-web-ui; do (cd $$d && docker compose down; docker compose up -d --force-recreate); done'
   ```
-  Или скопируйте `install-all.sh` на сервер и запустите `bash install-all.sh`.
 
 ---
 

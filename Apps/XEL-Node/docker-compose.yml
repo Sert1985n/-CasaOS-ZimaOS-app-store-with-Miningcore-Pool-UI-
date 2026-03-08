@@ -3,27 +3,35 @@ services:
   app:
     cpu_shares: 90
     container_name: Node-XEL
+    hostname: Node-XEL
     deploy:
       resources:
         limits:
-          memory: 512M
-          cpus: '1'
-    image: alpine:3.20
+          memory: 4096M
+          cpus: '2'
+    image: xelis/daemon:latest
     command:
-    - sh
-    - -lc
-    - echo 'Skeleton container for XEL. Replace image/command with real node daemon.'
-      && sleep infinity
+      - xelis_daemon
+      - --network=mainnet
+      - --dir-path=/app/data/
+      - --rpc-bind-address=0.0.0.0:8080
     ports:
-    - target: 7042
-      published: '7042'
-      protocol: tcp
-    - target: 9042
-      published: '9042'
-      protocol: tcp
+      - target: 8080
+        published: '8080'
+        protocol: tcp
+      - target: 2125
+        published: '2125'
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /media/ZimaOS-HD/nodes/xel
+        target: /app/data
+        bind:
+          create_host_path: true
+    restart: unless-stopped
     networks:
-    - pool_network
-    - default
+      - pool_network
+      - default
 
 networks:
   default:
@@ -33,23 +41,22 @@ networks:
 
 x-casaos:
   architectures:
-  - amd64
+    - amd64
   author: public-pool-btc.ru
   category: Cryptocurrency Nodes
   description:
-    en_us: Skeleton node app for Elastic (XEL). Replace container image with real
-      daemon.
+    en_us: XELIS full node for Miningcore pool. RPC 8080. Data at /media/ZimaOS-HD/nodes/xel
   developer: public-pool-btc.ru
   icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xel.png
   thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xel.png
   index: /
   is_uncontrolled: false
   main: app
-  port_map: '9042'
+  port_map: '8080'
   scheme: http
   store_app_id: public-pool-node-xel
   tagline:
-    en_us: XEL Node (skeleton)
+    en_us: XELIS (XEL) Node
   title:
-    custom: Elastic (XEL) Node
-    en_us: Elastic (XEL) Node
+    custom: XELIS (XEL) Node
+    en_us: XELIS (XEL) Node

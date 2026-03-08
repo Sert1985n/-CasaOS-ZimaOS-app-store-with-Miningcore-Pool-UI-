@@ -37,8 +37,7 @@ x-casaos:
   author: public-pool-btc.ru
   category: Cryptocurrency Nodes
   description:
-    en_us: Skeleton node app for OctaSpace (OCTA). Replace container image with real
-      daemon.
+    en_us: Skeleton for OctaSpace (OCTA). EVM chain. Build from octaspace/orc. RPC 8547. No standalone node image.
   developer: public-pool-btc.ru
   icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/eth.png
   thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/eth.png

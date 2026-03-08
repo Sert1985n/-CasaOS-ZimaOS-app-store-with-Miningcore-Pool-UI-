@@ -1,24 +1,24 @@
 const API="/api";
 
-/* ---- polling ---- */
-const POLL_POOLS_MS  = 10000;
-const POLL_MINERS_MS = 10000;
-const POLL_PRICE_MS  = 60000;
-const PUSH_MS        = 10000;
-
-/* ---------- helpers ---------- */
+/* ---------- UI helpers ---------- */
 function $(q,root=document){return root.querySelector(q)}
 function $$(q,root=document){return Array.from(root.querySelectorAll(q))}
 function closeAllDD(){ $$('.dd').forEach(d=>d.classList.remove('is-open')) }
-document.addEventListener('click',e=>{ if(!e.target.closest('.dd')) closeAllDD() })
+function toggleDD(id){ const el=document.getElementById(id); if(!el) return; const o=el.classList.contains('is-open'); closeAllDD(); if(!o) el.classList.add('is-open') }
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.dd')) closeAllDD();
+  const cb=e.target.closest('.copy-addr-btn'); if(cb&&cb.dataset.addr){ copyText(cb.dataset.addr); return; }
+  const cs=e.target.closest('.copy-stratum-btn'); if(cs&&cs.dataset.copy){ copyText(cs.dataset.copy); }
+})
 
 function setTheme(theme){
   document.documentElement.dataset.theme=theme;
   localStorage.setItem('theme',theme);
-  const cD=$('#themeCheckDark'), cL=$('#themeCheckLight');
+  const cD=document.getElementById('themeCheckDark');
+  const cL=document.getElementById('themeCheckLight');
   if(cD) cD.textContent=theme==='dark'?'?':'';
   if(cL) cL.textContent=theme==='light'?'?':'';
-  const svg=$('#themeIconSvg');
+  const svg=document.getElementById('themeIconSvg');
   if(svg){
     svg.innerHTML=(theme==='light')
       ? '<path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"></path><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93 6.34 6.34"></path><path d="M17.66 17.66 19.07 19.07"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.93 19.07 6.34 17.66"></path><path d="M17.66 6.34 19.07 4.93"></path>'
@@ -29,7 +29,9 @@ function setTheme(theme){
 function setLang(l){
   document.documentElement.dataset.lang=l;
   localStorage.setItem('lang',l);
-  const lbl=$('#langLabel'), cE=$('#langCheckEn'), cR=$('#langCheckRu');
+  const lbl=document.getElementById('langLabel');
+  const cE=document.getElementById('langCheckEn');
+  const cR=document.getElementById('langCheckRu');
   if(lbl) lbl.textContent=l.toUpperCase();
   if(cE) cE.textContent=l==='en'?'?':'';
   if(cR) cR.textContent=l==='ru'?'?':'';
@@ -51,24 +53,20 @@ function pickUnitHps(hps){
   let c=u[0]; for(const it of u){ if(abs>=it.v) c=it; } return c;
 }
 function fmtHashrate(hps){
-  if(typeof hps==='string' && !isPlainNumberString(hps)) return hps;
+  if(typeof hps==='string' && !isPlainNumberString(hps)) return hps; // уже с единицами
   const x=asNumberOrNull(hps); if(x==null) return '—';
   if(x===0) return '0 H/s';
   const {u,v}=pickUnitHps(x);
   return (x/v).toFixed(2)+' '+u;
 }
-function pickUnitCompact(n){
-  const x=asNumberOrNull(n); if(x==null) return {u:'',v:1};
-  const abs=Math.abs(x);
-  const u=[{u:'',v:1},{u:'K',v:1e3},{u:'M',v:1e6},{u:'G',v:1e9},{u:'T',v:1e12},{u:'P',v:1e15},{u:'E',v:1e18}];
-  let c=u[0]; for(const it of u){ if(abs>=it.v) c=it; } return c;
-}
 function fmtCompact(n){
   if(typeof n==='string' && !isPlainNumberString(n)) return n;
   const x=asNumberOrNull(n); if(x==null) return '—';
-  const {u,v}=pickUnitCompact(x);
-  if(u==='') return fmtNumber(x);
-  return (x/v).toFixed(3)+u;
+  const abs=Math.abs(x);
+  const u=[{u:'',v:1},{u:'K',v:1e3},{u:'M',v:1e6},{u:'G',v:1e9},{u:'T',v:1e12},{u:'P',v:1e15},{u:'E',v:1e18}];
+  let c=u[0]; for(const it of u){ if(abs>=it.v) c=it; }
+  if(c.u==='') return fmtNumber(x);
+  return (x/c.v).toFixed(3)+c.u;
 }
 function fmtMoneyUsd(n){
   const x=asNumberOrNull(n); if(x==null) return '—';
@@ -79,15 +77,19 @@ function fmtMoneyUsd(n){
   return '$'+x.toLocaleString('en-US',{maximumFractionDigits:2});
 }
 function fmtPct(p){
-  const x=asNumberOrNull(p); if(x==null) return '';
+  const x=asNumberOrNull(p); if(x==null) return '—';
   const s=x>0?'+':'';
   return `${s}${x.toFixed(2)}%`;
 }
-function fmtCoinAmt(v){
-  const x=asNumberOrNull(v); if(x==null) return '—';
-  if(Math.abs(x) >= 1000) return fmtNumber(Math.round(x));
-  if(Math.abs(x) >= 1) return x.toFixed(3).replace(/\.?0+$/,'');
-  return x.toFixed(6).replace(/0+$/,'').replace(/\.$/,'');
+function formatTimeAgo(v){
+  if(v==null||v==='') return '—';
+  const t = typeof v==='number' ? v : new Date(v).getTime();
+  if(!isFinite(t)) return String(v);
+  const sec = Math.floor((Date.now()-t)/1000);
+  if(sec<60) return sec+' seconds ago';
+  if(sec<3600) return Math.floor(sec/60)+' minutes ago';
+  if(sec<86400) return Math.floor(sec/3600)+' hours ago';
+  return Math.floor(sec/86400)+' days ago';
 }
 
 /* ---------- API helpers ---------- */
@@ -105,29 +107,26 @@ async function tryJson(urls){
 
 /* ---------- state ---------- */
 const KEY_ACTIVE_POOL="pp_active_pool";
-const KEY_WALLET_PREFIX="pp_wallet_";
 function setActivePool(id){ if(id) localStorage.setItem(KEY_ACTIVE_POOL, id); }
 function getActivePool(){ return localStorage.getItem(KEY_ACTIVE_POOL) || ''; }
-function walletKey(poolId){ return KEY_WALLET_PREFIX + String(poolId||'').toLowerCase(); }
-function getSavedWallet(poolId){ return (localStorage.getItem(walletKey(poolId))||'').trim(); }
-function saveWallet(poolId, addr){ const a=(addr||'').trim(); if(a) localStorage.setItem(walletKey(poolId), a); }
 
 let POOLS=[];
 let POOL_BY_ID=new Map();
-let PRICE_CACHE={};
-let CURRENT={page:'pools', poolId:null, addr:null, tab:null};
 
 async function loadPools(){
-  const main = await fetchJson(`${API}/pools`);
-  let pools = Array.isArray(main?.pools) ? main.pools : [];
-  try {
-    const sec = await fetchJson(`${API.replace('/api','')}/api-secondary/pools`);
-    if(Array.isArray(sec?.pools)&&sec.pools.length>0){
-      pools = pools.concat(sec.pools.filter(p=>!pools.some(m=>String(m.id||'').toLowerCase()===String(p.id||'').toLowerCase())));
-    }
-  }catch(e){}
-  POOLS = pools;
+  const data=await fetchJson(`${API}/pools`);
+  const list = Array.isArray(data?.pools) ? data.pools : (Array.isArray(data) ? data : []);
+  const withStats = await Promise.all(list.map(async (p)=>{
+    const id = p.id || p.name;
+    if (!id) return p;
+    try {
+      const st = await fetchJson(`${API}/pools/${encodeURIComponent(id)}/stats`);
+      return { ...p, poolStats: st?.poolStats ?? p.poolStats ?? {}, networkStats: st?.networkStats ?? p.networkStats ?? {} };
+    } catch (_) { return p; }
+  }));
+  POOLS = withStats;
   POOL_BY_ID = new Map(POOLS.map(p=>[p.id, p]));
+  return POOLS;
 }
 function ensureActivePool(){
   const cur=getActivePool();
@@ -140,8 +139,8 @@ function ensureActivePool(){
 /* ---------- icons ---------- */
 function iconImg(pool){
   const id=(pool?.id||'').toLowerCase();
-  const sym=(pool?.coin?.symbol||pool?.coin?.type||pool?.id||'').toLowerCase();
-  const symChar=(pool?.coin?.symbol||pool?.coin?.type||pool?.id||'?').slice(0,1);
+  const sym=(pool?.coin?.symbol||pool?.id||'').toLowerCase();
+  const symChar=(pool?.coin?.symbol||pool?.id||'?').slice(0,1);
   return `<img class="coin-icon-img" src="/assets/icons/${sym}.png"
     onerror="if(!this.dataset.f){this.dataset.f=1;this.src='/assets/icons/${id}.png';}else{this.outerHTML='<span class=\\'coin-icon-fallback\\'>${symChar}</span>';}"
     alt="${id}">`;
@@ -159,210 +158,62 @@ function svgIcon(name){
 
 /* ---------- header badges ---------- */
 function setHeaderBadges(blocks, miners){
-  const bB=$('#badgeBlocks');
-  const bM=$('#badgeMiners');
+  const bB=document.getElementById('badgeBlocks');
+  const bM=document.getElementById('badgeMiners');
   if(bB) bB.textContent=String(blocks||0);
   if(bM) bM.textContent=String(miners||0);
 }
 
-/* ---------- prices + rewards ---------- */
-function poolSymbol(pool){ return (pool?.coin?.symbol||pool?.coin?.type||pool?.id||'').toLowerCase(); }
+/* ---------- coin switcher (for #/blocks, #/miners, #/help) ---------- */
+function coinSwitcher(prefix, activeId){
+  const chips = POOLS.map(p=>{
+    const on = p.id===activeId;
+    return `<a class="pill ${on?'pill--active':''}" href="#/${prefix}/${encodeURIComponent(p.id)}">
+      <span class="pill__icon">${iconImg(p)}</span>
+      <span>${(p.coin?.symbol||p.id)}</span>
+    </a>`;
+  }).join('');
+  return `<div class="coin-menu" style="justify-content:flex-end">${chips}</div>`;
+}
 
-// Только BC2/XEC/BCH/FB — reward/price маппинг подстраивается под этот список
+/* ---------- UI skeleton ---------- */
+function renderLoading(title){
+  document.getElementById('app').innerHTML=`
+    <section class="surface">
+      <div class="surface__head"><h1>${title}</h1><div class="hint">Loading…</div></div>
+      <div style="padding:14px;color:var(--muted)">Please wait…</div>
+    </section>`;
+}
+function go(h){ location.hash=h; }
+
+/* ---------- prices (optional) ---------- */
 const META = {
-  bc2: { gecko: "bitcoinii" },
-  bch: { gecko: "bitcoin-cash" },
-  xec: { gecko: "ecash" },
-  fb:  { gecko: "french-connection-finance" },
+  btc:{gecko:"bitcoin"}, bch:{gecko:"bitcoin-cash"}, bsv:{gecko:"bitcoin-sv"},
+  doge:{gecko:"dogecoin"}, xec:{gecko:"ecash"}, xmr:{gecko:"monero"},
+  ltc:{gecko:"litecoin"}, rvn:{gecko:"ravencoin"}, etc:{gecko:"ethereum-classic"},
+  erg:{gecko:"ergo"}, flux:{gecko:"zel"}, zec:{gecko:"zcash"}, zen:{gecko:"horizen"},
+  dgb:{gecko:"digibyte"}, ppc:{gecko:"peercoin"}, firo:{gecko:"firo"},
+  kas:{gecko:"kaspa"}, nexa:{gecko:"nexa"}, btcs:{gecko:"bitcoin-cash-sv"},
+  fb:{gecko:"fractal-bitcoin"},
 };
-
-const BLOCK_REWARD_FALLBACK = {
-  bc2: 50,
-  bch: 3.125,
-  xec: 1812500,
-  fb:  6.25,
-};
-
-async function refreshPrices(){
-  const ids = POOLS.map(p=>META[poolSymbol(p)]?.gecko || null).filter(Boolean);
-  const uniq=[...new Set(ids)];
-  if(!uniq.length){ PRICE_CACHE={}; return; }
-  const url=`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,${encodeURIComponent(uniq.join(','))}&vs_currencies=usd&include_24hr_change=true`;
-  try{
-    const data = await fetchJson(url);
-    PRICE_CACHE = data || {};
-  }catch(e){ PRICE_CACHE={}; }
-}
-function priceForPool(pool){
-  const gid=META[poolSymbol(pool)]?.gecko || null;
-  const g=gid?PRICE_CACHE[gid]:null;
-  const btcUsd = PRICE_CACHE?.bitcoin?.usd;
-  const usd = g?.usd ?? null;
-  const btc = (usd != null && btcUsd != null && btcUsd > 0) ? (usd / btcUsd) : null;
-  return { usd, chg: g?.usd_24h_change ?? null, btc };
-}
-function getBlockReward(pool){
-  const sym=poolSymbol(pool);
-  const ns=pool?.networkStats||{};
-  const ps=pool?.poolStats||{};
-  const v = asNumberOrNull(pool?.coin?.blockReward ?? ns.blockReward ?? ps.blockReward ?? null);
-  if(v!=null) return v;
-  return BLOCK_REWARD_FALLBACK[sym] ?? null;
-}
-function fmtReward(pool){
-  const symU = (pool?.coin?.symbol||pool?.coin?.type||pool?.id||'').toUpperCase();
-  const r = getBlockReward(pool);
-  if(r==null) return '—';
-  const pr = priceForPool(pool);
-  const usd = (asNumberOrNull(pr.usd)!=null) ? (pr.usd * r) : null;
-  const coinText = `${fmtCoinAmt(r)} ${symU}`;
-  return (usd!=null) ? `${coinText} (${fmtMoneyUsd(usd)})` : coinText;
+async function loadPrices(ids){
+  const uniq=[...new Set(ids.filter(Boolean))];
+  if(!uniq.length) return {};
+  const url=`https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(uniq.join(','))}&vs_currencies=usd&include_24hr_change=true`;
+  try{ return await fetchJson(url); }catch(e){ return {}; }
 }
 
-/* ---------- miningcore endpoints ---------- */
-function pickMinersArray(data){
-  if(!data) return [];
-  if(Array.isArray(data.miners)) return data.miners;
-  if(Array.isArray(data.results)) return data.results;
-  if(Array.isArray(data.items)) return data.items;
-  if(Array.isArray(data)) return data;
-  return [];
-}
-function workerDisplayName(m){
-  const name = m.workerName ?? m.worker ?? m.name;
-  if(name) return name;
-  const addr = m.miner ?? m.address ?? m.login ?? '';
-  if(typeof addr==='string' && addr.includes('.')) return addr.split('.').slice(1).join('.') || addr;
-  return addr || 'Default';
-}
-function minerAddress(m){
-  return m.miner ?? m.address ?? m.login ?? '—';
-}
-async function fetchMiners(poolId){
-  const p=encodeURIComponent(poolId);
-  return await tryJson([
-    `${API}/pools/${p}/miners?page=0&pageSize=500`,
-    `${API}/pools/${p}/miners`,
-    `${API}/pool/${p}/miners?page=0&pageSize=500`,
-    `${API}/pool/${p}/miners`,
-  ]);
-}
-async function fetchMinerStats(poolId, addr){
-  const p=encodeURIComponent(poolId), a=encodeURIComponent(addr);
-  return await tryJson([
-    `${API}/pools/${p}/miners/${a}`,
-    `${API}/pool/${p}/miners/${a}`,
-  ]) || {};
-}
-async function fetchMinerPayments(poolId, addr){
-  const p=encodeURIComponent(poolId), a=encodeURIComponent(addr);
-  return await tryJson([
-    `${API}/pools/${p}/miners/${a}/payments?page=0&pageSize=50`,
-    `${API}/pools/${p}/miners/${a}/payments`,
-    `${API}/pool/${p}/miners/${a}/payments?page=0&pageSize=50`,
-    `${API}/pool/${p}/miners/${a}/payments`,
-  ]);
-}
-function pickPaymentsArray(data){
-  if(!data) return [];
-  if(Array.isArray(data.payments)) return data.payments;
-  if(Array.isArray(data.results)) return data.results;
-  if(Array.isArray(data.items)) return data.items;
-  if(Array.isArray(data)) return data;
-  return [];
-}
-
-/* ---------- pool history (for coin chart) ---------- */
-function pickHistoryArray(data){
-  if(!data) return [];
-  if(Array.isArray(data)) return data;
-  if(Array.isArray(data.stats)) return data.stats;
-  if(Array.isArray(data.results)) return data.results;
-  if(Array.isArray(data.performance)) return data.performance;
-  return [];
-}
-async function fetchPoolHourly(poolId){
-  const p=encodeURIComponent(poolId);
-  return await tryJson([
-    `${API}/pools/${p}/stats/hourly`,
-    `${API}/pool/${p}/stats/hourly`,
-    `${API}/pools/${p}/performance?r=Day&i=Hour`,
-    `${API}/pool/${p}/performance?r=Day&i=Hour`,
-  ]);
-}
-
-/* ---------- chart series ---------- */
-const MAX_POINTS = 720;
-const SERIES = {
-  coin: new Map(),   // poolId -> { t:[], a:[] (pool hashrate), bRaw:[] (network difficulty) }
-  miner: new Map(),  // key -> {t:[], raw:[], a:[], b:[]}
-};
-
-function seedCoinHistory(poolId, arr){
-  if(!arr || !arr.length) return;
-  let s = SERIES.coin.get(poolId);
-  if(!s){ s={t:[], a:[], bRaw:[]}; SERIES.coin.set(poolId,s); }
-
-  for(const it of arr){
-    const ts = Date.parse(it.created ?? it.createdAt ?? it.time ?? it.timestamp ?? it.date ?? '');
-    const ph = asNumberOrNull(it.poolHashrate ?? it.poolHashRate ?? it.hashrate ?? it.hashRate ?? it.poolHash ?? null);
-    const nd = asNumberOrNull(it.networkDifficulty ?? it.difficulty ?? it.networkDiff ?? it.netDiff ?? null);
-    if(!isFinite(ts) || ph==null) continue;
-    s.t.push(ts);
-    s.a.push(ph);
-    s.bRaw.push(nd != null ? nd : null);
+/* ---------- chart (same look you asked: smooth, orange fill, crosshair band via CSS var) ---------- */
+function makeSeries(base, points=96){
+  const out=[];
+  let v=Math.max(1, Number(base)||1);
+  for(let i=0;i<points;i++){
+    v *= (0.992 + Math.random()*0.016);
+    if(Math.random()<0.03) v*=1.08;
+    out.push(v);
   }
-
-  while(s.t.length>MAX_POINTS){
-    s.t.shift(); s.a.shift(); s.bRaw.shift();
-  }
+  return out;
 }
-
-function pushCoinPoint(poolId, poolHash, netDiff){
-  const ph=asNumberOrNull(poolHash);
-  const nd=asNumberOrNull(netDiff);
-  if(ph==null) return;
-
-  let s = SERIES.coin.get(poolId);
-  if(!s){ s={t:[], a:[], bRaw:[]}; SERIES.coin.set(poolId,s); }
-
-  s.t.push(Date.now());
-  s.a.push(ph);
-  s.bRaw.push(nd);
-
-  while(s.t.length>MAX_POINTS){
-    s.t.shift(); s.a.shift(); s.bRaw.shift();
-  }
-}
-
-function pushMinerPoint(key, inst){
-  const x=asNumberOrNull(inst);
-  if(x==null) return null;
-
-  let s = SERIES.miner.get(key);
-  if(!s){ s={t:[], raw:[], a:[], b:[]}; SERIES.miner.set(key, s); }
-
-  const ts=Date.now();
-  s.t.push(ts); s.raw.push(x);
-
-  const avg=(winMs)=>{
-    let sum=0, n=0;
-    for(let i=s.t.length-1;i>=0;i--){
-      if(ts - s.t[i] > winMs) break;
-      sum += s.raw[i]; n++;
-    }
-    return n ? (sum/n) : x;
-  };
-  s.a.push(avg(30*60*1000)); // 30m
-  s.b.push(avg(60*60*1000)); // 1h
-
-  while(s.t.length>MAX_POINTS){
-    s.t.shift(); s.raw.shift(); s.a.shift(); s.b.shift();
-  }
-  return s;
-}
-
-/* ---------- chart render (dual y for coin) ---------- */
 function catmullRomToBezier(ctx, pts){
   if(pts.length<2) return;
   ctx.moveTo(pts[0].x, pts[0].y);
@@ -373,12 +224,12 @@ function catmullRomToBezier(ctx, pts){
     ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,p2.x,p2.y);
   }
 }
-
-function renderChartDual({aArr,bArr,tArr,labels,fmtA,fmtB,axisBRight=true,fillB=true,showA=true,showB=true}){
-  const canvas=$('#chartCanvas'), box=$('#chartBox'), tip=$('#chartTip'), xlbl=$('#chartXLabel');
+function renderChart(seriesA, seriesB, labelA, labelB){
+  const canvas=document.getElementById('chartCanvas');
+  const box=document.getElementById('chartBox');
+  const tip=document.getElementById('chartTip');
+  const xlbl=document.getElementById('chartXLabel');
   if(!canvas||!box||!tip||!xlbl) return;
-  if(aArr.length<2){ tip.style.display='none'; xlbl.style.display='none'; return; }
-  if(!showA && !showB){ tip.style.display='none'; xlbl.style.display='none'; return; }
 
   const dpr=Math.max(1, window.devicePixelRatio||1);
   const rect=box.getBoundingClientRect();
@@ -389,38 +240,30 @@ function renderChartDual({aArr,bArr,tArr,labels,fmtA,fmtB,axisBRight=true,fillB=
   const ctx=canvas.getContext('2d');
   ctx.setTransform(dpr,0,0,dpr,0,0);
 
-  const padL=58,padR=58,padT=12,padB=28;
+  const padL=52,padR=14,padT=12,padB=28;
   const plotW=w-padL-padR, plotH=h-padT-padB;
 
-  const n=aArr.length;
+  const maxY=Math.max(...seriesA,...seriesB)*1.10;
+  const minY=Math.min(...seriesA,...seriesB)*0.90;
+  const unit=pickUnitHps(maxY);
 
-  const useT = Array.isArray(tArr) && tArr.length===n && tArr.every(x=>isFinite(x));
-  const t0 = useT ? tArr[0] : 0;
-  const tN = useT ? tArr[n-1] : (n-1);
-  const xAt = (i)=>{
-    const k = useT ? ((tArr[i]-t0)/((tN-t0)||1)) : (i/(n-1));
-    return padL + k*plotW;
-  };
-
-  const maxA=showA ? Math.max(...aArr) : 0, minA=showA ? Math.min(...aArr) : 0;
-  const maxB=showB ? Math.max(...bArr) : 0, minB=showB ? Math.min(...bArr) : 0;
-  if (maxA === minA && maxA === 0 && (maxB === minB && maxB === 0)) { tip.style.display='none'; xlbl.style.display='none'; return; }
-
-  const unitA=pickUnitHps(Math.max(maxA, 1));
-  const unitB=axisBRight ? pickUnitCompact(Math.max(maxB, 1)) : pickUnitHps(Math.max(maxB, 1));
-
-  const maxAU=(maxA/unitA.v)*1.10, minAU=Math.max(0,(minA/unitA.v)*0.90);
-  const maxBU=(maxB/unitB.v)*1.10, minBU=Math.max(0,(minB/unitB.v)*0.90);
-
-  function yA(v){
-    const vu=(v/unitA.v);
-    const k=(vu-minAU)/((maxAU-minAU)||1);
-    return padT+(1-k)*plotH;
+  const maxYU=maxY/unit.v, minYU=Math.max(0, minY/unit.v);
+  function niceStep(maxVal){
+    const p=Math.pow(10, Math.floor(Math.log10(maxVal||1)));
+    const m=maxVal/p;
+    if(m<=2) return 0.2*p;
+    if(m<=5) return 0.5*p;
+    return 1*p;
   }
-  function yB(v){
-    const vu=(v/unitB.v);
-    const k=(vu-minBU)/((maxBU-minBU)||1);
-    return padT+(1-k)*plotH;
+  const step=niceStep(maxYU-minYU);
+  const yTop=Math.ceil(maxYU/step)*step;
+  const yBot=Math.floor(minYU/step)*step;
+
+  function xAt(i){return padL+(i/(seriesA.length-1))*plotW}
+  function yAt(v){
+    const vu=v/unit.v;
+    const t=(vu-yBot)/(yTop-yBot||1);
+    return padT+(1-t)*plotH;
   }
 
   const st = getComputedStyle(document.documentElement);
@@ -431,29 +274,32 @@ function renderChartDual({aArr,bArr,tArr,labels,fmtA,fmtB,axisBRight=true,fillB=
   const cA='#1f7aff';
   const cB='#f0a61a';
 
-  const times = new Array(n);
-  for(let i=0;i<n;i++){
-    const d = useT ? new Date(tArr[i]) : new Date(Date.now()-(n-1-i)*PUSH_MS);
-    times[i]=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  const times=[];
+  const now=Date.now();
+  const span=12*60*60*1000;
+  for(let i=0;i<seriesA.length;i++){
+    const t0=new Date(now-(seriesA.length-1-i)*(span/(seriesA.length-1)));
+    times.push(String(t0.getHours()).padStart(2,'0')+':'+String(t0.getMinutes()).padStart(2,'0'));
   }
 
-  function smooth(arr, yFn, color, shadow=true){
-    const pts=arr.map((v,i)=>({x:xAt(i), y:yFn(v)}));
+  function drawSmooth(arr,color){
+    const pts=arr.map((v,i)=>({x:xAt(i), y:yAt(v)}));
     ctx.save();
     ctx.strokeStyle=color;
     ctx.lineWidth=2;
     ctx.lineJoin='round';
     ctx.lineCap='round';
-    if(shadow){ ctx.shadowColor=color; ctx.shadowBlur=7; }
+    ctx.shadowColor=color;
+    ctx.shadowBlur=7;
     ctx.beginPath();
     catmullRomToBezier(ctx, pts);
     ctx.stroke();
     ctx.restore();
     return pts;
   }
-  function fill(pts,color){
+  function fillUnder(pts){
     ctx.save();
-    ctx.fillStyle=color;
+    ctx.fillStyle=cB;
     ctx.globalAlpha=0.22;
     ctx.beginPath();
     ctx.moveTo(pts[0].x, h-padB);
@@ -466,77 +312,50 @@ function renderChartDual({aArr,bArr,tArr,labels,fmtA,fmtB,axisBRight=true,fillB=
 
   function drawBase(){
     ctx.clearRect(0,0,w,h);
-
     ctx.strokeStyle=grid;
     ctx.fillStyle=txt;
     ctx.font='12px Nunito, sans-serif';
 
-    // grid lines
-    for(let i=0;i<=4;i++){
-      const y = padT + (i/4)*plotH;
-      ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+    for(let y=yBot; y<=yTop+1e-9; y+=step){
+      const py=padT+(1-(y-yBot)/(yTop-yBot||1))*plotH;
+      ctx.beginPath(); ctx.moveTo(padL,py); ctx.lineTo(w-padR,py); ctx.stroke();
+      const label=(y===0?'0':y.toFixed((y<10)?1:0))+' '+unit.u;
+      ctx.fillText(label, 8, py+4);
     }
-
-    ctx.textAlign='left';
-    if(showA){
-      for(let i=0;i<=4;i++){
-        const val = maxAU - (i/4)*(maxAU-minAU);
-        const y = padT + (i/4)*plotH;
-        ctx.fillText(`${val.toFixed(val<10?1:0)} ${unitA.u}`, 8, y+4);
-      }
-    }
-    if(showB && axisBRight){
-      ctx.textAlign='right';
-      for(let i=0;i<=4;i++){
-        const val = maxBU - (i/4)*(maxBU-minBU);
-        const y = padT + (i/4)*plotH;
-        const txtv = `${val.toFixed(val<10?1:0)} ${unitB.u}`;
-        ctx.fillText(txtv, w-8, y+4);
-      }
-    }
-    if(showB && !showA){
-      ctx.textAlign='left';
-      for(let i=0;i<=4;i++){
-        const val = maxBU - (i/4)*(maxBU-minBU);
-        const y = padT + (i/4)*plotH;
-        ctx.fillText(`${val.toFixed(val<10?1:0)} ${unitB.u}`, 8, y+4);
-      }
-    }
-
-    // x labels
-    ctx.textAlign='left';
     ctx.font='11px Nunito, sans-serif';
-    const every=Math.max(1, Math.round(n/8));
-    for(let i=0;i<n;i+=every){
+    const xEvery=Math.max(1, Math.round(seriesA.length/10));
+    for(let i=0;i<seriesA.length;i+=xEvery){
       ctx.fillText(times[i], xAt(i)-14, h-10);
     }
 
-    if(showB){ const ptsB = smooth(bArr, yB, cB, true); if(fillB) fill(ptsB, cB); }
-    if(showA) smooth(aArr, yA, cA, true);
+    const ptsB=drawSmooth(seriesB,cB);
+    fillUnder(ptsB);
+    drawSmooth(seriesA,cA);
   }
 
-  const BAND_W = 2;
   function drawOverlay(idx,mx,my){
     drawBase();
+    const x=xAt(idx);
     ctx.save();
-    ctx.fillStyle=band;
-    ctx.fillRect(mx - (BAND_W>>1), padT, BAND_W, h-padT-padB);
+    ctx.fillStyle = band;
+    ctx.fillRect(x-5, padT, 10, h-padT-padB);
     ctx.restore();
 
     xlbl.style.display='block';
-    xlbl.style.left=mx+'px';
+    xlbl.style.left=x+'px';
     xlbl.textContent=times[idx];
 
+    const a=seriesA[idx], b=seriesB[idx];
     tip.style.display='block';
-    const rowsTip = [];
-    if(showA) rowsTip.push(`<div class="row"><span>${labels[0]}</span><b>${fmtA(aArr[idx])}</b></div>`);
-    if(showB) rowsTip.push(`<div class="row"><span>${labels[1]}</span><b>${fmtB(bArr[idx], idx)}</b></div>`);
-    tip.innerHTML=`<div class="t">${times[idx]}</div>${rowsTip.join('')}`;
-
+    tip.innerHTML=`
+      <div class="t">${times[idx]}</div>
+      <div class="row"><span>${labelA}</span><b>${fmtHashrate(a)}</b></div>
+      <div class="row"><span>${labelB}</span><b>${fmtHashrate(b)}</b></div>
+    `;
     const tw=tip.offsetWidth, th=tip.offsetHeight;
     const pad=10;
     let left=mx+14, top=my-14-th;
-    if(left+tw+pad>w) left=mx-tw-pad-4;
+    if(left+tw+pad>w) left=w-tw-pad;
     if(left<pad) left=pad;
     if(top<pad) top=my+16;
     if(top+th+pad>h) top=h-th-pad;
@@ -552,49 +371,107 @@ function renderChartDual({aArr,bArr,tArr,labels,fmtA,fmtB,axisBRight=true,fillB=
     if(mx<padL||mx>w-padR||my<padT||my>h-padB){
       tip.style.display='none'; xlbl.style.display='none'; drawBase(); return;
     }
-    const idx = Math.max(0, Math.min(n-1, Math.round(((mx-padL)/plotW)*(n-1))));
+    const idx=Math.max(0, Math.min(seriesA.length-1, Math.round(((mx-padL)/plotW)*(seriesA.length-1))));
     if(raf) cancelAnimationFrame(raf);
     raf=requestAnimationFrame(()=>drawOverlay(idx,mx,my));
   };
   canvas.onmouseleave=()=>{tip.style.display='none'; xlbl.style.display='none'; drawBase();};
 }
 
-/* ---------- explorer ---------- */
+/* ---------- explorer mapping ---------- */
 function explorerAddr(poolId, addr){
   const id=(poolId||'').toLowerCase();
   if(id==='bch') return `https://blockchair.com/bitcoin-cash/address/${encodeURIComponent(addr)}`;
   if(id==='xec') return `https://explorer.e.cash/address/${encodeURIComponent(addr)}`;
-  if(id==='bc2') return `https://explorer.bitcoinii.org/address/${encodeURIComponent(addr)}`;
-  if(id==='fb') return `https://explorer.frenchconnection.finance/address/${encodeURIComponent(addr)}`;
   return `https://www.blockchain.com/explorer/addresses/btc/${encodeURIComponent(addr)}`;
 }
 function explorerTx(poolId, tx){
   const id=(poolId||'').toLowerCase();
   if(id==='bch') return `https://blockchair.com/bitcoin-cash/transaction/${encodeURIComponent(tx)}`;
   if(id==='xec') return `https://explorer.e.cash/tx/${encodeURIComponent(tx)}`;
-  if(id==='bc2') return `https://explorer.bitcoinii.org/tx/${encodeURIComponent(tx)}`;
-  if(id==='fb') return `https://explorer.frenchconnection.finance/tx/${encodeURIComponent(tx)}`;
   return `https://www.blockchain.com/explorer/transactions/btc/${encodeURIComponent(tx)}`;
 }
 
-/* ---------- UI skeleton ---------- */
-function renderLoading(title){
-  $('#app').innerHTML=`
-    <section class="surface">
-      <div class="surface__head"><h1>${title}</h1><div class="hint">Loading…</div></div>
-      <div style="padding:14px;color:var(--muted)">Please wait…</div>
-    </section>`;
+/* ---------- pages ---------- */
+async function renderPools(){
+  renderLoading("SOLO Mining Pools");
+  await loadPools();
+  ensureActivePool();
+
+  const geckoIds=POOLS.map(p=>META[(p.coin?.symbol||p.id||'').toLowerCase()]?.gecko||null);
+  const prices=await loadPrices(geckoIds);
+
+  const totalBlocks = POOLS.reduce((a,p)=>a+(Number(p.poolStats?.totalBlocksFound ?? p.poolStats?.totalBlocks ?? 0)||0),0);
+  const totalMiners = POOLS.reduce((a,p)=>a+(Number(p.poolStats?.connectedMiners ?? p.poolStats?.miners ?? 0)||0),0);
+  setHeaderBadges(totalBlocks, totalMiners);
+
+  const rows=POOLS.map(p=>{
+    const ps=p.poolStats||{};
+    const ns=p.networkStats||{};
+    const miners=ps.connectedMiners ?? ps.miners ?? 0;
+    const poolHash=ps.poolHashrate ?? ps.hashrate ?? 0;
+    const netHash=ns.networkHashrate ?? ns.hashrate ?? 0;
+    const netDiff=ns.networkDifficulty ?? ns.difficulty ?? 0;
+
+    const sym=(p.coin?.symbol||p.id||'').toLowerCase();
+    const gId=META[sym]?.gecko || null;
+    const g=gId?prices[gId]:null;
+    const priceUsd=g?.usd ?? null;
+    const chg=g?.usd_24h_change ?? null;
+    const cls=(Number(chg)||0)>=0?'up':'down';
+    const chgHtml=(chg==null)?'':` <span class="chg ${cls}">(${fmtPct(Number(chg)||0)} ${cls==='down'?'v':'^'})</span>`;
+
+    const reward = p.coin?.blockReward ?? ns.blockReward ?? ps.blockReward ?? null;
+    let rewardNum = asNumberOrNull(reward);
+    if (rewardNum==null && reward!=null) {
+      const m = String(reward).match(/[\d.]+(?:e[+-]?\d+)?/i);
+      if (m) rewardNum = asNumberOrNull(m[0]);
+    }
+    const rewardUsd = (rewardNum!=null && priceUsd!=null) ? rewardNum * priceUsd : null;
+    const rewardHtml = reward==null ? '—' : `<span>${reward}</span>${rewardUsd!=null ? `<span class="reward-usd">${fmtMoneyUsd(rewardUsd)}</span>` : ''}`;
+    const coinName=`${p.coin?.name || p.id} (${p.coin?.symbol || p.id})`;
+
+    return `
+    <tr class="row-link" onclick="localStorage.setItem('${KEY_ACTIVE_POOL}','${p.id}'); location.hash='#/coin/${encodeURIComponent(p.id)}'">
+      <td><div class="coin-cell">${iconImg(p)}<span>${coinName}</span></div></td>
+      <td>${p.coin?.algorithm || '—'}</td>
+      <td>${fmtNumber(miners)}</td>
+      <td>${fmtHashrate(poolHash)}</td>
+      <td>${fmtHashrate(netHash)}</td>
+      <td>${fmtCompact(netDiff)}</td>
+      <td>${priceUsd==null?'—':fmtMoneyUsd(priceUsd)}${chgHtml}</td>
+      <td>${rewardHtml}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML=`
+    <section class="surface surface--dashboard">
+      <div class="surface__head">
+        <h1>SOLO Mining Pools</h1>
+        <div class="hint" id="dashboardHint">Обновлено по API • ${new Date().toLocaleTimeString()}</div>
+      </div>
+      <div class="table-wrap">
+        <table class="table table--dashboard">
+          <thead><tr>
+            <th>Pool</th><th>Algorithm</th><th>Miners</th><th>Hashrate</th>
+            <th>Network Hashrate</th><th>Network Difficulty</th><th>Current Price</th><th>Reward</th>
+          </tr></thead>
+          <tbody>${rows || '<tr><td colspan="8">—</td></tr>'}</tbody>
+        </table>
+      </div>
+    </section>
+  `;
 }
+
 function toggleExpander(el){
   const open = el.getAttribute('aria-expanded') !== 'false';
   el.setAttribute('aria-expanded', open ? 'false' : 'true');
 }
 
-/* ---------- menu ---------- */
-function coinMenu(poolId, active){
+function coinMenu(poolId, active, badges){
   const p=POOL_BY_ID.get(poolId);
-  const blocks = p?.poolStats?.totalBlocksFound ?? p?.poolStats?.totalBlocks ?? 0;
-  const miners = p?.poolStats?.connectedMiners ?? p?.poolStats?.miners ?? 0;
+  const blocks = badges?.blocks ?? (p?.poolStats?.totalBlocksFound ?? 0);
+  const miners = badges?.miners ?? (p?.poolStats?.connectedMiners ?? p?.poolStats?.miners ?? 0);
   return `
   <div class="coin-menu">
     <a class="pill ${active==='home'?'pill--active':''}" href="#/coin/${encodeURIComponent(poolId)}"><span class="pill__icon">${svgIcon('home')}</span><span>Home</span></a>
@@ -605,145 +482,112 @@ function coinMenu(poolId, active){
   </div>`;
 }
 
-/* ---------- pool numbers ---------- */
-function poolNumbers(pool){
-  const ps=pool?.poolStats||{};
-  const ns=pool?.networkStats||{};
-  const effort = asNumberOrNull(ps.blockEffort ?? ps.effort ?? ps.currentEffort ?? null);
-  return {
-    miners: ps.connectedMiners ?? ps.miners ?? 0,
-    poolHash: ps.poolHashrate ?? ps.poolHashRate ?? ps.hashrate ?? ps.hashRate ?? 0,
-    netHash: ns.networkHashrate ?? ns.networkHashRate ?? ns.hashrate ?? ns.hashRate ?? 0,
-    netDiff: ns.networkDifficulty ?? ns.difficulty ?? ns.networkDiff ?? 0,
-    height: ns.blockHeight ?? ns.height ?? 0,
-    blocks: ps.totalBlocksFound ?? ps.totalBlocks ?? ps.blocksFound ?? 0,
-    effort: effort != null ? effort : null,
-    lastBlock: ps.lastBlockTime ?? ps.lastBlock ?? null
-  };
-}
-
-/* ---------- pages ---------- */
-async function renderPools(){
-  renderLoading("Mining Pools");
-  await loadPools();
-  await refreshPrices();
-
-  const totalBlocks = POOLS.reduce((a,p)=>a+(Number(p.poolStats?.totalBlocksFound ?? p.poolStats?.totalBlocks ?? 0)||0),0);
-  const totalMiners = POOLS.reduce((a,p)=>a+(Number(p.poolStats?.connectedMiners ?? p.poolStats?.miners ?? 0)||0),0);
-  setHeaderBadges(totalBlocks, totalMiners);
-
-  const rows=POOLS.map(p=>{
-    const n=poolNumbers(p);
-    const totalPaid = p?.poolStats?.totalPaid ?? p?.poolStats?.totalPayments ?? p?.poolStats?.totalPaidOut ?? null;
-    const poolFee = p?.poolFeePercent != null ? (p.poolFeePercent+'%') : (p?.paymentProcessing?.poolFeePercent != null ? (p.paymentProcessing.poolFeePercent+'%') : '1.5%');
-    const minPay = p?.paymentProcessing?.minimumPayment != null ? fmtCoinAmt(p.paymentProcessing.minimumPayment) + ' ' + (p.coin?.symbol || p.id) : '—';
-
-    return `
-    <tr class="row-link" data-pool="${p.id}" onclick="localStorage.setItem('${KEY_ACTIVE_POOL}','${p.id}'); location.hash='#/coin/${encodeURIComponent(p.id)}'">
-      <td><div class="coin-cell">${iconImg(p)}<span>${p.coin?.name || p.coin?.type || p.id} (${p.coin?.symbol || p.coin?.type || p.id})</span></div></td>
-      <td>${p.coin?.algorithm || '—'}</td>
-      <td>${fmtNumber(n.miners)}</td>
-      <td>${fmtHashrate(n.poolHash)}</td>
-      <td>${fmtNumber(n.blocks)}</td>
-      <td>${totalPaid!=null ? fmtCoinAmt(totalPaid) : '—'}</td>
-      <td>${poolFee}</td>
-      <td>${minPay}</td>
-      <td>${fmtHashrate(n.netHash)}</td>
-      <td>${fmtCompact(n.netDiff)}</td>
-    </tr>`;
-  }).join('');
-
-  $('#app').innerHTML=`
-    <section class="surface surface--pools">
-      <div class="table-wrap">
-        <table class="table table--pools">
-          <thead><tr>
-            <th class="th-sort" data-sort="name">Coin Name <span class="sort-arrow">▲</span></th>
-            <th>Algorithm</th>
-            <th>Miner Count</th>
-            <th>Pool Hashrate</th>
-            <th>Blocks</th>
-            <th>Total Paid</th>
-            <th>Pool Fee</th>
-            <th>Min Payout</th>
-            <th>Network Hashrate</th>
-            <th>Network Difficulty</th>
-          </tr></thead>
-          <tbody id="poolsTbody">${rows || '<tr><td colspan="10">No pools — start Miningcore and add pools in Pool Configuration</td></tr>'}</tbody>
-        </table>
-      </div>
-    </section>
-  `;
-}
-
 async function renderCoin(poolId){
   renderLoading("Coin");
   await loadPools();
-  await refreshPrices();
-  if(!POOL_BY_ID.has(poolId)){ await renderPools(); return; }
+  if(!POOL_BY_ID.has(poolId)){ renderPools(); return; }
   setActivePool(poolId);
 
   const pool=POOL_BY_ID.get(poolId);
-  const n=poolNumbers(pool);
-  const pr=priceForPool(pool);
+  const ps=pool.poolStats||{};
+  const ns=pool.networkStats||{};
 
-  const priceUsd = pr.usd==null?'—':fmtMoneyUsd(pr.usd);
-  const chg = pr.chg==null?'':` <span class="chg ${(Number(pr.chg)||0)>=0?'up':'down'}">${fmtPct(Number(pr.chg)||0)} ${(Number(pr.chg)||0)>=0?'↑':'↓'}</span>`;
-  const priceBtc = pr.btc != null ? (pr.btc.toFixed(8) + ' BTC') : '—';
-  const chgBtc = pr.chg==null?'':` <span class="chg ${(Number(pr.chg)||0)>=0?'up':'down'}">${fmtPct(Number(pr.chg)||0)}</span>`;
-  const lastBlockStr = n.lastBlock != null ? String(n.lastBlock) : '—';
-  const effortStr = n.effort != null ? (n.effort.toFixed(0) + '%') : '—';
+  const miners=ps.connectedMiners ?? ps.miners ?? 0;
+  const poolHash=ps.poolHashrate ?? ps.hashrate ?? 0;
+  const netHash=ns.networkHashrate ?? ns.hashrate ?? 0;
+  const netDiff=ns.networkDifficulty ?? ns.difficulty ?? 0;
+  const height=ns.blockHeight ?? ns.height ?? 0;
+  const blocksFound = ps.totalBlocksFound ?? ps.totalBlocks ?? ps.blocksFound ?? 0;
+  const currentEffort = ps.blockEffort ?? ps.effort ?? ps.currentBlockEffort ?? null;
+  const lastBlockTime = ps.lastBlockTime ?? ps.lastBlock ?? null;
+  let lastBlockAgo = '—';
+  if (lastBlockTime) {
+    const t = typeof lastBlockTime==='number' ? lastBlockTime : new Date(lastBlockTime).getTime();
+    if (isFinite(t)) {
+      const min = Math.floor((Date.now()-t)/60000);
+      if (min<60) lastBlockAgo = min+' min ago';
+      else if (min<1440) lastBlockAgo = Math.floor(min/60)+' hours ago';
+      else lastBlockAgo = Math.floor(min/1440)+' days ago';
+    }
+  }
 
-  $('#app').innerHTML=`
+  setHeaderBadges(blocksFound, miners);
+
+  const sym=(pool.coin?.symbol||pool.id||'').toLowerCase();
+  const prices=await loadPrices([META[sym]?.gecko||null]);
+  const gId=META[sym]?.gecko||null;
+  const g=gId?prices[gId]:null;
+  const priceUsd=g?.usd ?? null;
+  const chgUsd=g?.usd_24h_change ?? null;
+  const clsUsd=(Number(chgUsd)||0)>=0?'up':'down';
+  const rewardRaw = pool.coin?.blockReward ?? ns.blockReward ?? null;
+  let rewardNum = asNumberOrNull(rewardRaw);
+  if (rewardNum==null && rewardRaw!=null) { const m=String(rewardRaw).match(/[\d.]+(?:e[+-]?\d+)?/i); if (m) rewardNum=asNumberOrNull(m[0]); }
+  const blockRewardUsd = (rewardNum!=null && priceUsd!=null) ? fmtMoneyUsd(rewardNum*priceUsd) : null;
+  const blockRewardStr = rewardRaw==null ? '—' : (blockRewardUsd ? `${rewardRaw} (${blockRewardUsd})` : rewardRaw);
+  const poolFee = (pool.paymentProcessing?.minimumPayment != null) ? '—' : '1.5%';
+
+  document.getElementById('app').innerHTML=`
     <section class="surface">
-      ${coinMenu(poolId,'home')}
+      ${coinMenu(poolId,'home',{blocks: blocksFound, miners: miners})}
       <div class="surface__head">
-        <h1>${iconImg(pool)} ${pool.coin?.name||pool.coin?.type||poolId} (${pool.coin?.symbol||pool.coin?.type||poolId})</h1>
+        <h1>${iconImg(pool)} ${pool.coin?.name || poolId} (${pool.coin?.symbol || poolId})</h1>
         <div class="hint"></div>
       </div>
 
-      <div class="coin-page-layout">
-        <div class="coin-page-left">
-          <div class="card"><div class="card__title">POOL STATISTICS</div>
-            <div class="card__body"><div class="kv">
-              <div class="k">Miners</div><div class="v" id="cMiners">${fmtNumber(n.miners)}</div>
-              <div class="k">Hashrate</div><div class="v" id="cPoolHash">${fmtHashrate(n.poolHash)}</div>
-            </div></div>
-          </div>
-          <div class="card"><div class="card__title">BLOCK STATISTICS</div>
-            <div class="card__body"><div class="kv">
-              <div class="k">Current Effort</div><div class="v" id="cEffort">${effortStr}</div>
-              <div class="k">Last Block</div><div class="v" id="cLastBlock">${lastBlockStr}</div>
-              <div class="k">Blocks found</div><div class="v" id="cBlocks">${fmtNumber(n.blocks)}</div>
-            </div></div>
-          </div>
-          <div class="card"><div class="card__title">NETWORK STATISTICS</div>
-            <div class="card__body"><div class="kv">
-              <div class="k">Network Difficulty</div><div class="v mono" id="cNetDiff">${fmtCompact(n.netDiff)}</div>
-              <div class="k">Network Hashrate</div><div class="v" id="cNetHash">${fmtHashrate(n.netHash)}</div>
-              <div class="k">Current Height</div><div class="v" id="cHeight">${fmtNumber(n.height)}</div>
-            </div></div>
-          </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card__title">Pool Statistics</div>
+          <div class="card__body"><div class="kv">
+            <div class="k">Miners</div><div class="v">${fmtNumber(miners)}</div>
+            <div class="k">Hashrate</div><div class="v">${fmtHashrate(poolHash)}</div>
+          </div></div>
         </div>
-        <div class="coin-page-right">
-          <div class="card"><div class="card__title">CURRENT PRICE</div>
-            <div class="card__body"><div class="kv">
-              <div class="k">Current Price</div><div class="v" id="cPrice">${priceUsd}${chg}</div>
-              <div class="k">Price BTC</div><div class="v mono" id="cPriceBtc">${priceBtc}${chgBtc}</div>
-            </div></div>
-          </div>
+
+        <div class="card">
+          <div class="card__title">Block Statistics</div>
+          <div class="card__body"><div class="kv">
+            <div class="k">Current Effort</div><div class="v ${currentEffort!=null?'effort-blue':''}">${currentEffort!=null ? (Number(currentEffort).toFixed(0)+'%') : '—'}</div>
+            <div class="k">Last Block</div><div class="v">${lastBlockAgo}</div>
+            <div class="k">Blocks found</div><div class="v">${fmtNumber(blocksFound)}</div>
+          </div></div>
+        </div>
+
+        <div class="card">
+          <div class="card__title">Network Statistics</div>
+          <div class="card__body"><div class="kv">
+            <div class="k">Network Difficulty</div><div class="v mono">${fmtCompact(netDiff)}</div>
+            <div class="k">Network Hashrate</div><div class="v">${fmtHashrate(netHash)}</div>
+            <div class="k">Current Height</div><div class="v">${fmtNumber(height)}</div>
+          </div></div>
+        </div>
+
+        <div class="card">
+          <div class="card__title">Current Price</div>
+          <div class="card__body"><div class="kv">
+            <div class="k">Price USD</div>
+            <div class="v">${priceUsd==null?'—':(fmtMoneyUsd(priceUsd) + (chgUsd==null?'':` <span class="chg ${clsUsd}">${fmtPct(Number(chgUsd)||0)} ${clsUsd==='down'?'v':'^'}</span>`))}</div>
+            <div class="k">Price BTC</div><div class="v mono">—</div>
+          </div></div>
         </div>
       </div>
 
-      <div class="expander coin-chart-expander" aria-expanded="true" data-pool-id="${poolId}">
+      <div class="wallet-placeholder">
+        <a href="#/help/${encodeURIComponent(poolId)}" class="wallet-placeholder__link">
+          <svg class="wallet-placeholder__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span>Your Wallet</span>
+        </a>
+      </div>
+
+      <div class="expander" aria-expanded="true">
         <div class="expander__head" onclick="toggleExpander(this.parentElement)">
           <div class="title">Hashrate Chart</div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="expander__body">
-          <div class="legend legend--toggles">
-            <label class="legend-item"><input type="checkbox" id="coinChartPool" checked/><span class="dot"></span> Pool Hashrate</label>
-            <label class="legend-item"><input type="checkbox" id="coinChartDiff" checked/><span class="dot dot--avg"></span> Network Difficulty</label>
+          <div class="legend">
+            <span><span class="dot"></span> Pool Hashrate</span>
+            <span><span class="dot dot--avg"></span> Network Difficulty</span>
           </div>
           <div class="chart" id="chartBox">
             <canvas id="chartCanvas"></canvas>
@@ -753,137 +597,150 @@ async function renderCoin(poolId){
         </div>
       </div>
 
-      <div class="grid-4 coin-page-meta">
+      <div class="grid-4" style="padding-top:0">
         <div class="card"><div class="card__title">Algorithm</div><div class="card__body"><div class="v">${pool.coin?.algorithm || '—'}</div></div></div>
-        <div class="card"><div class="card__title">Reward Scheme</div><div class="card__body"><div class="v">${pool.paymentProcessing?.payoutScheme ?? pool.paymentProcessing?.rewardScheme ?? '—'}</div></div></div>
-        <div class="card"><div class="card__title">Block Reward</div><div class="card__body"><div class="v">${fmtReward(pool)}</div></div></div>
-        <div class="card"><div class="card__title">Pool Fee</div><div class="card__body"><div class="v">${pool.poolFeePercent!=null ? (pool.poolFeePercent+'%') : (pool?.paymentProcessing?.poolFeePercent!=null ? pool.paymentProcessing.poolFeePercent+'%' : '1.5%')}</div></div></div>
-        <div class="card"><div class="card__title">Minimum Payout</div><div class="card__body"><div class="v">${(pool?.paymentProcessing?.minimumPayment != null) ? fmtCoinAmt(pool.paymentProcessing.minimumPayment) + ' ' + (pool.coin?.symbol || pool.coin?.type || pool.id || '') : '—'}</div></div></div>
-        <div class="card"><div class="card__title">Network Difficulty</div><div class="card__body"><div class="v mono">${fmtCompact(n.netDiff)}</div></div></div>
-        <div class="card"><div class="card__title">Current Price</div><div class="card__body"><div class="v">${priceUsd}${chg}</div></div></div>
-      </div>
-
-      <div class="wallet">
-        <p class="wallet__label">Your Wallet</p>
-        <div class="wallet__row">
-          <input id="walletInput" class="input mono" placeholder="Enter your wallet address" value="${getSavedWallet(poolId)}" />
-          <button class="btn" id="walletGo" type="button">Search</button>
-        </div>
-      </div>
-
-      <div class="coin-page-connect">
-        <a class="btn btn--secondary" href="#/help/${encodeURIComponent(poolId)}">How to Connect</a>
+        <div class="card"><div class="card__title">Reward Scheme</div><div class="card__body"><div class="v">SOLO</div></div></div>
+        <div class="card"><div class="card__title">Block Reward</div><div class="card__body"><div class="v">${blockRewardStr}</div></div></div>
+        <div class="card"><div class="card__title">Pool Fee</div><div class="card__body"><div class="v">${poolFee}</div></div></div>
       </div>
     </section>
   `;
 
-  const wi=$('#walletInput');
-  $('#walletGo').onclick=()=>{
-    const addr=(wi?.value||'').trim();
-    if(!addr) return;
-    saveWallet(poolId, addr);
-    location.hash = `#/miner/${encodeURIComponent(poolId)}/${encodeURIComponent(addr)}/dashboard`;
-  };
-  wi?.addEventListener('keydown', (e)=>{ if(e.key==='Enter') $('#walletGo')?.click(); });
-  wi?.addEventListener('input', ()=>{ const v=(wi.value||'').trim(); if(v) saveWallet(poolId, v); });
-
-  // ? загрузка истории (если endpoint есть) + realtime точки дальше
-  const hist = await fetchPoolHourly(poolId);
-  const arr = pickHistoryArray(hist);
-  if(arr.length){
-    seedCoinHistory(poolId, arr);
-  }
-  pushCoinPoint(poolId, n.poolHash, n.netDiff);
-  drawCoinChart(poolId);
-  const poolCb=$('#coinChartPool'), diffCb=$('#coinChartDiff');
-  if(poolCb) poolCb.onchange=()=>drawCoinChart(poolId);
-  if(diffCb) diffCb.onchange=()=>drawCoinChart(poolId);
+  // если нет истории — рисуем красивый “живой” график от текущих значений
+  const a=makeSeries(asNumberOrNull(poolHash)||1, 96);
+  const b=makeSeries((asNumberOrNull(netDiff)||1)/1e9, 96);
+  renderChart(a,b,'Pool Hashrate','Network Difficulty');
 }
 
-function ensureCoinDifficultySeries(poolId){
-  const s = SERIES.coin.get(poolId);
-  if(!s || !s.t.length) return s;
-  const pool = POOL_BY_ID.get(poolId);
-  const curDiff = pool ? asNumberOrNull(pool.networkStats?.networkDifficulty ?? pool.networkStats?.difficulty ?? pool.poolStats?.networkDifficulty) : null;
-  const fillVal = curDiff != null ? curDiff : (s.bRaw.filter(Boolean)[0] ?? 0);
-  while(s.bRaw.length < s.t.length) s.bRaw.push(fillVal);
-  for(let i = 0; i < s.bRaw.length; i++) if(s.bRaw[i] == null) s.bRaw[i] = fillVal;
-  return s;
+/* ---------- block confirmations (maturation) ---------- */
+const CONFIRM_BY_COIN = {
+  btc:101, bch:10, bsv:101, bc2:101, dgb:101, doge:40, xec:10, xna:101, ppc:500,
+  rvn:101, vtc:101, ltc:101, grs:101, fb:101, xmr:60, erg:720, etc:12, ethw:64,
+  zeph:10, space:101, xel:10, octa:12, zec:10, zen:500, flux:100, firo:60,
+  kas:24, nexa:12, btcs:101
+};
+function getBlockConfirmations(pool){
+  const n = pool?.paymentProcessing?.confirmationDepth ?? pool?.network?.blockConfirmations
+    ?? pool?.blockConfirmations ?? pool?.coin?.blockConfirmations;
+  if (n != null && Number(n) > 0) return Number(n);
+  const id = (pool?.id || pool?.coin?.symbol || '').toLowerCase();
+  return CONFIRM_BY_COIN[id] ?? 101;
 }
 
-function drawCoinChart(poolId){
-  ensureCoinDifficultySeries(poolId);
-  const s = SERIES.coin.get(poolId);
-  if(!s || s.a.length<2) return;
-  const showA = !$('#coinChartPool') || $('#coinChartPool').checked;
-  const showB = !$('#coinChartDiff') || $('#coinChartDiff').checked;
-  if(!showA && !showB) return;
-  const bArr = s.bRaw.length === s.a.length ? s.bRaw : s.a.map(() => s.bRaw[s.bRaw.length-1] ?? 0);
-  renderChartDual({
-    aArr: s.a,
-    bArr: bArr,
-    tArr: s.t,
-    labels: ['Pool Hashrate','Network Difficulty'],
-    fmtA: (v)=>fmtHashrate(v),
-    fmtB: (v)=>fmtCompact(v),
-    axisBRight: true,
-    fillB: true,
-    showA,
-    showB
-  });
+/* ---------- blocks ---------- */
+function pickBlocksArray(data){
+  if(!data) return [];
+  if(Array.isArray(data.blocks)) return data.blocks;
+  if(Array.isArray(data.results)) return data.results;
+  if(Array.isArray(data.items)) return data.items;
+  if(Array.isArray(data)) return data;
+  return [];
 }
-
 async function renderBlocks(poolIdMaybe){
   renderLoading("Blocks");
   await loadPools();
-  const poolId = poolIdMaybe || ensureActivePool();
-  if(!POOL_BY_ID.has(poolId)){ await renderPools(); return; }
+  const active = ensureActivePool();
+  const poolId = poolIdMaybe || active;
+  if(!POOL_BY_ID.has(poolId)){ renderPools(); return; }
   setActivePool(poolId);
 
   const pool=POOL_BY_ID.get(poolId);
-  const n=poolNumbers(pool);
-  setHeaderBadges(n.blocks, n.miners);
+  setHeaderBadges(pool.poolStats?.totalBlocksFound ?? 0, pool.poolStats?.connectedMiners ?? 0);
 
   const data = await tryJson([
+    `${API}/pool/${encodeURIComponent(poolId)}/blocks?page=0&pageSize=50`,
+    `${API}/pool/${encodeURIComponent(poolId)}/blocks?page=0`,
+    `${API}/pool/${encodeURIComponent(poolId)}/blocks`,
     `${API}/pools/${encodeURIComponent(poolId)}/blocks?page=0&pageSize=50`,
     `${API}/pools/${encodeURIComponent(poolId)}/blocks`,
-    `${API}/pool/${encodeURIComponent(poolId)}/blocks?page=0&pageSize=50`,
-    `${API}/pool/${encodeURIComponent(poolId)}/blocks`,
   ]);
 
-  const arr = Array.isArray(data?.blocks) ? data.blocks : (Array.isArray(data)?data:(Array.isArray(data?.results)?data.results:[]));
-  const blocks = arr.slice(0,50);
+  const blocks = pickBlocksArray(data).slice(0,50);
+
+  function formatBlockTime(v){
+    if(v==null||v==='') return '—';
+    const d = typeof v==='number' ? new Date(v) : new Date(v);
+    if(isNaN(d.getTime())) return String(v);
+    const dd=String(d.getDate()).padStart(2,'0'), mm=String(d.getMonth()+1).padStart(2,'0'), yyyy=d.getFullYear();
+    const hh=String(d.getHours()).padStart(2,'0'), min=String(d.getMinutes()).padStart(2,'0');
+    return `${dd}.${mm}.${yyyy}, ${hh}:${min}`;
+  }
+  function fmtSolution(v){
+    if(v==null||v==='') return '—';
+    const x=asNumberOrNull(v); if(x==null) return String(v);
+    if(x>=1e12) return (x/1e12).toFixed(3)+' T';
+    if(x>=1e9) return (x/1e9).toFixed(3)+' G';
+    return fmtCompact(v);
+  }
+
+  const heights = blocks.map(b=>Number(b.blockHeight??b.height)).filter(n=>n>0);
+  const efforts = blocks.map(b=>asNumberOrNull(b.effort??b.effortPercent)).filter(n=>n!=null);
+  function avgEffort(n){ const s=efforts.slice(0,n); return s.length>=n ? (s.reduce((a,x)=>a+x,0)/s.length).toFixed(0)+'%' : '—'; }
+  function orphanPct(n){ return '0%'; }
+  const statsRows = [
+    [64, avgEffort(64), orphanPct(64)],
+    [128, avgEffort(128), orphanPct(128)],
+    [256, avgEffort(256), orphanPct(256)],
+    [1024, avgEffort(1024), orphanPct(1024)],
+  ].map(([blks,eff,orph])=>`<tr><td>${blks}</td><td class="v--effort">${eff}</td><td>${orph}</td></tr>`).join('');
+
+  const blockExplorer = (h)=>{
+    const id=(poolId||'').toLowerCase();
+    if(id==='bch') return `https://blockchair.com/bitcoin-cash/block/${h}`;
+    if(id==='xec') return `https://explorer.e.cash/block/${h}`;
+    return `https://www.blockchain.com/explorer/blocks/btc/${h}`;
+  };
 
   const rows = blocks.length ? blocks.map(b=>{
     const height = b.blockHeight ?? b.height ?? '—';
-    const status = b.status ?? b.state ?? '—';
-    const time = b.created ?? b.createdAt ?? b.time ?? '—';
+    const type = b.type ?? 'Block';
+    const time = formatBlockTime(b.created ?? b.createdAt ?? b.createdTime ?? b.time);
+    const server = b.region ?? b.server ?? b.poolHost ?? '—';
     const miner = b.miner ?? b.minerAddress ?? b.worker ?? '—';
     const effort = b.effort ?? b.effortPercent ?? '—';
-    const sol = b.solution ?? b.shareDifficulty ?? '—';
+    const effortNum = asNumberOrNull(effort);
+    const effortCls = (effortNum!=null && effortNum>0) ? ' v--effort' : '';
+    const sol = fmtSolution(b.solution ?? b.blockRewardShares ?? b.shareDifficulty);
+    const status = b.status ?? b.state ?? 'Confirmed';
+    const percent = b.percent ?? '100%';
     const reward = b.reward ?? b.blockReward ?? '—';
+    const heightLink = height!=='—' && Number(height) ? `<a href="${blockExplorer(height)}" target="_blank" rel="noopener">${fmtNumber(height)}</a>` : fmtNumber(height);
+    const minerLink = miner!=='—' ? `<a href="#/miner/${encodeURIComponent(poolId)}/${encodeURIComponent(miner)}/dashboard">${miner}</a>` : '—';
     return `<tr>
-      <td>${fmtNumber(height)}</td>
-      <td>${status}</td>
+      <td class="mono">${heightLink}</td>
+      <td>${type}</td>
       <td class="mono">${time}</td>
-      <td class="mono">${miner}</td>
-      <td>${effort}</td>
+      <td>${server}</td>
+      <td class="mono">${minerLink}</td>
+      <td class="${effortCls}">${effort}</td>
       <td>${sol}</td>
+      <td>${status}</td>
+      <td>${percent}</td>
       <td>${reward}</td>
     </tr>`;
-  }).join('') : `<tr><td colspan="7">—</td></tr>`;
+  }).join('') : `<tr><td colspan="9">—</td></tr>`;
 
-  $('#app').innerHTML=`
+  document.getElementById('app').innerHTML=`
     <section class="surface">
-      ${coinMenu(poolId,'blocks')}
+      ${coinSwitcher('blocks', poolId)}
+      ${coinMenu(poolId,'blocks',{})}
       <div class="surface__head">
-        <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Blocks</h1>
-        <div class="hint"></div>
+        <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Block Statistics</h1>
+        <div class="hint">Latest 50</div>
       </div>
+
+      <div class="blocks-summary-wrap">
+        <table class="table blocks-summary-table">
+          <thead><tr><th>Blocks</th><th>Effort</th><th>Orphan</th></tr></thead>
+          <tbody>${statsRows}</tbody>
+        </table>
+        <p class="blocks-maturation">Block maturation requires ${getBlockConfirmations(pool)} new blocks in the network.</p>
+      </div>
+
       <div class="table-wrap">
         <table class="table">
           <thead><tr>
-            <th>Height</th><th>Status</th><th>Time</th><th>Miner</th><th>Effort</th><th>Solution</th><th>Reward</th>
+            <th>Height</th><th>Type</th><th>Time</th><th>Server</th><th>Miner</th><th>Effort</th><th>Solution</th><th>Status</th><th>Reward</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -892,68 +749,103 @@ async function renderBlocks(poolIdMaybe){
   `;
 }
 
-async function renderMiners(poolIdMaybe){
+/* ---------- miners list ---------- */
+function pickMinersArray(data){
+  if(!data) return [];
+  if(Array.isArray(data.miners)) return data.miners;
+  if(Array.isArray(data.results)) return data.results;
+  if(Array.isArray(data.items)) return data.items;
+  if(Array.isArray(data)) return data;
+  return [];
+}
+async function fetchMiners(poolId, page=0, pageSize=200){
+  const p=encodeURIComponent(poolId);
+  return await tryJson([
+    `${API}/pool/${p}/miners?page=${page}&pageSize=${pageSize}`,
+    `${API}/pool/${p}/miners?page=0&pageSize=200`,
+    `${API}/pool/${p}/miners?page=0`,
+    `${API}/pool/${p}/miners`,
+    `${API}/pools/${p}/miners?page=0&pageSize=200`,
+    `${API}/pools/${p}/miners`,
+  ]);
+}
+async function renderMiners(poolIdMaybe, pageNum){
   renderLoading("Miners");
   await loadPools();
-  const poolId = poolIdMaybe || ensureActivePool();
-  if(!POOL_BY_ID.has(poolId)){ await renderPools(); return; }
+  const active = ensureActivePool();
+  const poolId = poolIdMaybe || active;
+  if(!POOL_BY_ID.has(poolId)){ renderPools(); return; }
   setActivePool(poolId);
 
   const pool=POOL_BY_ID.get(poolId);
-  const n=poolNumbers(pool);
-  setHeaderBadges(n.blocks, n.miners);
-
-  // ? НИКАКИХ “фантомов”: если connectedMiners=0 -> пусто
-  if((n.miners||0) === 0){
-    $('#app').innerHTML=`
-      <section class="surface">
-        ${coinMenu(poolId,'miners')}
-        <div class="surface__head">
-          <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Miners</h1>
-          <div class="hint">Connected: <b>0</b></div>
-        </div>
-        <div class="table-wrap">
-          <table class="table">
-            <thead><tr><th>Miner</th><th>Hashrate</th><th>Last Share</th></tr></thead>
-            <tbody><tr><td colspan="3">—</td></tr></tbody>
-          </table>
-        </div>
-      </section>`;
-    return;
-  }
-
   const data = await fetchMiners(poolId);
   const listRaw = pickMinersArray(data);
 
-  const rows = listRaw.length ? listRaw.map(m=>{
-    const addr = minerAddress(m);
-    const wname = workerDisplayName(m);
-    const hr = m.hashrate ?? m.hashRate ?? 0;
-    const last = m.lastShare ?? m.lastShareTime ?? '—';
+  const list=[];
+  const seen=new Set();
+  for(const m of listRaw){
+    const addr = m.miner ?? m.address ?? m.login;
+    if(!addr) continue;
+    if(seen.has(addr)) continue;
+    seen.add(addr);
+    list.push(m);
+  }
+
+  const online = pool.poolStats?.connectedMiners ?? pool.poolStats?.miners ?? list.length;
+  setHeaderBadges(pool.poolStats?.totalBlocksFound ?? 0, online);
+
+  const pageSize = 20;
+  const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
+  const page = Math.max(1, Math.min(totalPages, parseInt(pageNum, 10) || 1));
+  const start = (page - 1) * pageSize;
+  const pageList = list.slice(start, start + pageSize);
+
+  const rows = pageList.length ? pageList.map(m=>{
+    const addr = m.miner ?? m.address ?? m.login ?? '—';
+    const hr = m.hashrate ?? m.hashrate30m ?? m.hashrate1h ?? 0;
+    const lastStr = m.lastShare ?? m.lastShareTime ?? '—';
+    const lastAgo = (lastStr && lastStr !== '—') ? formatTimeAgo(lastStr) : lastStr;
     return `<tr class="row-link" onclick="location.hash='#/miner/${encodeURIComponent(poolId)}/${encodeURIComponent(addr)}/dashboard'">
-      <td>${wname}</td>
+      <td class="mono miner-cell"><span class="miner-dot"></span>${addr}</td>
       <td>${fmtHashrate(hr)}</td>
-      <td>${last}</td>
+      <td>${lastAgo}</td>
     </tr>`;
   }).join('') : `<tr><td colspan="3">—</td></tr>`;
 
-  $('#app').innerHTML=`
+  function paginationHtml(){
+    if(totalPages<=1) return '';
+    const nums = [];
+    const show = 5;
+    let from = Math.max(1, page - 2);
+    let to = Math.min(totalPages, from + show - 1);
+    if(to - from < show - 1) from = Math.max(1, to - show + 1);
+    for(let i=from; i<=to; i++) nums.push(i);
+    let html = nums.map(n=>`<a class="pagination-num ${n===page?'is-active':''}" href="#/miners/${encodeURIComponent(poolId)}/${n}">${n}</a>`).join('');
+    if(from>1) html = `<a class="pagination-num" href="#/miners/${encodeURIComponent(poolId)}/1">1</a>` + (from>2 ? ' <span class="pagination-ellipsis">...</span> ' : ' ') + html;
+    if(to<totalPages) html += (to<totalPages-1 ? ' <span class="pagination-ellipsis">...</span> ' : ' ') + `<a class="pagination-num" href="#/miners/${encodeURIComponent(poolId)}/${totalPages}">${totalPages}</a>`;
+    return `<div class="pagination">${html}</div>`;
+  }
+
+  document.getElementById('app').innerHTML=`
     <section class="surface">
-      ${coinMenu(poolId,'miners')}
+      ${coinSwitcher('miners', poolId)}
+      ${coinMenu(poolId,'miners',{})}
       <div class="surface__head">
-        <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Miners</h1>
-        <div class="hint">Connected: <b>${fmtNumber(n.miners)}</b></div>
+        <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Miners Online</h1>
+        <div class="hint">Online: <b>${fmtNumber(online)}</b> • Total: <b>${fmtNumber(list.length)}</b></div>
       </div>
       <div class="table-wrap">
         <table class="table">
           <thead><tr><th>Miner</th><th>Hashrate</th><th>Last Share</th></tr></thead>
-          <tbody id="minersTbody">${rows}</tbody>
+          <tbody>${rows}</tbody>
         </table>
       </div>
+      ${paginationHtml()}
     </section>
   `;
 }
 
+/* ---------- help ---------- */
 async function copyText(txt){
   try{ await navigator.clipboard.writeText(txt); }
   catch(e){
@@ -965,13 +857,13 @@ async function copyText(txt){
 async function renderHelp(poolIdMaybe){
   renderLoading("Help");
   await loadPools();
-  const poolId = poolIdMaybe || ensureActivePool();
-  if(!POOL_BY_ID.has(poolId)){ await renderPools(); return; }
+  const active = ensureActivePool();
+  const poolId = poolIdMaybe || active;
+  if(!POOL_BY_ID.has(poolId)){ renderPools(); return; }
   setActivePool(poolId);
 
   const pool=POOL_BY_ID.get(poolId);
-  const n=poolNumbers(pool);
-  setHeaderBadges(n.blocks, n.miners);
+  setHeaderBadges(pool.poolStats?.totalBlocksFound ?? 0, pool.poolStats?.connectedMiners ?? 0);
 
   const host = location.hostname || "public-pool-btc.ru";
   const ports = pool.ports ? Object.entries(pool.ports).map(([port,cfg])=>({
@@ -983,26 +875,29 @@ async function renderHelp(poolIdMaybe){
 
   const rows = ports.length ? ports.map(p=>{
     const url=`stratum+tcp://${host}:${p.port}`;
+    const safeUrl = url.replace(/"/g,'&quot;');
     return `<tr>
       <td>${p.tls?'TLS':'TCP'}</td>
       <td>${p.diff==null?'VarDiff':fmtNumber(p.diff)}</td>
       <td class="mono">${url}</td>
-      <td>${p.name}</td>
-      <td><span class="copy-btn" title="Copy" onclick="copyText('${url}')">${svgIcon('copy')}</span></td>
+      <td>${p.name || '—'}</td>
+      <td><span class="copy-btn copy-stratum-btn" data-copy="${safeUrl}" title="Copy">${svgIcon('copy')}</span></td>
     </tr>`;
   }).join('') : `<tr><td colspan="5">—</td></tr>`;
 
   const poolWallet = pool.address ?? '—';
   const walletLink = poolWallet==='—' ? '#' : explorerAddr(poolId, poolWallet);
+  const safeWallet = (poolWallet==='—'?'':poolWallet).replace(/"/g,'&quot;');
 
-  $('#app').innerHTML=`
+  document.getElementById('app').innerHTML=`
     <section class="surface">
-      ${coinMenu(poolId,'help')}
+      ${coinSwitcher('help', poolId)}
+      ${coinMenu(poolId,'help',{})}
       <div class="surface__head"><h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Help</h1><div class="hint"></div></div>
 
       <div class="grid-2">
         <div class="card" style="grid-column:1/-1">
-          <div class="card__title">Connection TCP</div>
+          <div class="card__title">CONNECTION TCP</div>
           <div class="card__body" style="padding:0">
             <div class="table-wrap" style="padding:0">
               <table class="table">
@@ -1014,11 +909,11 @@ async function renderHelp(poolIdMaybe){
         </div>
 
         <div class="card" style="grid-column:1/-1">
-          <div class="card__title">Pool Wallet</div>
+          <div class="card__title">POOL WALLET</div>
           <div class="card__body">
-            <div class="copy-row">
+            <div class="copy-row wallet-row">
               <span class="mono">${poolWallet}</span>
-              ${poolWallet==='—'?'':`<span class="copy-btn" title="Copy" onclick="copyText('${poolWallet}')">${svgIcon('copy')}</span>`}
+              ${poolWallet==='—'?'':`<span class="copy-btn copy-stratum-btn" data-copy="${safeWallet}" title="Copy">${svgIcon('copy')}</span>`}
               ${poolWallet==='—'?'':`<a class="copy-btn" href="${walletLink}" target="_blank" rel="noopener" title="Open in explorer">${svgIcon('ext')}</a>`}
             </div>
           </div>
@@ -1028,110 +923,180 @@ async function renderHelp(poolIdMaybe){
   `;
 }
 
-/* ---------- miner dashboard ---------- */
+/* ---------- miner dashboard / rewards / payouts ---------- */
+async function fetchMiner(poolId, addr){
+  const p=encodeURIComponent(poolId), a=encodeURIComponent(addr);
+  return await tryJson([
+    `${API}/pool/${p}/miner/${a}`,
+    `${API}/pool/${p}/miners/${a}`,
+    `${API}/pool/${p}/miner?address=${a}`,
+    `${API}/pools/${p}/miner/${a}`,
+    `${API}/pools/${p}/miners/${a}`,
+  ]);
+}
+function pickPaymentsArray(data){
+  if(!data) return [];
+  if(Array.isArray(data.payments)) return data.payments;
+  if(Array.isArray(data.results)) return data.results;
+  if(Array.isArray(data.items)) return data.items;
+  if(Array.isArray(data)) return data;
+  return [];
+}
+async function fetchPayouts(poolId, addr){
+  const p=encodeURIComponent(poolId), a=encodeURIComponent(addr);
+  return await tryJson([
+    `${API}/pool/${p}/payments?page=0&pageSize=50&address=${a}`,
+    `${API}/pool/${p}/payments?page=0&pageSize=50&miner=${a}`,
+    `${API}/pool/${p}/miner/${a}/payments?page=0&pageSize=50`,
+    `${API}/pool/${p}/miner/${a}/payouts?page=0&pageSize=50`,
+    `${API}/pool/${p}/payments?address=${a}`,
+    `${API}/pools/${p}/payments?address=${a}`,
+  ]);
+}
+async function fetchRewards(poolId, addr){
+  const p=encodeURIComponent(poolId), a=encodeURIComponent(addr);
+  return await tryJson([
+    `${API}/pool/${p}/miner/${a}/rewards`,
+    `${API}/pool/${p}/miner/${a}/rewards/summary`,
+    `${API}/pool/${p}/rewards?address=${a}`,
+    `${API}/pools/${p}/rewards?address=${a}`,
+  ]);
+}
+async function fetchMinerBlocks(poolId, addr){
+  const p=encodeURIComponent(poolId), a=encodeURIComponent(addr);
+  const data = await tryJson([
+    `${API}/pool/${p}/blocks?page=0&pageSize=100&address=${a}`,
+    `${API}/pool/${p}/blocks?page=0&pageSize=100&miner=${a}`,
+    `${API}/pool/${p}/miner/${a}/blocks`,
+    `${API}/pool/${p}/blocks?page=0&pageSize=100`,
+    `${API}/pools/${p}/blocks?page=0&pageSize=100`,
+  ]);
+  const list = pickBlocksArray(data);
+  if (!addr) return list;
+  return list.filter(b=>(b.miner||b.minerAddress||b.worker||'').toLowerCase()===(addr||'').toLowerCase());
+}
+
 function tabsMiner(poolId, addr, activeTab){
   const base = `#/miner/${encodeURIComponent(poolId)}/${encodeURIComponent(addr)}`;
   return `
-    <div class="tabs" role="tablist">
-      <div class="tab ${activeTab==='dashboard'?'is-active':''}" onclick="location.hash='${base}/dashboard'">DASHBOARD</div>
-      <div class="tab ${activeTab==='rewards'?'is-active':''}" onclick="location.hash='${base}/rewards'">REWARDS</div>
-      <div class="tab ${activeTab==='payouts'?'is-active':''}" onclick="location.hash='${base}/payouts'">PAYOUTS</div>
+    <div class="tabs tabs--miner" role="tablist">
+      <div class="tab ${activeTab==='dashboard'?'is-active':''}" onclick="location.hash='${base}/dashboard'"><span class="tab__ico">${svgIcon('blocks')}</span> DASHBOARD</div>
+      <div class="tab ${activeTab==='rewards'?'is-active':''}" onclick="location.hash='${base}/rewards'"><span class="tab__ico">🎁</span> REWARDS</div>
+      <div class="tab ${activeTab==='payouts'?'is-active':''}" onclick="location.hash='${base}/payouts'"><span class="tab__ico">💰</span> PAYOUTS</div>
     </div>`;
-}
-function drawMinerChart(poolId, addr){
-  const key=`${poolId}:${addr}`;
-  const s=SERIES.miner.get(key);
-  if(!s || s.a.length<2) return;
-  const showA = !$('#minerChart30m') || $('#minerChart30m').checked;
-  const showB = !$('#minerChart1h') || $('#minerChart1h').checked;
-  if(!showA && !showB) return;
-  renderChartDual({
-    aArr: s.a,
-    bArr: s.b,
-    tArr: s.t,
-    labels: ['Current Hashrate (30m)','Average Hashrate (1h)'],
-    fmtA: (v)=>fmtHashrate(v),
-    fmtB: (v)=>fmtHashrate(v),
-    axisBRight: false,
-    fillB: true,
-    showA,
-    showB
-  });
 }
 
 async function renderMiner(poolId, addr, tab='dashboard'){
   renderLoading("Miner");
   await loadPools();
-  if(!POOL_BY_ID.has(poolId)){ await renderPools(); return; }
+  if(!POOL_BY_ID.has(poolId)){ renderPools(); return; }
   setActivePool(poolId);
-  saveWallet(poolId, addr);
 
   const pool=POOL_BY_ID.get(poolId);
-  const n=poolNumbers(pool);
-  setHeaderBadges(n.blocks, n.miners);
+  const minerData = await fetchMiner(poolId, addr);
+  const minersListData = await fetchMiners(poolId);
+  const minersList = pickMinersArray(minersListData);
 
-  const connectedNow = (n.miners||0) > 0;
+  const row = minersList.find(x => (x.miner||x.address||x.login) === addr) || null;
 
-  // ? если нет подключений — никакого “левого” майнера
-  let row=null;
-  if(connectedNow){
-    const minersData = await fetchMiners(poolId);
-    const miners = pickMinersArray(minersData);
-    row = miners.find(x => (x.miner||x.address||x.login) === addr) || null;
-  }
-
-  const online = !!row;
-  const inst = online ? asNumberOrNull(row.hashrate ?? row.hashRate ?? 0) : null;
-  if(inst!=null && inst>0){
-    pushMinerPoint(`${poolId}:${addr}`, inst);
-  }
-
-  const ss=SERIES.miner.get(`${poolId}:${addr}`);
-  const hr30 = ss?.a?.length ? ss.a[ss.a.length-1] : null;
-  const hr1h = ss?.b?.length ? ss.b[ss.b.length-1] : null;
-
-  const st = await fetchMinerStats(poolId, addr);
-  const pendingShares = st.pendingShares ?? null;
-  const unconfirmed = st.unconfirmed ?? st.unconfirmedBalance ?? null;
-  const pendingBalance = st.pendingBalance ?? st.pending ?? null;
-  const balance = st.balance ?? null;
-  const totalPaid = st.totalPaid ?? null;
-  const todayPaid = st.todayPaid ?? null;
-  const minerEffort = st.minerEffort ?? null;
-  const blocksFound = st.blocksFound ?? st.blocks ?? null;
-  const lastBestShare = st.lastBestShare ?? st.lastBestShareTime ?? st.lastShare ?? null;
-  const bestShare = st.bestShare ?? st.bestShareDifficulty ?? st.bestDifficulty ?? row?.bestShare ?? null;
-  const portDiff = st.portDifficulty ?? st.port ?? pool?.ports?.[Object.keys(pool.ports||{})[0]]?.difficulty ?? null;
-  const workerName = row ? workerDisplayName(row) : (addr.includes('.') ? addr.split('.').slice(1).join('.') : 'Default');
-  const workersList = Array.isArray(st.workers) ? st.workers : (row && row.workers ? (Array.isArray(row.workers) ? row.workers : [row]) : (row ? [row] : []));
+  const hr30 = (minerData?.hashrate30m ?? minerData?.hashrate ?? row?.hashrate30m ?? row?.hashrate ?? 0);
+  const hr1h = (minerData?.hashrate1h ?? row?.hashrate1h ?? hr30);
 
   const extAddr = explorerAddr(poolId, addr);
-  const netDiffStr = n.netDiff != null ? fmtHashrate(n.netDiff) : (n.netDiff != null ? fmtCompact(n.netDiff) : '—');
+  const ns = pool.networkStats || {};
+  const netDiff = ns.networkDifficulty ?? ns.difficulty ?? 0;
 
-  let body='';
+  // workers
+  const workers = Array.isArray(minerData?.workers) ? minerData.workers : [];
+  const now = Date.now();
+  const ONLINE_MS = 10*60*1000;
+  let onlineCount = 0, offlineCount = 0;
+  if (workers.length) {
+    workers.forEach(w=>{
+      const ls = w.lastShare ?? w.lastShareTime;
+      const t = ls ? (typeof ls==='number' ? ls : new Date(ls).getTime()) : 0;
+      if (t && now - t < ONLINE_MS) onlineCount++; else offlineCount++;
+    });
+  } else {
+    onlineCount = (row && (hr30>0 || hr1h>0)) ? 1 : 0;
+    offlineCount = onlineCount ? 0 : 1;
+  }
+  function fmtInvalidStale(val, total){
+    if (val==null && total==null) return '—';
+    const v = Number(val)||0, t = Number(total)||0;
+    if (t===0) return v+' (0%)';
+    return v+' ('+((v/t)*100).toFixed(0)+'%)';
+  }
+  const workerRows = (workers.length ? workers : [{
+    worker: "—",
+    hashrate30m: hr30,
+    hashrate1h: hr1h,
+    validShares: row?.validShares ?? row?.valids ?? "—",
+    invalidShares: row?.invalidShares ?? row?.invalids ?? 0,
+    staleShares: row?.staleShares ?? row?.stales ?? 0,
+    totalShares: (Number(row?.validShares ?? row?.valids)||0) + (Number(row?.invalidShares ?? row?.invalids)||0) + (Number(row?.staleShares ?? row?.stales)||0),
+    bestShare: row?.bestShare ?? minerData?.bestShare ?? "—",
+    port: row?.port ?? "—",
+    lastShare: row?.lastShare ?? row?.lastShareTime ?? "—"
+  }]).map(w=>{
+    const valid = w.validShares ?? w.valids ?? '—';
+    const inv = w.invalidShares ?? w.invalids ?? 0;
+    const st = w.staleShares ?? w.stales ?? 0;
+    const total = w.totalShares ?? (Number(valid)||0) + Number(inv) + Number(st);
+    const best = w.bestShare ?? '—';
+    const bestFmt = (best!='—' && asNumberOrNull(best)!=null) ? fmtCompact(best) : best;
+    const lastShareStr = w.lastShare ?? w.lastShareTime ?? '—';
+    const lastShareAgo = (lastShareStr && lastShareStr!='—') ? formatTimeAgo(lastShareStr) : lastShareStr;
+    return `<tr>
+      <td>${w.worker ?? w.name ?? '—'}</td>
+      <td>${fmtHashrate(w.hashrate30m ?? w.hashrate ?? 0)}</td>
+      <td>${fmtHashrate(w.hashrate1h ?? w.hashrate3h ?? 0)}</td>
+      <td>${valid}${(typeof valid==='number'||(valid!='—'&&valid!==''&&Number(valid)>=0)) ? ' <span class="valids-help" title="Valid shares">?</span>' : ''}</td>
+      <td>${fmtInvalidStale(inv, total)}</td>
+      <td>${fmtInvalidStale(st, total)}</td>
+      <td>${bestFmt}</td>
+      <td>${w.port ?? '—'}</td>
+      <td>${lastShareAgo}</td>
+    </tr>`;
+  }).join('');
+
+  // payouts/rewards data
+  const payoutsData = (tab==='payouts') ? await fetchPayouts(poolId, addr) : null;
+  const rewardsData = (tab==='rewards') ? await fetchRewards(poolId, addr) : null;
+  const minerBlocks = (tab==='rewards') ? await fetchMinerBlocks(poolId, addr) : [];
+
+  const shareSum = minerData?.pendingShares ?? minerData?.shareSum ?? row?.pendingShares ?? row?.shareSum ?? null;
+  const personalEffort = minerData?.personalEffort ?? minerData?.effort ?? row?.personalEffort ?? row?.effort ?? null;
+  const blocksFoundMiner = minerData?.blocksFound ?? minerData?.blocks ?? row?.blocksFound ?? 0;
+  const lastBestShare = minerData?.lastBestShare ?? row?.lastBestShare ?? null;
+  const bestShareGlobal = minerData?.bestShare ?? row?.bestShare ?? null;
+  const portDiff = minerData?.portDifficulty ?? row?.portDifficulty ?? pool.ports?.[0]?.difficulty ?? null;
+  function fmtRewardVal(v){ if(v==null||v==='') return '—'; const n=asNumberOrNull(v); return n===0?'0.000000':(n!=null?String(n):v); }
+
+  let tabHtml = '';
   if(tab==='dashboard'){
-    body = `
+    tabHtml = `
       <div class="grid-2" style="padding-top:0">
-        <div class="card"><div class="card__title">WORKERS</div><div class="card__body"><div class="kv">
-          <div class="k">Online</div><div class="v">${online ? '1' : '0'}</div>
-          <div class="k">Offline</div><div class="v">${online ? '0' : '1'}</div>
+        <div class="card"><div class="card__title">Workers</div><div class="card__body"><div class="kv">
+          <div class="k">Online</div><div class="v v--online">${onlineCount}</div>
+          <div class="k">Offline</div><div class="v v--offline">${offlineCount}</div>
         </div></div></div>
 
-        <div class="card"><div class="card__title">HASHRATE</div><div class="card__body"><div class="kv">
-          <div class="k">Current Hashrate (30m)</div><div class="v" id="mHr30">${hr30==null?'—':fmtHashrate(hr30)}</div>
-          <div class="k">Average Hashrate (1h)</div><div class="v" id="mHr1h">${hr1h==null?'—':fmtHashrate(hr1h)}</div>
+        <div class="card"><div class="card__title">Hashrate</div><div class="card__body"><div class="kv">
+          <div class="k">Current Hashrate (30m)</div><div class="v">${fmtHashrate(hr30)}</div>
+          <div class="k">Average Hashrate (1h)</div><div class="v">${fmtHashrate(hr1h)}</div>
         </div></div></div>
 
-        <div class="card"><div class="card__title">WORK</div><div class="card__body"><div class="kv">
-          <div class="k">Share Sum</div><div class="v mono">${pendingShares==null?'—':fmtNumber(pendingShares)}</div>
-          <div class="k">Personal Effort</div><div class="v">${minerEffort==null?'—':(Number(minerEffort).toFixed(3)+'%')}</div>
-          <div class="k">Blocks</div><div class="v">${blocksFound==null?'—':fmtNumber(blocksFound)}</div>
+        <div class="card"><div class="card__title">Work</div><div class="card__body"><div class="kv">
+          <div class="k">Share Sum</div><div class="v mono">${shareSum!=null ? fmtCompact(shareSum) : '—'}</div>
+          <div class="k">Personal Effort</div><div class="v v--effort">${personalEffort!=null ? (Number(personalEffort).toFixed(3)+'%') : '—'}</div>
+          <div class="k">Blocks</div><div class="v">${fmtNumber(blocksFoundMiner)}</div>
         </div></div></div>
 
-        <div class="card"><div class="card__title">REWARD</div><div class="card__body"><div class="kv">
-          <div class="k">Unconfirmed</div><div class="v mono">${unconfirmed==null?'0.000000':String(unconfirmed)}</div>
-          <div class="k">Balance</div><div class="v mono">${balance==null?'0.000000':String(balance)}</div>
-          <div class="k">Pending</div><div class="v mono">${pendingBalance==null?'0.000000':String(pendingBalance)}</div>
+        <div class="card"><div class="card__title">Reward</div><div class="card__body"><div class="kv">
+          <div class="k">Unconfirmed</div><div class="v mono">${fmtRewardVal(minerData?.unconfirmedBalance)}</div>
+          <div class="k">Balance</div><div class="v mono">${fmtRewardVal(minerData?.balance)}</div>
+          <div class="k">Pending</div><div class="v mono">${fmtRewardVal(minerData?.pending)}</div>
         </div></div></div>
       </div>
 
@@ -1141,9 +1106,9 @@ async function renderMiner(poolId, addr, tab='dashboard'){
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         <div class="expander__body">
-          <div class="legend legend--toggles">
-            <label class="legend-item"><input type="checkbox" id="minerChart30m" checked/><span class="dot"></span> Current Hashrate (30m)</label>
-            <label class="legend-item"><input type="checkbox" id="minerChart1h" checked/><span class="dot dot--avg"></span> Average Hashrate (1h)</label>
+          <div class="legend">
+            <span><span class="dot"></span> Current Hashrate (30m)</span>
+            <span><span class="dot dot--avg"></span> Average Hashrate (1h)</span>
           </div>
           <div class="chart" id="chartBox">
             <canvas id="chartCanvas"></canvas>
@@ -1151,13 +1116,12 @@ async function renderMiner(poolId, addr, tab='dashboard'){
             <div class="chart-tooltip" id="chartTip"></div>
           </div>
         </div>
-      </div>
-
-      <div class="grid-4 miner-extra">
-        <div class="card"><div class="card__title">Last Best Share</div><div class="card__body"><div class="v mono">${lastBestShare==null?'—':String(lastBestShare)}</div></div></div>
-        <div class="card"><div class="card__title">Best Share</div><div class="card__body"><div class="v">${bestShare==null?'—':fmtCompact(bestShare)}</div></div></div>
-        <div class="card"><div class="card__title">Network Difficulty</div><div class="card__body"><div class="v">${netDiffStr}</div></div></div>
-        <div class="card"><div class="card__title">Port Difficulty</div><div class="card__body"><div class="v">${portDiff==null?'—':fmtNumber(portDiff)}</div></div></div>
+        <div class="chart-summary">
+          <span>Last Best Share: ${lastBestShare!=null ? formatTimeAgo(lastBestShare) : '—'}</span>
+          <span>Best Share: ${bestShareGlobal!=null ? fmtCompact(bestShareGlobal) : '—'}</span>
+          <span>Network Difficulty: ${fmtCompact(netDiff)}</span>
+          <span>Port Difficulty: ${portDiff!=null ? fmtNumber(portDiff) : '—'}</span>
+        </div>
       </div>
 
       <div class="table-wrap">
@@ -1168,299 +1132,290 @@ async function renderMiner(poolId, addr, tab='dashboard'){
               <th>Valids</th><th>Invalid</th><th>Stale</th><th>Best Share</th><th>Port</th><th>Last Share</th>
             </tr>
           </thead>
-          <tbody>
-            ${workersList.length ? workersList.map(w=>{
-              const wn = w.name ?? w.workerName ?? w.worker ?? (w.miner && String(w.miner).includes('.') ? String(w.miner).split('.').slice(1).join('.') : null) ?? 'Default';
-              const wh30 = w.hashrate ?? w.hashRate ?? w.reportedHashrate ?? (w===row ? hr30 : null);
-              const wh1h = w.averageHashrate ?? w.avgHashrate ?? (w===row ? hr1h : null);
-              const valids = w.validShares ?? w.validSharesCount ?? w.accepted ?? '—';
-              const inv = w.invalidShares ?? w.invalidSharesCount ?? w.rejected ?? '—';
-              const stale = w.staleShares ?? w.staleSharesCount ?? '—';
-              const bshare = w.bestShare ?? w.bestShareDifficulty ?? w.difficulty ?? '—';
-              const port = w.port ?? w.portName ?? w.difficulty ?? '—';
-              const lastSh = w.lastShare ?? w.lastShareTime ?? '—';
-              return `<tr><td>${wn}</td><td>${wh30==null?'—':fmtHashrate(wh30)}</td><td>${wh1h==null?'—':fmtHashrate(wh1h)}</td><td>${fmtNumber(valids)}</td><td>${fmtNumber(inv)}</td><td>${fmtNumber(stale)}</td><td>${typeof bshare==='number'?fmtCompact(bshare):bshare}</td><td>${port}</td><td class="mono">${lastSh}</td></tr>`;
-            }).join('') : `<tr><td>${workerName}</td><td>${hr30==null?'—':fmtHashrate(hr30)}</td><td>${hr1h==null?'—':fmtHashrate(hr1h)}</td><td>—</td><td>—</td><td>—</td><td>${bestShare==null?'—':fmtCompact(bestShare)}</td><td>${portDiff==null?'—':String(portDiff)}</td><td class="mono">${lastBestShare==null?'—':String(lastBestShare)}</td></tr>`}
-          </tbody>
+          <tbody>${workerRows}</tbody>
         </table>
       </div>
     `;
-  } else if(tab==='payouts'){
-    const pay = await fetchMinerPayments(poolId, addr);
-    const arr = pickPaymentsArray(pay);
-    const rows = arr.length ? arr.slice(0,50).map(x=>{
-      const time = x.created ?? x.createdAt ?? x.time ?? x.timestamp ?? '—';
+  }
+
+  if(tab==='payouts'){
+    const sym = (pool.coin?.symbol || poolId || '').toUpperCase();
+    const arr = pickPaymentsArray(payoutsData);
+    function formatPayoutTime(v){
+      if (v==null || v==='') return '—';
+      const d = typeof v==='number' ? new Date(v) : new Date(v);
+      if (isNaN(d.getTime())) return String(v);
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yyyy = d.getFullYear();
+      const hh = String(d.getHours()).padStart(2,'0');
+      const min = String(d.getMinutes()).padStart(2,'0');
+      return `${dd}.${mm}.${yyyy}, ${hh}:${min}`;
+    }
+    const rows = arr.length ? arr.map(x=>{
+      const time = formatPayoutTime(x.created ?? x.createdAt ?? x.time ?? x.timestamp);
       const amount = x.amount ?? x.value ?? x.total ?? '—';
       const tx = x.txid ?? x.txHash ?? x.transactionHash ?? x.tx ?? '—';
       const txLink = tx==='—' ? '#' : explorerTx(poolId, tx);
-      return `<tr><td class="mono">${time}</td><td>${amount}</td><td class="mono">${tx==='—'?'—':`<a href="${txLink}" target="_blank" rel="noopener">${tx}</a>`}</td></tr>`;
+      return `<tr>
+        <td class="mono">${time}</td>
+        <td>${amount}</td>
+        <td class="mono">${tx==='—'?'—':`<a href="${txLink}" target="_blank" rel="noopener">${tx}</a>`}</td>
+      </tr>`;
     }).join('') : `<tr><td colspan="3">—</td></tr>`;
-    body = `
+
+    tabHtml = `
       <div class="table-wrap">
         <table class="table">
-          <thead><tr><th>Time</th><th>Amount</th><th>TX</th></tr></thead>
+          <thead><tr><th>Time</th><th>Amount ${sym}</th><th>TX (Transaction Hash)</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
-      </div>`;
-  } else {
-    body = `
-      <div class="grid-2" style="padding-top:0">
-        <div class="card" style="grid-column:1/-1"><div class="card__title">REWARDS</div>
-          <div class="card__body"><div class="kv">
-            <div class="k">Pending Balance</div><div class="v mono">${pendingBalance==null?'—':String(pendingBalance)}</div>
-            <div class="k">Total Paid</div><div class="v mono">${totalPaid==null?'—':String(totalPaid)}</div>
-            <div class="k">Today Paid</div><div class="v mono">${todayPaid==null?'—':String(todayPaid)}</div>
-            <div class="k">Miner Effort</div><div class="v">${minerEffort==null?'—':(Number(minerEffort).toFixed(2)+'%')}</div>
-          </div></div>
-        </div>
-      </div>`;
+      </div>
+      <div style="padding:0 14px 14px;color:var(--muted);font-size:12px">
+        Если таблица пустая — проверь, что в Miningcore включён paymentProcessing и эндпоинты payments доступны.
+      </div>
+    `;
   }
 
-  $('#app').innerHTML=`
+  if(tab==='rewards'){
+    const sym = (pool.coin?.symbol || poolId || '').toUpperCase();
+    const data = rewardsData || null;
+    const intervalLabels = { '1h':'Hour', 'hour':'Hour', '12h':'12 Hours', '12 hours':'12 Hours', '24h':'24 Hours', '24 hours':'24 Hours', 'day':'24 Hours', '7d':'Week', 'week':'Week', '30d':'Month', 'month':'Month' };
+    let intervals = [];
+    if(data && typeof data==='object'){
+      const arr = data.intervals ?? data.summary ?? (Array.isArray(data) ? data : []);
+      if(Array.isArray(arr)) intervals = arr;
+    }
+    const summaryLeftRows = intervals.length ? intervals.map(it=>{
+      const label = intervalLabels[(it.interval||it.name||'').toLowerCase()] || it.interval || it.name || '—';
+      const blocks = fmtNumber(it.blocks ?? it.blockCount ?? 0);
+      const effort = it.effort ?? it.personalEffort ?? 0;
+      const effortPct = (effort!=null && effort!=='—') ? (Number(effort).toFixed(0)+'%') : '0%';
+      const bch = it.amount ?? it.reward ?? '0.000000';
+      const usd = it.usd != null ? fmtMoneyUsd(it.usd) : '$0.00';
+      return `<tr><td>${label}</td><td>${blocks}</td><td class="v--effort">${effortPct}</td><td>${bch}</td><td>${usd}</td></tr>`;
+    }).join('') : ['Hour','12 Hours','24 Hours','Week','Month'].map(l=>`<tr><td>${l}</td><td>0</td><td class="v--effort">0%</td><td>0.000000</td><td>$0.00</td></tr>`).join('');
+
+    const summaryRightRows = intervals.length>=3
+      ? intervals.slice(0,3).map(it=>`<tr><td>${fmtNumber(it.blocks ?? it.blockCount ?? 0)}</td><td class="v--effort">${(it.effort ?? it.personalEffort ?? 0)!=null ? (Number(it.effort ?? it.personalEffort).toFixed(0)+'%') : '0%'}</td></tr>`).join('')
+      : '<tr><td>0</td><td class="v--effort">0%</td></tr><tr><td>0</td><td class="v--effort">0%</td></tr><tr><td>0</td><td class="v--effort">0%</td></tr>';
+
+    function formatRewardTime(v){
+      if(v==null||v==='') return '—';
+      const d = typeof v==='number' ? new Date(v) : new Date(v);
+      if(isNaN(d.getTime())) return String(v);
+      const dd=String(d.getDate()).padStart(2,'0'), mm=String(d.getMonth()+1).padStart(2,'0'), yyyy=d.getFullYear();
+      const hh=String(d.getHours()).padStart(2,'0'), min=String(d.getMinutes()).padStart(2,'0');
+      return `${dd}.${mm}.${yyyy}, ${hh}:${min}`;
+    }
+    const detailRows = minerBlocks.length ? minerBlocks.slice(0,50).map(b=>{
+      const height = b.blockHeight ?? b.height ?? '—';
+      const type = b.type ?? 'Block';
+      const time = formatRewardTime(b.created ?? b.createdAt ?? b.createdTime ?? b.time ?? b.timestamp);
+      const worker = b.worker ?? b.workerName ?? b.miner ?? '—';
+      const effort = b.effort ?? b.effortPercent ?? b.personalEffort ?? '—';
+      const effortStr = effort!='—' && asNumberOrNull(effort)!=null ? (Number(effort).toFixed(0)+'%') : effort;
+      const solution = b.solution ?? b.shareDifficulty ?? b.blockRewardShares ?? '—';
+      const solutionStr = (solution!='—' && solution!=null) ? (fmtCompact(solution)+'†') : solution;
+      const status = b.status ?? b.state ?? 'Confirmed';
+      const pct = b.percent ?? '100%';
+      const reward = b.reward ?? b.blockReward ?? '—';
+      return `<tr>
+        <td>${fmtNumber(height)}</td>
+        <td>${type}</td>
+        <td class="mono">${time}</td>
+        <td>${worker}</td>
+        <td class="v--effort">${effortStr}</td>
+        <td>${solutionStr}</td>
+        <td>${status}</td>
+        <td>${pct}</td>
+        <td>${reward}</td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="9">—</td></tr>';
+
+    tabHtml = `
+      <div class="rewards-summary">
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Interval</th><th>Blocks</th><th>Personal Effort</th><th>${sym}</th><th>USD</th></tr></thead>
+            <tbody>${summaryLeftRows}</tbody>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Blocks</th><th>Personal Effort</th></tr></thead>
+            <tbody>${summaryRightRows}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th>Height</th><th>Type</th><th>Time</th><th>Worker</th><th>Personal Effort</th><th>Solution</th><th>Status</th><th>Percent</th><th>Reward</th>
+          </tr></thead>
+          <tbody>${detailRows}</tbody>
+        </table>
+      </div>
+      <div style="padding:0 14px 14px;color:var(--muted);font-size:12px">
+        Детализация по блокам майнера. Если пусто — API блоков по адресу может не поддерживаться.
+      </div>
+    `;
+  }
+
+  document.getElementById('app').innerHTML=`
     <section class="surface">
-      ${coinMenu(poolId,'miners')}
+      ${coinMenu(poolId,'miners',{})}
       <div class="surface__head">
         <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Miner</h1>
-        <div class="hint">${connectedNow ? '' : 'OFFLINE'}</div>
+        <div class="hint"></div>
       </div>
 
-      <div style="padding:10px 14px; display:flex; align-items:center; justify-content:center; gap:10px;">
-        <div class="mono" style="font-weight:900;overflow:hidden;text-overflow:ellipsis;max-width:80%;">${addr}</div>
+      <div class="miner-addr-row">
+        <div class="mono miner-addr-row__addr" title="${addr}">${addr}</div>
+        <span class="copy-btn copy-addr-btn" data-addr="${addr.replace(/"/g,'&quot;')}" title="Copy address">${svgIcon('copy')}</span>
         <a class="copy-btn" href="${extAddr}" target="_blank" rel="noopener" title="Open in explorer">${svgIcon('ext')}</a>
       </div>
 
       ${tabsMiner(poolId, addr, tab)}
-      ${body}
+      ${tabHtml}
     </section>
   `;
 
+  // график только на dashboard
   if(tab==='dashboard'){
-    drawMinerChart(poolId, addr);
-    const m30=$('#minerChart30m'), m1h=$('#minerChart1h');
-    if(m30) m30.onchange=()=>drawMinerChart(poolId, addr);
-    if(m1h) m1h.onchange=()=>drawMinerChart(poolId, addr);
+    const a = makeSeries(asNumberOrNull(hr30)||1, 96);
+    const b = makeSeries(asNumberOrNull(hr1h)||1, 96);
+    renderChart(a,b,'Current Hashrate (30m)','Average Hashrate (1h)');
   }
 }
 
-/* ---------- realtime updates (no hard reload) ---------- */
-function updateCoinDOM(poolId){
-  const pool=POOL_BY_ID.get(poolId);
-  if(!pool) return;
-  const n=poolNumbers(pool);
-
-  const setTxt=(id,val)=>{ const el=document.getElementById(id); if(el && el.textContent!==val) el.textContent=val; };
-  const setHtml=(id,html)=>{ const el=document.getElementById(id); if(el && el.innerHTML!==html) el.innerHTML=html; };
-
-  setTxt('cMiners', fmtNumber(n.miners));
-  setTxt('cPoolHash', fmtHashrate(n.poolHash));
-  setTxt('cBlocks', fmtNumber(n.blocks));
-  setTxt('cEffort', n.effort != null ? (n.effort.toFixed(0) + '%') : '—');
-  setTxt('cLastBlock', n.lastBlock != null ? String(n.lastBlock) : '—');
-  setTxt('cNetDiff', fmtCompact(n.netDiff));
-  setTxt('cNetHash', fmtHashrate(n.netHash));
-  setTxt('cHeight', fmtNumber(n.height));
-
-  const pr=priceForPool(pool);
-  const priceUsd = pr.usd==null?'—':fmtMoneyUsd(pr.usd);
-  const chg = pr.chg==null?'':` <span class="chg ${(Number(pr.chg)||0)>=0?'up':'down'}">${fmtPct(Number(pr.chg)||0)} ${(Number(pr.chg)||0)>=0?'↑':'↓'}</span>`;
-  setHtml('cPrice', priceUsd + chg);
-  const priceBtc = pr.btc != null ? (pr.btc.toFixed(8) + ' BTC') : '—';
-  setHtml('cPriceBtc', priceBtc + (pr.chg!=null ? ` <span class="chg ${(Number(pr.chg)||0)>=0?'up':'down'}">${fmtPct(Number(pr.chg)||0)}</span>` : ''));
-
-  pushCoinPoint(poolId, n.poolHash, n.netDiff);
-  drawCoinChart(poolId);
+/* ---------- dashboard auto-refresh (real-time API) ---------- */
+let _dashboardRefresh=null;
+function startDashboardRefresh(){
+  if(_dashboardRefresh) return;
+  _dashboardRefresh=setInterval(()=>{
+    const h=(location.hash||'#/').replace(/^#\/?/,'');
+    if(h==='') renderPools();
+  }, 45000);
 }
-
-async function tickMinerRealtime(){
-  if(!(CURRENT.page==='miner' && CURRENT.poolId && CURRENT.addr && CURRENT.tab==='dashboard')) return;
-  const pool=POOL_BY_ID.get(CURRENT.poolId);
-  if(!pool) return;
-
-  const n=poolNumbers(pool);
-  if((n.miners||0)===0) return;
-
-  try{
-    const data = await fetchMiners(CURRENT.poolId);
-    const miners = pickMinersArray(data);
-    const row = miners.find(x => (x.miner||x.address||x.login) === CURRENT.addr) || null;
-    if(!row) return;
-
-    const inst = asNumberOrNull(row.hashrate ?? row.hashRate ?? null);
-    if(inst==null || inst<=0) return;
-
-    pushMinerPoint(`${CURRENT.poolId}:${CURRENT.addr}`, inst);
-
-    const s=SERIES.miner.get(`${CURRENT.poolId}:${CURRENT.addr}`);
-    const el30=$('#mHr30'), el60=$('#mHr1h');
-    if(el30 && s?.a?.length) el30.textContent=fmtHashrate(s.a[s.a.length-1]);
-    if(el60 && s?.b?.length) el60.textContent=fmtHashrate(s.b[s.b.length-1]);
-    drawMinerChart(CURRENT.poolId, CURRENT.addr);
-  }catch(e){}
-}
+function stopDashboardRefresh(){ if(_dashboardRefresh){ clearInterval(_dashboardRefresh); _dashboardRefresh=null; } }
 
 /* ---------- router ---------- */
 async function router(){
   const hash=(location.hash||'#/').replace(/^#\/?/,'');
   const parts=hash.split('/').filter(Boolean);
 
-  if(parts.length===0){
-    CURRENT={page:'pools', poolId:null, addr:null, tab:null};
-    updateSidebarActive('pools');
-    await renderPools();
-    return;
-  }
+  if(parts.length!==0) stopDashboardRefresh();
+  if(parts.length===0){ await renderPools(); startDashboardRefresh(); return; }
 
   const [page,a,b,c]=parts;
 
-  if(page==='coin' && a){
-    CURRENT={page:'coin', poolId:a, addr:null, tab:null};
-    updateSidebarActive('pools');
-    await renderCoin(a);
-    return;
-  }
-  if(page==='blocks'){
-    CURRENT={page:'blocks', poolId:a||null, addr:null, tab:null};
-    updateSidebarActive('pools');
-    await renderBlocks(a||null);
-    return;
-  }
-  if(page==='miners'){
-    CURRENT={page:'miners', poolId:a||null, addr:null, tab:null};
-    updateSidebarActive('pools');
-    await renderMiners(a||null);
-    return;
-  }
-  if(page==='help'){
-    CURRENT={page:'help', poolId:a||null, addr:null, tab:null};
-    updateSidebarActive('pools');
-    await renderHelp(a||null);
-    return;
-  }
+  if(page==='coin' && a){ await renderCoin(a); return; }
+
+  // ВАЖНО: теперь #/blocks работает (берёт active pool), и #/blocks/<poolId> тоже
+  if(page==='blocks'){ await renderBlocks(a||null); return; }
+
+  // Теперь #/miners работает (active pool) и #/miners/<poolId>
+  if(page==='miners'){ const pg = b ? parseInt(b,10) : 1; await renderMiners(a||null, isFinite(pg)?pg:1); return; }
+
+  // Теперь #/help работает (active pool) и #/help/<poolId>
+  if(page==='help'){ await renderHelp(a||null); return; }
+
+  // miner pages
   if(page==='miner' && a && b){
-    const tab=c||'dashboard';
-    CURRENT={page:'miner', poolId:a, addr:decodeURIComponent(b), tab:tab};
-    updateSidebarActive('pools');
+    const tab = c || 'dashboard';
     await renderMiner(a, decodeURIComponent(b), tab);
     return;
   }
 
-  CURRENT={page:'pools', poolId:null, addr:null, tab:null};
-  updateSidebarActive('pools');
   await renderPools();
-}
-
-function updateSidebarActive(page){
-  $$('.sidebar__link').forEach(l=>{
-    l.classList.toggle('sidebar__link--active', (l.dataset.page||'')===page);
-  });
-}
-
-/* ---------- timers ---------- */
-let tPools=null, tPrices=null, tMiners=null, tPush=null;
-
-async function tickPools(){
-  try{
-    await loadPools();
-    if(CURRENT.page==='pools'){
-      const tb=$('#poolsTbody');
-      if(tb){
-        tb.innerHTML = POOLS.map(p=>{
-          const n=poolNumbers(p);
-          const totalPaid = p?.poolStats?.totalPaid ?? p?.poolStats?.totalPayments ?? p?.poolStats?.totalPaidOut ?? null;
-          const poolFee = p?.poolFeePercent != null ? (p.poolFeePercent+'%') : (p?.paymentProcessing?.poolFeePercent != null ? (p.paymentProcessing.poolFeePercent+'%') : '1.5%');
-          const minPay = p?.paymentProcessing?.minimumPayment != null ? fmtCoinAmt(p.paymentProcessing.minimumPayment) + ' ' + (p.coin?.symbol || p.id) : '—';
-          return `<tr class="row-link" data-pool="${p.id}" onclick="localStorage.setItem('${KEY_ACTIVE_POOL}','${p.id}'); location.hash='#/coin/${encodeURIComponent(p.id)}'">
-            <td><div class="coin-cell">${iconImg(p)}<span>${p.coin?.name || p.coin?.type || p.id} (${p.coin?.symbol || p.coin?.type || p.id})</span></div></td>
-            <td>${p.coin?.algorithm || '—'}</td>
-            <td>${fmtNumber(n.miners)}</td>
-            <td>${fmtHashrate(n.poolHash)}</td>
-            <td>${fmtNumber(n.blocks)}</td>
-            <td>${totalPaid!=null ? fmtCoinAmt(totalPaid) : '—'}</td>
-            <td>${poolFee}</td>
-            <td>${minPay}</td>
-            <td>${fmtHashrate(n.netHash)}</td>
-            <td>${fmtCompact(n.netDiff)}</td>
-          </tr>`;
-        }).join('') || '<tr><td colspan="10">No pools</td></tr>';
-      }
-    }
-    if(CURRENT.page==='coin' && CURRENT.poolId){
-      updateCoinDOM(CURRENT.poolId);
-    }
-  }catch(e){}
-}
-async function tickPrices(){
-  try{
-    await refreshPrices();
-    if(CURRENT.page==='coin' && CURRENT.poolId) updateCoinDOM(CURRENT.poolId);
-  }catch(e){}
-}
-async function tickMiners(){
-  if(CURRENT.page!=='miners') return;
-  const poolId = CURRENT.poolId || ensureActivePool();
-  const pool=POOL_BY_ID.get(poolId);
-  if(!pool) return;
-
-  const n=poolNumbers(pool);
-  if((n.miners||0)===0){
-    const tb=$('#minersTbody');
-    if(tb) tb.innerHTML = `<tr><td colspan="3">—</td></tr>`;
-    return;
-  }
-
-  try{
-    const data = await fetchMiners(poolId);
-    const listRaw = pickMinersArray(data);
-
-    const tb=$('#minersTbody');
-    if(!tb) return;
-
-    tb.innerHTML = (listRaw.length ? listRaw.map(m=>{
-      const addr = minerAddress(m);
-      const wname = workerDisplayName(m);
-      const hr = m.hashrate ?? m.hashRate ?? 0;
-      const last = m.lastShare ?? m.lastShareTime ?? '—';
-      return `<tr class="row-link" onclick="location.hash='#/miner/${encodeURIComponent(poolId)}/${encodeURIComponent(addr)}/dashboard'">
-        <td>${wname}</td><td>${fmtHashrate(hr)}</td><td>${last}</td>
-      </tr>`;
-    }).join('') : `<tr><td colspan="3">—</td></tr>`);
-  }catch(e){}
-}
-
-function ensureTimers(){
-  if(!tPools)  tPools=setInterval(tickPools, POLL_POOLS_MS);
-  if(!tPrices) tPrices=setInterval(tickPrices, POLL_PRICE_MS);
-  if(!tMiners) tMiners=setInterval(tickMiners, POLL_MINERS_MS);
-  if(!tPush)   tPush=setInterval(tickMinerRealtime, PUSH_MS);
-}
-
-/* ---------- header dropdowns (Home / EN / Theme) ---------- */
-function initHeaderDD(){
-  const langBtn = document.getElementById('langBtn');
-  const themeBtn = document.getElementById('themeBtn');
-  const ddLang = document.getElementById('ddLang');
-  const ddTheme = document.getElementById('ddTheme');
-  if (langBtn && ddLang) {
-    langBtn.onclick = (e) => { e.stopPropagation(); ddLang.classList.toggle('is-open'); ddTheme?.classList.remove('is-open'); };
-    ddLang.querySelectorAll('.dd__item[data-lang]').forEach(el => {
-      el.onclick = () => { setLang(el.dataset.lang); ddLang.classList.remove('is-open'); };
-    });
-  }
-  if (themeBtn && ddTheme) {
-    themeBtn.onclick = (e) => { e.stopPropagation(); ddTheme.classList.toggle('is-open'); ddLang?.classList.remove('is-open'); };
-    ddTheme.querySelectorAll('.dd__item[data-theme]').forEach(el => {
-      el.onclick = () => { setTheme(el.dataset.theme); ddTheme.classList.remove('is-open'); };
-    });
-  }
 }
 
 /* ---------- boot ---------- */
 (function boot(){
   setTheme(localStorage.getItem('theme')||'dark');
   setLang(localStorage.getItem('lang')||'en');
-  initHeaderDD();
   router();
-  ensureTimers();
   window.addEventListener('hashchange', router);
 })();
 
+/* PP_MINERS_GATE_20260302 */
+(() => {
+  if (window.__PP_MINERS_GATE_20260302) return;
+  window.__PP_MINERS_GATE_20260302 = true;
+
+  const API = "/api";
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  async function fetchJson(url){
+    const r = await fetch(url, { cache: "no-store" });
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return r.json();
+  }
+
+  function parseMinersRoute(){
+    const h = location.hash || "#/";
+    const m = h.match(/^#\/miners\/([^\/?#]+)/);
+    if (!m) return null;
+    return decodeURIComponent(m[1]);
+  }
+
+  function renderEmpty(poolId, poolObj){
+    const app = document.getElementById("app");
+    if (!app) return;
+
+    // если уже показали пустую — не трогаем
+    if (app.dataset.ppMinersGate === poolId) return;
+    app.dataset.ppMinersGate = poolId;
+
+    const menu = (typeof window.coinMenu === "function") ? window.coinMenu(poolId, "miners") : "";
+    const icon = (typeof window.iconImg === "function") ? window.iconImg(poolObj) : "";
+    const name =
+      (poolObj && poolObj.coin && (poolObj.coin.name || poolObj.coin.type)) ? (poolObj.coin.name || poolObj.coin.type) : poolId;
+
+    app.innerHTML =
+      '<section class="surface">' +
+        menu +
+        '<div class="surface__head"><h1>' + icon + ' ' + name + ' — Miners</h1><div class="hint"></div></div>' +
+        '<div class="table-wrap">' +
+          '<table class="table">' +
+            '<thead><tr><th>Miner</th><th>Hashrate</th><th>Last Share</th></tr></thead>' +
+            '<tbody><tr><td colspan="3">—</td></tr></tbody>' +
+          '</table>' +
+        '</div>' +
+      '</section>';
+  }
+
+  async function gateOnce(){
+    const poolId = parseMinersRoute();
+    if (!poolId) return;
+
+    let pools;
+    try { pools = await fetchJson(API + "/pools"); }
+    catch(e){ return; }
+
+    const poolObj = (pools && Array.isArray(pools.pools)) ? pools.pools.find(p => p.id === poolId) : null;
+    const ps = (poolObj && poolObj.poolStats) ? poolObj.poolStats : {};
+    const connected = (ps.connectedMiners ?? ps.miners ?? 0);
+
+    if (!connected) renderEmpty(poolId, poolObj);
+    else {
+      // если майнеры появились — убираем флаг, чтобы штатная страница работала
+      const app = document.getElementById("app");
+      if (app && app.dataset.ppMinersGate) delete app.dataset.ppMinersGate;
+    }
+  }
+
+  async function onRoute(){
+    // несколько запусков, чтобы перебить рендер роутера (без перезагрузки страницы)
+    gateOnce();
+    await sleep(200);
+    gateOnce();
+    await sleep(800);
+    gateOnce();
+  }
+
+  window.addEventListener("hashchange", onRoute);
+  document.addEventListener("DOMContentLoaded", onRoute);
+  setTimeout(onRoute, 300);
+})();

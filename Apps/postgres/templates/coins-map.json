@@ -161,7 +161,7 @@
       "id": "zeph",
       "coin": "zephyr",
       "stratum": 6018,
-      "rpcPort": 38081,
+      "rpcPort": 17767,
       "zmqPort": 0,
       "addressType": ""
     },
@@ -235,6 +235,14 @@
       "stratum": 6028,
       "rpcPort": 7227,
       "zmqPort": 0,
+      "addressType": ""
+    },
+    {
+      "id": "btcs",
+      "coin": "bitcoinsilver",
+      "stratum": 6029,
+      "rpcPort": 9015,
+      "zmqPort": 7015,
       "addressType": ""
     }
   ]

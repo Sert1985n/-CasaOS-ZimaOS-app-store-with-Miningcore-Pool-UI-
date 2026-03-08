@@ -3,27 +3,36 @@ services:
   app:
     cpu_shares: 90
     container_name: Node-ZEC
+    hostname: Node-ZEC
     deploy:
       resources:
         limits:
-          memory: 512M
-          cpus: '1'
-    image: alpine:3.20
+          memory: 4096M
+          cpus: '2'
+    image: electriccoinco/zcashd:latest
     command:
-    - sh
-    - -lc
-    - echo 'Skeleton container for ZEC. Replace image/command with real node daemon.'
-      && sleep infinity
+      - zcashd
+      - -rpcbind=0.0.0.0
+      - -rpcport=8232
+      - -rpcallowip=0.0.0.0/0
+      - -rpcuser=pooluser
+      - -rpcpassword=poolpassword
+      - -server
+      - -txindex=1
     ports:
-    - target: 7032
-      published: '7032'
-      protocol: tcp
-    - target: 9032
-      published: '9032'
-      protocol: tcp
+      - target: 8232
+        published: '8232'
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /media/ZimaOS-HD/nodes/zec
+        target: /root/.zcash
+        bind:
+          create_host_path: true
+    restart: unless-stopped
     networks:
-    - pool_network
-    - default
+      - pool_network
+      - default
 
 networks:
   default:
@@ -33,22 +42,22 @@ networks:
 
 x-casaos:
   architectures:
-  - amd64
+    - amd64
   author: public-pool-btc.ru
   category: Cryptocurrency Nodes
   description:
-    en_us: Skeleton node app for Zcash (ZEC). Replace container image with real daemon.
+    en_us: Zcash full node for Miningcore pool. RPC 8232. Data at /media/ZimaOS-HD/nodes/zec
   developer: public-pool-btc.ru
   icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zec.png
   thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zec.png
   index: /
   is_uncontrolled: false
   main: app
-  port_map: '9032'
+  port_map: '8232'
   scheme: http
   store_app_id: public-pool-node-zec
   tagline:
-    en_us: ZEC Node (skeleton)
+    en_us: Zcash (ZEC) Node
   title:
     custom: Zcash (ZEC) Node
     en_us: Zcash (ZEC) Node

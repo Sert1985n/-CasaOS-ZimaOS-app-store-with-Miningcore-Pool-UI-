@@ -122,20 +122,20 @@ docker network create pool_network 2>/dev/null || true
 | FB | FB-Node | Node-FB | 9021 | 7013 | /media/ZimaOS-HD/nodes/fb |
 | XMR | XMR-Node | Node-XMR | 18081 | — | /media/ZimaOS-HD/nodes/xmr |
 | ERG | ERG-Node | Node-ERG | 9050 | — | /media/ZimaOS-HD/nodes/erg |
-| ETC | ETC-Node | Node-ETC | 8545 | — | skeleton |
+| ETC | ETC-Node | Node-ETC | 8545 | — | etclabscore/core-geth |
 | ETHW | ETHW-Node | Node-ETHW | 8546 | — | skeleton |
-| ZEPH | ZEPH-Node | Node-ZEPH | 38081 | — | skeleton |
-| SPACE | SPACE-Node | Node-SPACE | 9133 | — | skeleton |
-| XEL | XEL-Node | Node-XEL | 8080 | — | skeleton |
+| ZEPH | ZEPH-Node | Node-ZEPH | 17767 | — | supertypo/zephyrd |
+| SPACE | SPACE-Node | Node-SPACE | 9133 | — | spaceworksco/spacecoin |
+| XEL | XEL-Node | Node-XEL | 8080 | — | xelis/daemon |
 | OCTA | OCTA-Node | Node-OCTA | 8547 | — | skeleton |
-| ZEC | ZEC-Node | Node-ZEC | 8232 | — | skeleton |
+| ZEC | ZEC-Node | Node-ZEC | 8232 | — | electriccoinco/zcashd |
 | ZEN | ZEN-Node | Node-ZEN | 8231 | — | /media/ZimaOS-HD/nodes/zen |
 | FLUX | FLUX-Node | Node-FLUX | 16124 | — | skeleton |
 | FIRO | FIRO-Node | Node-FIRO | 8888 | — | /media/ZimaOS-HD/nodes/firo |
 | KAS | KAS-Node | Node-KAS | 16110 | — | /media/ZimaOS-HD/nodes/kaspa |
 | NEXA | NEXA-Node | Node-NEXA | 7227 | — | /media/ZimaOS-HD/nodes/nexa |
 
-**Примечание:** Skeleton-ноды (ETC, ETHW, ZEPH, SPACE, XEL, OCTA, ZEC, FLUX) — заглушки. Нужно заменить образ и command на реальный daemon.
+**Примечание:** Реальные образы: ZEPH (supertypo/zephyrd), ZEC (electriccoinco/zcashd), ETC (etclabscore/core-geth), XEL (xelis/daemon), SPACE (spaceworksco/spacecoin). Skeleton остаются: ETHW, OCTA, FLUX — нет готовых Docker-образов.
 
 ### 3.2. Обязательно: pool_network
 

@@ -3,51 +3,82 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>public-pool-btc.ru — Mining Pools</title>
-  <link rel="icon" type="image/png" href="/favicon.png?v=2026-03-07"/>
-  <link rel="apple-touch-icon" href="/favicon.png?v=2026-03-07"/>
-  <link rel="stylesheet" href="/site.css?v=20260307"/>
+  <title>public-pool-btc.ru mining dashboard</title>
+  <meta name="theme-color" content="#0d1114"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+  <link rel="icon" type="image/png" href="/favicon.png"/>
+  <link rel="apple-touch-icon" href="/favicon.png"/>
+
+  <link rel="stylesheet" href="/site.css"/>
+  <link rel="stylesheet" href="/dashboard.css"/>
+  <link rel="stylesheet" href="/pp.custom.css"/>
 </head>
-<body class="layout-sidebar">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar__brand" onclick="location.hash='#/'">
-      <strong>public-pool-btc.ru</strong>
-    </div>
-    <nav class="sidebar__nav">
-      <a class="sidebar__link sidebar__link--active" href="#/" data-page="pools">
-        <span class="sidebar__icon">≡</span> Mining Pools
+<body>
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a href="#/" class="brand" aria-label="Home">
+        <div class="brand__logo brand__logo--pickaxe">
+          <svg class="brand__pickaxe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v4"/><path d="M6 7H3l9 14 3-6 3 6 3-6"/><path d="M14 11l3 6"/></svg>
+        </div>
+        <div class="brand__txt">
+          <strong>public-pool-btc.ru</strong>
+          <span>mining dashboard</span>
+        </div>
       </a>
-      <a class="sidebar__link sidebar__link--config" href="#" id="poolConfigLink" target="_blank" rel="noopener">
-        <span class="sidebar__icon">⚙</span> Pool Configuration
-      </a>
-    </nav>
-  </aside>
 
-  <div class="main-area">
-    <header class="topbar">
-      <button class="topbar__menu" id="menuBtn" type="button" aria-label="Menu">
-        <svg viewBox="0 0 24 24" class="ico"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
-      </button>
-      <h1 class="topbar__title">Mining Pools</h1>
-      <nav class="topbar__breadcrumb">
-        <a href="#/">Home</a> / <span>Mining Pools</span>
+      <nav class="navrow">
+        <a class="pill" href="#/">
+          <span class="pill__icon"><svg viewBox="0 0 24 24" class="ico"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10.5V20h14v-9.5"></path></svg></span>
+          <span>Home</span>
+        </a>
+        <a class="pill" href="#/blocks">
+          <span class="pill__icon"><svg viewBox="0 0 24 24" class="ico"><path d="M12 3 3.5 7.5 12 12l8.5-4.5L12 3Z"></path><path d="M3.5 7.5V16.5L12 21l8.5-4.5V7.5"></path><path d="M12 12v9"></path></svg></span>
+          <span>Blocks</span>
+          <span class="badge-count" id="badgeBlocks">0</span>
+        </a>
+        <a class="pill" href="#/miners">
+          <span class="pill__icon"><svg viewBox="0 0 24 24" class="ico"><path d="M16 11a4 4 0 1 0-8 0"></path><path d="M5 20a7 7 0 0 1 14 0"></path></svg></span>
+          <span>Miners</span>
+          <span class="badge-count" id="badgeMiners">0</span>
+        </a>
+        <a class="pill" href="#/help">
+          <span class="pill__icon"><svg viewBox="0 0 24 24" class="ico"><path d="M12 18h.01"></path><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"></path><path d="M12 22A10 10 0 1 0 12 2a10 10 0 0 0 0 20Z"></path></svg></span>
+          <span>Help</span>
+        </a>
+        <a class="pill" href="#/">
+          <span class="pill__icon"><svg viewBox="0 0 24 24" class="ico"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg></span>
+          <span>Pools</span>
+        </a>
       </nav>
-    </header>
 
-    <main class="content wrap">
-      <div id="app"></div>
-    </main>
-  </div>
+      <div class="actions">
+        <div class="dd" id="ddLang">
+          <button type="button" class="pill pill--ghost" id="langBtn" aria-haspopup="true" aria-expanded="false">
+            <span id="langLabel">EN</span>
+          </button>
+          <div class="dd__menu" role="menu">
+            <div class="dd__item" role="menuitem" data-lang="en"><span id="langCheckEn"></span> EN</div>
+            <div class="dd__item" role="menuitem" data-lang="ru"><span id="langCheckRu"></span> RU</div>
+          </div>
+        </div>
+        <div class="dd" id="ddTheme">
+          <button type="button" class="pill pill--ghost" id="themeBtn" aria-haspopup="true" aria-expanded="false">
+            <svg id="themeIconSvg" viewBox="0 0 24 24" class="ico" style="width:18px;height:18px"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+            <span>Theme</span>
+          </button>
+          <div class="dd__menu" role="menu">
+            <div class="dd__item" role="menuitem" data-theme="dark"><span id="themeCheckDark"></span> Dark</div>
+            <div class="dd__item" role="menuitem" data-theme="light"><span id="themeCheckLight"></span> Light</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
 
-  <script>
-    (function(){
-      var a = document.getElementById('poolConfigLink');
-      if(a) a.href = window.location.protocol + '//' + window.location.hostname + ':85/PoolConfiguration';
-    })();
-    document.getElementById('menuBtn').onclick = function(){
-      document.getElementById('sidebar').classList.toggle('sidebar--open');
-    };
-  </script>
-  <script src="/app.js?v=20260307"></script>
+  <main class="wrap" id="app"></main>
+
+  <script src="/app.js"></script>
+  <script src="/pp.custom.js"></script>
 </body>
 </html>

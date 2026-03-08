@@ -9,8 +9,8 @@ services:
     command: >
       sh -c 'apk add --no-cache nginx wget
       && B=https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/Web-UI-SoloPool-Org
-      && mkdir -p /usr/share/nginx/html /run/nginx /etc/nginx/http.d
-      && wget -q $$B/nginx.conf -O /etc/nginx/http.d/default.conf
+      && mkdir -p /usr/share/nginx/html /run/nginx /etc/nginx/conf.d
+      && wget -q $$B/nginx.conf -O /etc/nginx/nginx.conf
       && wget -q $$B/www/index.html -O /usr/share/nginx/html/index.html
       && wget -q $$B/www/app.js -O /usr/share/nginx/html/app.js
       && wget -q $$B/www/site.css -O /usr/share/nginx/html/site.css
@@ -18,6 +18,9 @@ services:
     networks:
       - pool_network
       - default
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 networks:
   pool_network:
     external: true

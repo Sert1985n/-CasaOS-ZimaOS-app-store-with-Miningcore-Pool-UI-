@@ -14,10 +14,10 @@ services:
     - MININGCORE_HOST=${SERVER_IP:-host.docker.internal}
     - PLATFORM=ZIMAOS
     - POOL_NAME=public-pool-btc.ru
-    - POSTGRES_DATABASE=zimaos
+    - POSTGRES_DATABASE=miningcore
     - POSTGRES_HOST=${SERVER_IP:-host.docker.internal}
-    - POSTGRES_PASSWORD=P@ssw0rd
-    - POSTGRES_USER=admin
+    - POSTGRES_PASSWORD=miningcore
+    - POSTGRES_USER=miningcore
     - PUID=1000
     - STRATUM_HOST=public-pool-btc.ru
     hostname: Miningcore-Web-UI
@@ -36,18 +36,6 @@ services:
       target: /app/miningcore
       bind:
         create_host_path: true
-    - type: bind
-      source: ./overrides/index.html
-      target: /app/wwwroot/index.html
-      read_only: true
-    - type: bind
-      source: ./overrides/css/site.css
-      target: /app/wwwroot/css/site.css
-      read_only: true
-    - type: bind
-      source: ./overrides/js/site.js
-      target: /app/wwwroot/js/site.js
-      read_only: true
     devices: []
     cap_add: []
     extra_hosts:

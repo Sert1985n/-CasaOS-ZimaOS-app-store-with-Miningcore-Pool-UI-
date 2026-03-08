@@ -17,7 +17,16 @@ echo Committing...
 git commit -m "Update: beautiful icons, Pool Config, Web-UI-Pool-Secondary, coins-map, PROJECT-GUIDE"
 
 echo Pushing to GitHub...
+echo.
+echo Если remote уже есть контент — выберите:
+echo 1) git push -u origin main --force   (ЗАМЕНИТЬ всё на GitHub нашими изменениями)
+echo 2) Или склонируйте репо заново, скопируйте файлы поверх, затем push
+echo.
 git push -u origin main
-
+if errorlevel 1 (
+    echo.
+    echo Push отклонён. Запустите: git push -u origin main --force
+    echo ВНИМАНИЕ: --force перезапишет историю на GitHub!
+)
 echo Done.
 pause

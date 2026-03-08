@@ -2,7 +2,8 @@ name: zen-node
 services:
   app:
     cpu_shares: 90
-    container_name: ZEN-Node
+    container_name: Node-ZEN
+    hostname: Node-ZEN
     deploy:
       resources:
         limits:
@@ -39,7 +40,6 @@ x-casaos:
     en_us: 'Horizen zend node (image: zencash/zen-node). Configure as needed; data
       at /data.'
   developer: public-pool-btc.ru
-  hostname: ''
   icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zen.png
   thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zen.png
   index: /

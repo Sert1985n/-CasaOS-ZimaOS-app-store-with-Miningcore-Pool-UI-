@@ -1312,19 +1312,6 @@ async function router(){
 
   const [page,a,b,c]=parts;
 
-  if(page==='referral'){
-    CURRENT={page:'referral', poolId:null, addr:null, tab:null};
-    updateSidebarActive('referral');
-    $('#app').innerHTML=`<section class="surface"><div class="surface__head"><h1>Referral Links</h1></div><div style="padding:20px;color:var(--muted)">Referral program — coming soon.</div></section>`;
-    return;
-  }
-  if(page==='support'){
-    CURRENT={page:'support', poolId:null, addr:null, tab:null};
-    updateSidebarActive('support');
-    $('#app').innerHTML=`<section class="surface"><div class="surface__head"><h1>Support Me</h1></div><div style="padding:20px;color:var(--muted)">Support the pool — donate addresses and links.</div></section>`;
-    return;
-  }
-
   if(page==='coin' && a){
     CURRENT={page:'coin', poolId:a, addr:null, tab:null};
     updateSidebarActive('pools');

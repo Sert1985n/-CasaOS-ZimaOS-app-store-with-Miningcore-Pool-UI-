@@ -50,6 +50,7 @@ x-casaos:
     - arm
     - arm64
   main: app
+  store_app_id: public-pool-postgresql
   description:
     en_us: Postgresql Database Engine
   tagline:

@@ -37,6 +37,12 @@ git commit -m "Full project: coins-map, Pool Config panel, Web-UI-Pool-Secondary
 git push origin main
 ```
 
+Если push отклонён (remote has work):
+```bash
+git push origin main --force
+```
+**Внимание:** `--force` заменит всё на GitHub нашими изменениями.
+
 (или `master` если у вас ветка master: `git push origin master`)
 
 ---

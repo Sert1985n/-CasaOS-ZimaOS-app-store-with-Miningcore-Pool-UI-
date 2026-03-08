@@ -38,8 +38,7 @@ services:
     - -zmqpubhashblock=tcp://0.0.0.0:7005
     - -rpcbind=0.0.0.0
     - -rpcport=9005
-    - -rpcallowip=192.168.10.0/24
-    - -rpcallowip=172.16.0.0/12
+    - -rpcallowip=0.0.0.0/0
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:

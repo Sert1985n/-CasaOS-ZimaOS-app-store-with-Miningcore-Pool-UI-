@@ -17,12 +17,6 @@
       <a class="sidebar__link sidebar__link--active" href="#/" data-page="pools">
         <span class="sidebar__icon">≡</span> Mining Pools
       </a>
-      <a class="sidebar__link" href="#/referral" data-page="referral">
-        <span class="sidebar__icon">↗</span> Referral Links
-      </a>
-      <a class="sidebar__link" href="#/support" data-page="support">
-        <span class="sidebar__icon">♥</span> Support Me
-      </a>
       <a class="sidebar__link sidebar__link--config" href="#" id="poolConfigLink" target="_blank" rel="noopener">
         <span class="sidebar__icon">⚙</span> Pool Configuration
       </a>
@@ -48,7 +42,7 @@
   <script>
     (function(){
       var a = document.getElementById('poolConfigLink');
-      if(a) a.href = window.location.protocol + '//' + window.location.hostname + ':4050';
+      if(a) a.href = window.location.protocol + '//' + window.location.hostname + ':85/PoolConfiguration';
     })();
     document.getElementById('menuBtn').onclick = function(){
       document.getElementById('sidebar').classList.toggle('sidebar--open');

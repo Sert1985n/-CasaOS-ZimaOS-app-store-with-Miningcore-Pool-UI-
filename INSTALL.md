@@ -221,7 +221,11 @@
   Не ставьте одновременно две ноды на один и тот же порт (например ZEN-Node и FLUX-Node оба используют 9033). При необходимости измените `published` в `docker-compose.yml` одной из нод.
 
 - **Web UI (Molepool, Solo-Pool, SoloPool) в статусе "Created", не запускаются**  
-  Эти приложения собирают образ через `build`. Если CasaOS не выполнил сборку, сделайте вручную по SSH: перейдите в папку приложения (например `Apps/Web-UI-SoloPool-Dashboard`) и выполните `docker compose build && docker compose up -d`.
+  Выполните один скрипт (вставит путь и всё сделает):
+  ```bash
+  curl -sL https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/install-all.sh | bash
+  ```
+  Или скопируйте `install-all.sh` на сервер и запустите `bash install-all.sh`.
 
 ---
 

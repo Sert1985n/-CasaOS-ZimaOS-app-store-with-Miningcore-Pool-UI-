@@ -1,0 +1,74 @@
+name: public-pool-tokel
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-TKL
+    hostname: Node-TKL
+    image: komodoplatform/komodo:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/tkl
+      target: /root/.komodo/TKL
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9037
+      published: '9037'
+      protocol: tcp
+    - target: 7037
+      published: '7037'
+      protocol: tcp
+    - target: 7775
+      published: '7775'
+      protocol: tcp
+    command:
+    - komodod
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -ac_name=TKL
+    - -zmqpubhashblock=tcp://0.0.0.0:7037
+    - -rpcbind=0.0.0.0
+    - -rpcport=9037
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/tkl.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-tokel_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Tokel (TKL) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/tkl. Ports: P2P 7775, RPC 9037, ZMQ 7037.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/tkl.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/tkl.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9037'
+  scheme: http
+  store_app_id: public-pool-node-tkl
+  tagline:
+    en_us: 'Tokel (TKL) Node'
+  title:
+    custom: 'Tokel (TKL) Node'
+    en_us: 'Tokel (TKL) Node'

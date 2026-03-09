@@ -1,0 +1,74 @@
+name: public-pool-digitalcoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-DGC
+    hostname: Node-DGC
+    image: theretromike/nodes:dgc
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/dgc
+      target: /root/.digitalcoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9064
+      published: '9064'
+      protocol: tcp
+    - target: 7064
+      published: '7064'
+      protocol: tcp
+    - target: 7999
+      published: '7999'
+      protocol: tcp
+    command:
+    - digitalcoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7064
+    - -rpcbind=0.0.0.0
+    - -rpcport=9064
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dgc.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-digitalcoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Digitalcoin (DGC) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/dgc. Ports: P2P 7999, RPC 9064, ZMQ 7064.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dgc.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dgc.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9064'
+  scheme: http
+  store_app_id: public-pool-node-dgc
+  tagline:
+    en_us: 'Digitalcoin (DGC) Node'
+  title:
+    custom: 'Digitalcoin (DGC) Node'
+    en_us: 'Digitalcoin (DGC) Node'

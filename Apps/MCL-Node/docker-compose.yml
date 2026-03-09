@@ -1,0 +1,74 @@
+name: public-pool-marmaracredit
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-MCL
+    hostname: Node-MCL
+    image: komodoplatform/komodo:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/mcl
+      target: /root/.komodo/MCL
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9038
+      published: '9038'
+      protocol: tcp
+    - target: 7038
+      published: '7038'
+      protocol: tcp
+    - target: 7776
+      published: '7776'
+      protocol: tcp
+    command:
+    - komodod
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -ac_name=MCL
+    - -zmqpubhashblock=tcp://0.0.0.0:7038
+    - -rpcbind=0.0.0.0
+    - -rpcport=9038
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mcl.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-marmaracredit_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'MarmaraCredit (MCL) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/mcl. Ports: P2P 7776, RPC 9038, ZMQ 7038.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mcl.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mcl.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9038'
+  scheme: http
+  store_app_id: public-pool-node-mcl
+  tagline:
+    en_us: 'MarmaraCredit (MCL) Node'
+  title:
+    custom: 'MarmaraCredit (MCL) Node'
+    en_us: 'MarmaraCredit (MCL) Node'

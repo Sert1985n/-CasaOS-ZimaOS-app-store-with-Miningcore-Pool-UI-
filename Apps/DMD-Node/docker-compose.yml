@@ -1,0 +1,74 @@
+name: public-pool-diamond
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-DMD
+    hostname: Node-DMD
+    image: theretromike/nodes:diamond
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/dmd
+      target: /root/.diamond
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9058
+      published: '9058'
+      protocol: tcp
+    - target: 7058
+      published: '7058'
+      protocol: tcp
+    - target: 17771
+      published: '17771'
+      protocol: tcp
+    command:
+    - diamondd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7058
+    - -rpcbind=0.0.0.0
+    - -rpcport=9058
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dmd.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-diamond_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Diamond (DMD) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/dmd. Ports: P2P 17771, RPC 9058, ZMQ 7058.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dmd.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dmd.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9058'
+  scheme: http
+  store_app_id: public-pool-node-dmd
+  tagline:
+    en_us: 'Diamond (DMD) Node'
+  title:
+    custom: 'Diamond (DMD) Node'
+    en_us: 'Diamond (DMD) Node'

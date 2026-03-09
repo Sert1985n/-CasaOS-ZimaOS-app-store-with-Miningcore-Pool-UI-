@@ -1,0 +1,74 @@
+name: public-pool-meowcoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-MEWC
+    hostname: Node-MEWC
+    image: theretromike/nodes:meowcoin
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/mewc
+      target: /root/.meowcoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9042
+      published: '9042'
+      protocol: tcp
+    - target: 7042
+      published: '7042'
+      protocol: tcp
+    - target: 8790
+      published: '8790'
+      protocol: tcp
+    command:
+    - meowcoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7042
+    - -rpcbind=0.0.0.0
+    - -rpcport=9042
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mewc.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-meowcoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'MeowCoin (MEWC) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/mewc. Ports: P2P 8790, RPC 9042, ZMQ 7042.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mewc.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mewc.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9042'
+  scheme: http
+  store_app_id: public-pool-node-mewc
+  tagline:
+    en_us: 'MeowCoin (MEWC) Node'
+  title:
+    custom: 'MeowCoin (MEWC) Node'
+    en_us: 'MeowCoin (MEWC) Node'

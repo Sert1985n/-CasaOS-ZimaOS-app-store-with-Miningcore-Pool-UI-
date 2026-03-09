@@ -1,0 +1,74 @@
+name: public-pool-dogpu
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-DOGPU
+    hostname: Node-DOGPU
+    image: theretromike/nodes:dogpu
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/dogpu
+      target: /root/.dogpu
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9048
+      published: '9048'
+      protocol: tcp
+    - target: 7048
+      published: '7048'
+      protocol: tcp
+    - target: 8794
+      published: '8794'
+      protocol: tcp
+    command:
+    - dogpud
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7048
+    - -rpcbind=0.0.0.0
+    - -rpcport=9048
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dogpu.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-dogpu_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'DOGPU (DOGPU) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/dogpu. Ports: P2P 8794, RPC 9048, ZMQ 7048.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dogpu.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dogpu.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9048'
+  scheme: http
+  store_app_id: public-pool-node-dogpu
+  tagline:
+    en_us: 'DOGPU (DOGPU) Node'
+  title:
+    custom: 'DOGPU (DOGPU) Node'
+    en_us: 'DOGPU (DOGPU) Node'

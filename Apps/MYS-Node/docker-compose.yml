@@ -1,0 +1,74 @@
+name: public-pool-mysterium
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-MYS
+    hostname: Node-MYS
+    image: theretromike/nodes:mys
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/mys
+      target: /root/.mys
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9056
+      published: '9056'
+      protocol: tcp
+    - target: 7056
+      published: '7056'
+      protocol: tcp
+    - target: 8800
+      published: '8800'
+      protocol: tcp
+    command:
+    - mysd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7056
+    - -rpcbind=0.0.0.0
+    - -rpcport=9056
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mys.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-mysterium_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Mysterium (MYS) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/mys. Ports: P2P 8800, RPC 9056, ZMQ 7056.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mys.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mys.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9056'
+  scheme: http
+  store_app_id: public-pool-node-mys
+  tagline:
+    en_us: 'Mysterium (MYS) Node'
+  title:
+    custom: 'Mysterium (MYS) Node'
+    en_us: 'Mysterium (MYS) Node'

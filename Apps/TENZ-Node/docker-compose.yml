@@ -1,0 +1,74 @@
+name: public-pool-tenz
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-TENZ
+    hostname: Node-TENZ
+    image: theretromike/nodes:tenz
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/tenz
+      target: /root/.tenz
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9055
+      published: '9055'
+      protocol: tcp
+    - target: 7055
+      published: '7055'
+      protocol: tcp
+    - target: 8799
+      published: '8799'
+      protocol: tcp
+    command:
+    - tenzd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7055
+    - -rpcbind=0.0.0.0
+    - -rpcport=9055
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/tenz.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-tenz_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Tenz (TENZ) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/tenz. Ports: P2P 8799, RPC 9055, ZMQ 7055.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/tenz.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/tenz.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9055'
+  scheme: http
+  store_app_id: public-pool-node-tenz
+  tagline:
+    en_us: 'Tenz (TENZ) Node'
+  title:
+    custom: 'Tenz (TENZ) Node'
+    en_us: 'Tenz (TENZ) Node'

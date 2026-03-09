@@ -1,0 +1,74 @@
+name: public-pool-marks
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-MARKS
+    hostname: Node-MARKS
+    image: theretromike/nodes:marks
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/marks
+      target: /root/.marks
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9053
+      published: '9053'
+      protocol: tcp
+    - target: 7053
+      published: '7053'
+      protocol: tcp
+    - target: 8797
+      published: '8797'
+      protocol: tcp
+    command:
+    - marksd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7053
+    - -rpcbind=0.0.0.0
+    - -rpcport=9053
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/marks.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-marks_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Marks (MARKS) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/marks. Ports: P2P 8797, RPC 9053, ZMQ 7053.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/marks.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/marks.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9053'
+  scheme: http
+  store_app_id: public-pool-node-marks
+  tagline:
+    en_us: 'Marks (MARKS) Node'
+  title:
+    custom: 'Marks (MARKS) Node'
+    en_us: 'Marks (MARKS) Node'

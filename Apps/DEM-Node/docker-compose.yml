@@ -1,0 +1,74 @@
+name: public-pool-deutsche-emark
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-DEM
+    hostname: Node-DEM
+    image: theretromike/nodes:dem
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/dem
+      target: /root/.emark
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9063
+      published: '9063'
+      protocol: tcp
+    - target: 7063
+      published: '7063'
+      protocol: tcp
+    - target: 5556
+      published: '5556'
+      protocol: tcp
+    command:
+    - emarkd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7063
+    - -rpcbind=0.0.0.0
+    - -rpcport=9063
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dem.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-deutsche-emark_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Deutsche eMark (DEM) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/dem. Ports: P2P 5556, RPC 9063, ZMQ 7063.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dem.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dem.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9063'
+  scheme: http
+  store_app_id: public-pool-node-dem
+  tagline:
+    en_us: 'Deutsche eMark (DEM) Node'
+  title:
+    custom: 'Deutsche eMark (DEM) Node'
+    en_us: 'Deutsche eMark (DEM) Node'

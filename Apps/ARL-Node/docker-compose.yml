@@ -1,0 +1,74 @@
+name: public-pool-arielcoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-ARL
+    hostname: Node-ARL
+    image: theretromike/nodes:arielcoin
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/arl
+      target: /root/.arielcoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9052
+      published: '9052'
+      protocol: tcp
+    - target: 7052
+      published: '7052'
+      protocol: tcp
+    - target: 8796
+      published: '8796'
+      protocol: tcp
+    command:
+    - arielcoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7052
+    - -rpcbind=0.0.0.0
+    - -rpcport=9052
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arl.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-arielcoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Arielcoin (ARL) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/arl. Ports: P2P 8796, RPC 9052, ZMQ 7052.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arl.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arl.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9052'
+  scheme: http
+  store_app_id: public-pool-node-arl
+  tagline:
+    en_us: 'Arielcoin (ARL) Node'
+  title:
+    custom: 'Arielcoin (ARL) Node'
+    en_us: 'Arielcoin (ARL) Node'

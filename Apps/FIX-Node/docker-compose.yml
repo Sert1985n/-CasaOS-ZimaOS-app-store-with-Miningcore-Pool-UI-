@@ -1,0 +1,74 @@
+name: public-pool-fix
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-FIX
+    hostname: Node-FIX
+    image: theretromike/nodes:fix
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/fix
+      target: /root/.fix
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9060
+      published: '9060'
+      protocol: tcp
+    - target: 7060
+      published: '7060'
+      protocol: tcp
+    - target: 8802
+      published: '8802'
+      protocol: tcp
+    command:
+    - fixd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7060
+    - -rpcbind=0.0.0.0
+    - -rpcport=9060
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/fix.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-fix_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'FIX (FIX) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/fix. Ports: P2P 8802, RPC 9060, ZMQ 7060.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/fix.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/fix.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9060'
+  scheme: http
+  store_app_id: public-pool-node-fix
+  tagline:
+    en_us: 'FIX (FIX) Node'
+  title:
+    custom: 'FIX (FIX) Node'
+    en_us: 'FIX (FIX) Node'

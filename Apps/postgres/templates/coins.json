@@ -6818,5 +6818,34 @@
     "explorerBlockLink": "https://explorer.cryptix-network.org/blocks/$hash$",
     "explorerTxLink": "https://explorer.cryptix-network.org/txs/{0}",
     "explorerAccountLink": "https://explorer.cryptix-network.org/addresses/{0}"
+  },
+  "fb": {
+    "name": "Fractal Bitcoin",
+    "canonicalName": "Fractal Bitcoin",
+    "symbol": "FB",
+    "family": "bitcoin",
+    "website": "https://www.bitcoin.org/",
+    "market": "https://coinmarketcap.com/currencies/bitcoin/",
+    "twitter": "https://x.com/bitcoin",
+    "telegram": "",
+    "discord": "",
+    "coinbaseHasher": {
+      "hash": "sha256d"
+    },
+    "headerHasher": {
+      "hash": "sha256d"
+    },
+    "blockHasher": {
+      "hash": "reverse",
+      "args": [
+        {
+          "hash": "sha256d"
+        }
+      ]
+    },
+    "coinbaseIgnoreAuxFlags": true,
+    "explorerBlockLink": "https://www.blockchain.com/btc/block/$hash$",
+    "explorerTxLink": "https://www.blockchain.com/btc/tx/{0}",
+    "explorerAccountLink": "https://www.blockchain.com/btc/address/{0}"
   }
 }

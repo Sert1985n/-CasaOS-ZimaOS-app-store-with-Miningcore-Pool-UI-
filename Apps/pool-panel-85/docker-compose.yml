@@ -25,6 +25,6 @@ x-casaos:
   icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
   thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
   title:
-    en_us: Panel пулов :85
+    en_us: Pool Panel
   category: Miningcore Pool UI
   port_map: "85"

@@ -45,7 +45,7 @@ x-casaos:
   scheme: http
   store_app_id: molepool-web-ui
   tagline:
-    en_us: Molepool — порт 82 • Diff, Price, Reward, 1.5% fee
+    en_us: Molepool — Solo Mining Dashboard
   title:
-    custom: Web UI Molepool (порт 82)
-    en_us: Web UI Molepool (порт 82)
+    custom: Molepool
+    en_us: Molepool

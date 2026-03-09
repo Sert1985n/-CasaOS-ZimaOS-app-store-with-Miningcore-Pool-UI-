@@ -64,7 +64,7 @@ x-casaos:
   scheme: http
   store_app_id: public-pool-mining-pool-configuration
   tagline:
-    en_us: Wallet, монеты, config — порт 4050
+    en_us: Wallet Management, Coin Configuration, Pool Control
   title:
-    custom: Pool Configuration — Wallet (порт 4050)
-    en_us: Pool Configuration — Wallet (порт 4050)
+    custom: Pool Configuration
+    en_us: Pool Configuration

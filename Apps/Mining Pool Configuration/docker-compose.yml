@@ -1,4 +1,4 @@
-name: public-pool-btc.ru
+name: public-pool-configuration
 services:
   app:
     container_name: Mining-Pool-Configuration

@@ -1,173 +1,161 @@
-const $ = (id)=>document.getElementById(id);
-const logEl = $("log");
-function log(...a){ logEl.textContent += a.join(" ") + "\n"; logEl.scrollTop = logEl.scrollHeight; }
+const API = "";
+const logEl = document.getElementById("log");
+function log(msg) { logEl.textContent = new Date().toLocaleTimeString() + " " + msg + "\n" + logEl.textContent; }
 
-async function api(path, method="GET", body=null){
-  const r = await fetch(path, {
-    method,
-    headers: body ? {"Content-Type":"application/json"} : undefined,
-    body: body ? JSON.stringify(body) : undefined
-  });
-  const j = await r.json().catch(()=>null);
-  if(!r.ok) throw new Error((j && (j.error||j.message)) || ("HTTP "+r.status));
+async function api(url, body) {
+  const opts = body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {};
+  const r = await fetch(API + url, opts);
+  const j = await r.json();
+  if (!j.ok && j.error) log("ERROR: " + j.error);
   return j;
 }
 
-let statusPools = {};
-const walletSupport = { supported: [], map: {} };
+function esc(s) { return String(s || "").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function isReal(addr) { return addr && addr !== "xxx" && addr.length > 5; }
 
-function coinCard(c){
-  const el = document.createElement("div");
-  el.className = "coin";
-  el.dataset.coinId = c.id;
-  const pool = statusPools[c.id];
-  const isEnabled = pool && pool.enabled;
-  const addr = (pool && pool.address) || "";
-  const ps = pool && pool.ports ? pool.ports : {};
-  const stratumFromConfig = Object.keys(ps).map(Number).filter(Boolean)[0] || c.stratum || "";
+async function loadPools() {
+  const d = await api("/api/pools/full");
+  if (!d.ok) return;
+  document.getElementById("poolCount").textContent = d.total + " pools loaded";
+  const el = document.getElementById("pools");
+  if (!d.pools.length) { el.innerHTML = '<p class="muted">No pools in config.json</p>'; return; }
+  el.innerHTML = d.pools.map(p => {
+    const addrClass = isReal(p.address) ? "addr-ok" : "addr-xxx";
+    const feeClass = isReal(p.feeAddress) ? "addr-ok" : "addr-xxx";
+    const stPorts = p.stratumPorts.join(", ") || "none";
+    return `
+    <div class="pool-card" id="pool-${esc(p.id)}">
+      <div class="pool-head">
+        <span class="pool-id">${esc(p.id)}</span>
+        <span class="pool-coin">${esc(p.coin)}</span>
+        <span class="badge ${p.enabled ? "badge-on" : "badge-off"}">${p.enabled ? "ENABLED" : "DISABLED"}</span>
+      </div>
+      <div class="pool-info">
+        <span>Daemon: <b>${esc(p.daemonHost)}:${p.daemonPort}</b></span>
+        <span>Stratum: <b>${stPorts}</b></span>
+      </div>
+      <div class="pool-fields">
+        <label>Pool Address <span class="${addrClass}">${isReal(p.address) ? "REAL" : "xxx"}</span>
+          <input id="addr-${esc(p.id)}" value="${esc(p.address)}"/>
+        </label>
+        <label>Fee Address <span class="${feeClass}">${isReal(p.feeAddress) ? "REAL" : "xxx"}</span>
+          <input id="fee-${esc(p.id)}" value="${esc(p.feeAddress)}"/>
+        </label>
+        <label>Fee %
+          <input id="pct-${esc(p.id)}" type="number" step="0.01" value="${p.feePercent}"/>
+        </label>
+      </div>
+      <div class="pool-btns">
+        <button class="btn btn-ok" onclick="savePool('${esc(p.id)}')">Save</button>
+        <button class="btn btn-blue" onclick="createWallet('${esc(p.id)}')">Create Wallet</button>
+        <button class="btn" onclick="togglePool('${esc(p.id)}')">${p.enabled ? "Disable" : "Enable"}</button>
+        <button class="btn btn-warn" onclick="clearPool('${esc(p.id)}')">Clear Wallet</button>
+        <button class="btn" onclick="restartNode('${esc(p.daemonHost)}')">Restart Node</button>
+        <button class="btn btn-danger" onclick="removePool('${esc(p.id)}')">Remove</button>
+      </div>
+    </div>`;
+  }).join("");
+}
 
-  el.innerHTML = `
-    <div class="meta">
-      <b>${c.symbol || c.id}</b>
-      <span>${c.coin} • stratum ${c.stratum || "—"} • rpc ${c.rpc || "—"}</span>
-      <div class="row">
-        <label>Порт Stratum <input type="number" class="stratPort" placeholder="${c.stratum||''}" value="${stratumFromConfig}" min="1" max="65535"/></label>
-      </div>
-      <div class="row">
-        <label>Wallet <input class="walletInp" placeholder="адрес кошелька" value="${addr}"/></label>
-      </div>
-      <div class="actions">
-        <button class="btn-enable" data-action="enable">ВКЛ</button>
-        <button class="btn-disable" data-action="disable">ВЫКЛ</button>
-        <button class="btn-create" data-action="create" title="Авто-создание адреса (getnewaddress)">Создать</button>
-        <button class="btn-remove" data-action="remove" title="Удалить пул">Удалить</button>
-        <button class="btn-save" data-action="save" title="Сохранить адрес">Сохранить</button>
-      </div>
-      ${isEnabled ? '<span class="badge on">ВКЛ</span>' : '<span class="badge off">ВЫКЛ</span>'}
+async function loadAvailable() {
+  const d = await api("/api/coins/available");
+  if (!d.ok) return;
+  const el = document.getElementById("available");
+  if (!d.coins.length) { el.innerHTML = '<p class="muted">All coins already in config.json</p>'; return; }
+  el.innerHTML = d.coins.map(c => `
+    <div class="avail-coin" onclick="fillAdd('${esc(c.key)}','${esc(c.symbol)}')">
+      <b>${esc(c.symbol)}</b> <span class="muted">${esc(c.name)}</span>
+      <span class="muted">${esc(c.key)}</span>
     </div>
-  `;
-
-  const stratPort = el.querySelector(".stratPort");
-  const walletInp = el.querySelector(".walletInp");
-
-  const doEnable = async ()=>{
-    const wallet = walletInp.value.trim() || $("wallet").value.trim();
-    const feeWallet = $("feeWallet").value.trim();
-    const minimumPayment = $("minimumPayment").value.trim() ? parseFloat($("minimumPayment").value) : undefined;
-    const customStratumPort = stratPort.value.trim() ? parseInt(stratPort.value,10) : undefined;
-    const restart = $("doRestart").checked;
-    log("== enable", c.id, "==");
-    try{
-      const out = await api("/api/enable","POST",{ coinId:c.id, wallet, poolFeeWallet: feeWallet, minimumPayment, customStratumPort, restart });
-      log(JSON.stringify(out,null,2));
-      await refreshStatus();
-      renderCoins();
-    }catch(e){ log("ERROR:", e.message); }
-  };
-
-  const doDisable = async ()=>{
-    const restart = $("doRestart").checked;
-    log("== disable", c.id, "==");
-    try{
-      const out = await api("/api/disable","POST",{ coinId:c.id, restart });
-      log(JSON.stringify(out,null,2));
-      await refreshStatus();
-      renderCoins();
-    }catch(e){ log("ERROR:", e.message); }
-  };
-
-  const doCreate = async ()=>{
-    log("== create wallet", c.id, "==");
-    try{
-      const out = await api("/api/wallet/create","POST",{ poolId:c.id, applyToConfig:true, restartAfter:$("doRestart").checked });
-      log(JSON.stringify(out,null,2));
-      walletInp.value = out.address || "";
-      await refreshStatus();
-      renderCoins();
-    }catch(e){ log("ERROR:", e.message); }
-  };
-
-  const doRemove = async ()=>{
-    if(!confirm("Удалить пул "+c.id+"?")) return;
-    const restart = $("doRestart").checked;
-    log("== remove", c.id, "==");
-    try{
-      const out = await api("/api/disable","POST",{ coinId:c.id, restart });
-      log(JSON.stringify(out,null,2));
-      await refreshStatus();
-      renderCoins();
-    }catch(e){ log("ERROR:", e.message); }
-  };
-
-  const doSave = async ()=>{
-    const newAddr = walletInp.value.trim();
-    const pool = statusPools[c.id];
-    if(!pool) return log("Пул не найден. Сначала включите монету.");
-    log("== save address", c.id, "==");
-    try{
-      const out = await api("/api/pools/"+c.id+"/address","POST",{ address: newAddr, restart: $("doRestart").checked });
-      log(JSON.stringify(out,null,2));
-      await refreshStatus();
-      renderCoins();
-    }catch(e){ log("ERROR:", e.message); }
-  };
-
-  el.querySelector(".btn-enable").onclick = doEnable;
-  el.querySelector(".btn-disable").onclick = doDisable;
-  el.querySelector(".btn-create").onclick = doCreate;
-  el.querySelector(".btn-remove").onclick = doRemove;
-  el.querySelector(".btn-save").onclick = doSave;
-
-  const canCreate = walletSupport.supported && walletSupport.supported.includes(c.id.toLowerCase());
-  const btnCreate = el.querySelector(".btn-create");
-  if(btnCreate) btnCreate.disabled = !canCreate;
-  if(btnCreate) btnCreate.title = canCreate ? "Авто-создание адреса (getnewaddress)" : "Не поддерживается для "+c.id;
-
-  return el;
+  `).join("");
 }
 
-async function refreshStatus(){
-  try {
-    const st = await api("/api/status");
-    statusPools = {};
-    (st.pools||[]).forEach(p=>{ statusPools[p.id]=p; if(p.ports&&p.ports.stratum) statusPools[p.id].ports = p.ports; });
-  }catch(e){ statusPools = {}; }
+function fillAdd(key, symbol) {
+  const id = symbol.toLowerCase();
+  document.getElementById("addId").value = id;
+  document.getElementById("addCoin").value = key;
+  document.getElementById("addContainer").value = "Node-" + symbol.toUpperCase();
+  log("Filled form for " + symbol);
 }
 
-async function refreshWalletSupport(){
-  try {
-    const w = await api("/api/wallet/support");
-    walletSupport.supported = w.supported || [];
-    walletSupport.map = w.map || {};
-  }catch(e){}
+async function savePool(id) {
+  const addr = document.getElementById("addr-" + id).value.trim();
+  const fee = document.getElementById("fee-" + id).value.trim();
+  const pct = document.getElementById("pct-" + id).value;
+  const r = await api("/api/pool/save", { poolId: id, address: addr, feeAddress: fee, feePercent: Number(pct) });
+  log(r.ok ? `Saved ${id}` : `Save failed: ${r.error}`);
+  loadPools();
 }
 
-async function renderCoins(){
-  const data = await api("/api/coins");
-  const box = $("coins");
-  box.innerHTML = "";
-  (data.coins||[]).forEach(c=>box.appendChild(coinCard(c)));
+async function createWallet(id) {
+  log(`Creating wallet for ${id}...`);
+  const r = await api("/api/wallet/create", { poolId: id });
+  if (r.ok) log(`Wallet created for ${id}: ${r.address}`);
+  else log(`Wallet failed for ${id}: ${r.err || r.error}`);
+  loadPools();
 }
 
-(async ()=>{
-  log("loading settings...");
-  try{
-    const st = await api("/api/settings");
-    if(st && st.settings){
-      if(st.settings.poolFeeWallet) $("feeWallet").value = st.settings.poolFeeWallet;
-      if(st.settings.defaultWallet) $("wallet").value = st.settings.defaultWallet;
-    }
-    $("feeWallet").addEventListener("change", async ()=>{
-      try{ await api("/api/settings","POST",{ poolFeeWallet: $("feeWallet").value.trim() }); }catch(e){}
-    });
-    $("wallet").addEventListener("change", async ()=>{
-      try{ await api("/api/settings","POST",{ defaultWallet: $("wallet").value.trim() }); }catch(e){}
-    });
-  }catch(e){}
+async function togglePool(id) {
+  const r = await api("/api/pool/toggle", { poolId: id });
+  log(r.ok ? `${id} is now ${r.enabled ? "ENABLED" : "DISABLED"}` : `Toggle failed`);
+  loadPools();
+}
 
-  await refreshWalletSupport();
-  await refreshStatus();
-  log("loading coins...");
-  await renderCoins();
-  log("ready");
-})();
+async function clearPool(id) {
+  if (!confirm(`Clear wallet/fee for ${id}?`)) return;
+  const r = await api("/api/pool/clear", { poolId: id });
+  log(r.ok ? `Cleared ${id}` : `Clear failed`);
+  loadPools();
+}
+
+async function restartNode(container) {
+  log(`Restarting ${container}...`);
+  const r = await api("/api/restart/node", { container });
+  log(r.ok ? `${container} restarted` : `Restart failed: ${r.err}`);
+}
+
+async function restartMC() {
+  log("Restarting Miningcore...");
+  const r = await api("/api/restart/miningcore");
+  log(r.ok ? "Miningcore restarted" : `Failed: ${r.err}`);
+}
+
+async function restartAll() {
+  if (!confirm("Restart Miningcore + all nodes?")) return;
+  log("Restarting all...");
+  const r = await api("/api/restart/all");
+  if (r.ok) r.results.forEach(x => log(`  ${x.name}: ${x.ok ? "OK" : x.err}`));
+}
+
+async function addPool() {
+  const poolId = document.getElementById("addId").value.trim();
+  const coinKey = document.getElementById("addCoin").value.trim();
+  const container = document.getElementById("addContainer").value.trim();
+  const rpc = document.getElementById("addRpc").value;
+  const zmq = document.getElementById("addZmq").value;
+  if (!poolId || !coinKey) { log("Fill pool id and coin key"); return; }
+  const r = await api("/api/pool/add", { poolId, coinKey, containerName: container, rpcPort: Number(rpc), zmqPort: Number(zmq) });
+  if (r.ok) {
+    log(`Added pool ${poolId} (${coinKey}) ports: ${JSON.stringify(r.pool.ports)}`);
+    document.getElementById("addId").value = "";
+    document.getElementById("addCoin").value = "";
+    document.getElementById("addContainer").value = "";
+    document.getElementById("addRpc").value = "";
+    document.getElementById("addZmq").value = "";
+  } else {
+    log(`Add failed: ${r.error}`);
+  }
+  loadPools();
+  loadAvailable();
+}
+
+async function removePool(id) {
+  if (!confirm(`Remove pool ${id} from config.json?`)) return;
+  const r = await api("/api/pool/remove", { poolId: id });
+  log(r.ok ? `Removed ${id}` : `Remove failed`);
+  loadPools();
+  loadAvailable();
+}
+
+loadPools();
+loadAvailable();

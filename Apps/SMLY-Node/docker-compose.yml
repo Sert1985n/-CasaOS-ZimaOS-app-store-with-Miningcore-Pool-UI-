@@ -1,0 +1,75 @@
+name: public-pool-smileycoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-SMLY
+    hostname: Node-SMLY
+    image: ingimarsson/smileycoin:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/smly
+      target: /root/.smileycoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9066
+      published: '9066'
+      protocol: tcp
+    - target: 7066
+      published: '7066'
+      protocol: tcp
+    - target: 11337
+      published: '11337'
+      protocol: tcp
+    command:
+    - smileycoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7066
+    - -rpcbind=0.0.0.0
+    - -rpcport=9066
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/smly.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-smileycoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'SmileyCoin (SMLY) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/smly. Ports: P2P 11337, RPC 9066, ZMQ 7066.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/smly.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/smly.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9066'
+  scheme: http
+  store_app_id: public-pool-node-smly
+  tagline:
+    en_us: 'SmileyCoin (SMLY) Node'
+  title:
+    custom: 'SmileyCoin (SMLY) Node'
+    en_us: 'SmileyCoin (SMLY) Node'

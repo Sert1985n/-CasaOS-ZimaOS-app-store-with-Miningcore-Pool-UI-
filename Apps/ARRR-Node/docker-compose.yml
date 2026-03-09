@@ -1,0 +1,83 @@
+name: public-pool-pirate-chain
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-ARRR
+    hostname: Node-ARRR
+    image: marinescuadrian/komodod:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/arrr
+      target: /root/.komodo/PIRATE
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9032
+      published: '9032'
+      protocol: tcp
+    - target: 7032
+      published: '7032'
+      protocol: tcp
+    - target: 7771
+      published: '7771'
+      protocol: tcp
+    command:
+    - komodod
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -ac_name=PIRATE
+    - -ac_supply=0
+    - -ac_reward=25600000000
+    - -ac_halving=77777
+    - -ac_private=1
+    - -ac_name=PIRATE
+    - -ac_supply=0
+    - -ac_reward=25600000000
+    - -ac_halving=77777
+    - -ac_private=1
+    - -zmqpubhashblock=tcp://0.0.0.0:7032
+    - -rpcbind=0.0.0.0
+    - -rpcport=9032
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arrr.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-pirate-chain_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Pirate Chain (ARRR) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/arrr. Ports: P2P 7771, RPC 9032, ZMQ 7032.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arrr.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arrr.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9032'
+  scheme: http
+  store_app_id: public-pool-node-arrr
+  tagline:
+    en_us: 'Pirate Chain (ARRR) Node'
+  title:
+    custom: 'Pirate Chain (ARRR) Node'
+    en_us: 'Pirate Chain (ARRR) Node'

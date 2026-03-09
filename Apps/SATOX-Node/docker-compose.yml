@@ -1,0 +1,75 @@
+name: public-pool-satoxcoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-SATOX
+    hostname: Node-SATOX
+    build: .
+    image: pool-node-satox:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/satox
+      target: /root/.satoxcoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9041
+      published: '9041'
+      protocol: tcp
+    - target: 7041
+      published: '7041'
+      protocol: tcp
+    - target: 8789
+      published: '8789'
+      protocol: tcp
+    command:
+    - satoxcoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7041
+    - -rpcbind=0.0.0.0
+    - -rpcport=9041
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/satox.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-satoxcoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Satoxcoin (SATOX) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/satox. Ports: P2P 8789, RPC 9041, ZMQ 7041.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/satox.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/satox.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9041'
+  scheme: http
+  store_app_id: public-pool-node-satox
+  tagline:
+    en_us: 'Satoxcoin (SATOX) Node'
+  title:
+    custom: 'Satoxcoin (SATOX) Node'
+    en_us: 'Satoxcoin (SATOX) Node'

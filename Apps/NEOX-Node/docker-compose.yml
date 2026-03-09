@@ -1,0 +1,75 @@
+name: public-pool-neoxa
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-NEOX
+    hostname: Node-NEOX
+    image: theretromike/nodes:neoxa
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/neox
+      target: /root/.neoxa
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9040
+      published: '9040'
+      protocol: tcp
+    - target: 7040
+      published: '7040'
+      protocol: tcp
+    - target: 8788
+      published: '8788'
+      protocol: tcp
+    command:
+    - neoxad
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7040
+    - -rpcbind=0.0.0.0
+    - -rpcport=9040
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/neox.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-neoxa_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Neoxa (NEOX) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/neox. Ports: P2P 8788, RPC 9040, ZMQ 7040.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/neox.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/neox.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9040'
+  scheme: http
+  store_app_id: public-pool-node-neox
+  tagline:
+    en_us: 'Neoxa (NEOX) Node'
+  title:
+    custom: 'Neoxa (NEOX) Node'
+    en_us: 'Neoxa (NEOX) Node'

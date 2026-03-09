@@ -29,13 +29,13 @@ x-casaos:
   description:
     en_us: MiningCore Web UI с PoolConfiguration: Setup Database Schema, Refresh Master Coin List, Generate Pool Config File. Управление монетами. Порт 85.
   tagline:
-    en_us: Pool Configuration — порт 85
+    en_us: Miningcore Web UI — Pool Configuration & Statistics
   developer: public-pool-btc.ru
   author: public-pool-btc.ru
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
+  icon: https://raw.githubusercontent.com/TheRetroMike/retromike-umbrel-app-store/master/retro-mike-miningcore-webui/webui.png
+  thumbnail: https://raw.githubusercontent.com/TheRetroMike/retromike-umbrel-app-store/master/retro-mike-miningcore-webui/webui.png
   store_app_id: public-pool-miningcore-webui-85
   title:
-    en_us: Web UI — Вторичный пул — порт 85
+    en_us: Miningcore Web UI
   category: Miningcore Pool UI
   port_map: "85"

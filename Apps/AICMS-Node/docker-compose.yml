@@ -1,0 +1,75 @@
+name: public-pool-aicms
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-AICMS
+    hostname: Node-AICMS
+    build: .
+    image: pool-node-aicms:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/aicms
+      target: /root/.aicms
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9049
+      published: '9049'
+      protocol: tcp
+    - target: 7049
+      published: '7049'
+      protocol: tcp
+    - target: 8795
+      published: '8795'
+      protocol: tcp
+    command:
+    - aicmsd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7049
+    - -rpcbind=0.0.0.0
+    - -rpcport=9049
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aicms.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-aicms_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'AICMS (AICMS) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/aicms. Ports: P2P 8795, RPC 9049, ZMQ 7049.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aicms.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aicms.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9049'
+  scheme: http
+  store_app_id: public-pool-node-aicms
+  tagline:
+    en_us: 'AICMS (AICMS) Node'
+  title:
+    custom: 'AICMS (AICMS) Node'
+    en_us: 'AICMS (AICMS) Node'

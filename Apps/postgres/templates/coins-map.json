@@ -1,17 +1,4 @@
 {
-  "brand": "public-pool-btc.ru",
-  "poolFeePercent": 0.05,
-  "miningcore": {
-    "container": "miningcore",
-    "apiPort": 4000
-  },
-  "postgres": {
-    "host": "postgresql",
-    "port": 5432,
-    "user": "miningcore",
-    "password": "miningcore",
-    "database": "miningcore"
-  },
   "coins": [
     {
       "id": "btc",
@@ -244,6 +231,254 @@
       "rpcPort": 9015,
       "zmqPort": 7015,
       "addressType": ""
+    },
+    {
+      "id": "kmd",
+      "symbol": "KMD",
+      "coin": "komodo",
+      "stratum": 6030,
+      "rpc": 9030,
+      "zmq": 7030
+    },
+    {
+      "id": "hush",
+      "symbol": "HUSH",
+      "coin": "hush",
+      "stratum": 6031,
+      "rpc": 9031,
+      "zmq": 7031
+    },
+    {
+      "id": "arrr",
+      "symbol": "ARRR",
+      "coin": "pirate",
+      "stratum": 6032,
+      "rpc": 9032,
+      "zmq": 7032
+    },
+    {
+      "id": "dp",
+      "symbol": "DP",
+      "coin": "digitalprice",
+      "stratum": 6034,
+      "rpc": 9034,
+      "zmq": 7034
+    },
+    {
+      "id": "clc",
+      "symbol": "CLC",
+      "coin": "coincollect",
+      "stratum": 6035,
+      "rpc": 9035,
+      "zmq": 7035
+    },
+    {
+      "id": "buck",
+      "symbol": "BUCK",
+      "coin": "buck",
+      "stratum": 6036,
+      "rpc": 9036,
+      "zmq": 7036
+    },
+    {
+      "id": "tkl",
+      "symbol": "TKL",
+      "coin": "tokel",
+      "stratum": 6037,
+      "rpc": 9037,
+      "zmq": 7037
+    },
+    {
+      "id": "mcl",
+      "symbol": "MCL",
+      "coin": "marmara",
+      "stratum": 6038,
+      "rpc": 9038,
+      "zmq": 7038
+    },
+    {
+      "id": "neox",
+      "symbol": "NEOX",
+      "coin": "neoxa",
+      "stratum": 6040,
+      "rpc": 9040,
+      "zmq": 7040
+    },
+    {
+      "id": "satox",
+      "symbol": "SATOX",
+      "coin": "satoxcoin",
+      "stratum": 6041,
+      "rpc": 9041,
+      "zmq": 7041
+    },
+    {
+      "id": "mewc",
+      "symbol": "MEWC",
+      "coin": "meowcoin",
+      "stratum": 6042,
+      "rpc": 9042,
+      "zmq": 7042
+    },
+    {
+      "id": "fren",
+      "symbol": "FREN",
+      "coin": "frencoin",
+      "stratum": 6045,
+      "rpc": 9045,
+      "zmq": 7045
+    },
+    {
+      "id": "aipg",
+      "symbol": "AIPG",
+      "coin": "aipowergrid",
+      "stratum": 6046,
+      "rpc": 9046,
+      "zmq": 7046
+    },
+    {
+      "id": "rvh",
+      "symbol": "RVH",
+      "coin": "ravenhash",
+      "stratum": 6047,
+      "rpc": 9047,
+      "zmq": 7047
+    },
+    {
+      "id": "dogpu",
+      "symbol": "DOGPU",
+      "coin": "dogpu",
+      "stratum": 6048,
+      "rpc": 9048,
+      "zmq": 7048
+    },
+    {
+      "id": "aicms",
+      "symbol": "AICMS",
+      "coin": "aicms",
+      "stratum": 6049,
+      "rpc": 9049,
+      "zmq": 7049
+    },
+    {
+      "id": "quai",
+      "symbol": "QUAI",
+      "coin": "quai",
+      "stratum": 6051,
+      "rpc": 9051,
+      "zmq": 7051
+    },
+    {
+      "id": "arl",
+      "symbol": "ARL",
+      "coin": "arielcoin",
+      "stratum": 6052,
+      "rpc": 9052,
+      "zmq": 7052
+    },
+    {
+      "id": "marks",
+      "symbol": "MARKS",
+      "coin": "marks",
+      "stratum": 6053,
+      "rpc": 9053,
+      "zmq": 7053
+    },
+    {
+      "id": "sqcn",
+      "symbol": "SQCN",
+      "coin": "sequencecoin",
+      "stratum": 6054,
+      "rpc": 9054,
+      "zmq": 7054
+    },
+    {
+      "id": "tenz",
+      "symbol": "TENZ",
+      "coin": "tenz",
+      "stratum": 6055,
+      "rpc": 9055,
+      "zmq": 7055
+    },
+    {
+      "id": "mys",
+      "symbol": "MYS",
+      "coin": "mysterium",
+      "stratum": 6056,
+      "rpc": 9056,
+      "zmq": 7056
+    },
+    {
+      "id": "bgco",
+      "symbol": "BGCO",
+      "coin": "bgcoin",
+      "stratum": 6057,
+      "rpc": 9057,
+      "zmq": 7057
+    },
+    {
+      "id": "dmd",
+      "symbol": "DMD",
+      "coin": "diamond",
+      "stratum": 6058,
+      "rpc": 9058,
+      "zmq": 7058
+    },
+    {
+      "id": "aure",
+      "symbol": "AURE",
+      "coin": "auroracoin-sha256",
+      "stratum": 6059,
+      "rpc": 9059,
+      "zmq": 7059
+    },
+    {
+      "id": "fix",
+      "symbol": "FIX",
+      "coin": "fix",
+      "stratum": 6060,
+      "rpc": 9060,
+      "zmq": 7060
+    },
+    {
+      "id": "lcc",
+      "symbol": "LCC",
+      "coin": "litecoin-cash",
+      "stratum": 6062,
+      "rpc": 9062,
+      "zmq": 7062
+    },
+    {
+      "id": "dem",
+      "symbol": "DEM",
+      "coin": "deutsche-emark",
+      "stratum": 6063,
+      "rpc": 9063,
+      "zmq": 7063
+    },
+    {
+      "id": "dgc",
+      "symbol": "DGC",
+      "coin": "digitalcoin",
+      "stratum": 6064,
+      "rpc": 9064,
+      "zmq": 7064
+    },
+    {
+      "id": "rbl",
+      "symbol": "RBL",
+      "coin": "rebelcoin",
+      "stratum": 6065,
+      "rpc": 9065,
+      "zmq": 7065
+    },
+    {
+      "id": "smly",
+      "symbol": "SMLY",
+      "coin": "smileycoin",
+      "stratum": 6066,
+      "rpc": 9066,
+      "zmq": 7066
     }
   ]
 }

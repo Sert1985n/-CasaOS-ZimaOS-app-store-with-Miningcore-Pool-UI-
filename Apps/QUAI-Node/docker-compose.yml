@@ -1,0 +1,73 @@
+name: public-pool-quai-network
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-QUAI
+    hostname: Node-QUAI
+    image: quainetwork/go-quai:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/quai
+      target: /root/.quai
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9051
+      published: '9051'
+      protocol: tcp
+    - target: 7051
+      published: '7051'
+      protocol: tcp
+    - target: 9000
+      published: '9000'
+      protocol: tcp
+    command:
+    - go-quai
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -zmqpubhashblock=tcp://0.0.0.0:7051
+    - -rpcbind=0.0.0.0
+    - -rpcport=9051
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/quai.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-quai-network_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Quai Network (QUAI) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/quai. Ports: P2P 9000, RPC 9051, ZMQ 7051.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/quai.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/quai.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9051'
+  scheme: http
+  store_app_id: public-pool-node-quai
+  tagline:
+    en_us: 'Quai Network (QUAI) Node'
+  title:
+    custom: 'Quai Network (QUAI) Node'
+    en_us: 'Quai Network (QUAI) Node'

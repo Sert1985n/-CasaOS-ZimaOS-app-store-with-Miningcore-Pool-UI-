@@ -1,0 +1,75 @@
+name: public-pool-ravenhash
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-RVH
+    hostname: Node-RVH
+    build: .
+    image: pool-node-rvh:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/rvh
+      target: /root/.rvh
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9047
+      published: '9047'
+      protocol: tcp
+    - target: 7047
+      published: '7047'
+      protocol: tcp
+    - target: 8793
+      published: '8793'
+      protocol: tcp
+    command:
+    - rvhd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7047
+    - -rpcbind=0.0.0.0
+    - -rpcport=9047
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rvh.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-ravenhash_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'RavenHash (RVH) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/rvh. Ports: P2P 8793, RPC 9047, ZMQ 7047.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rvh.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rvh.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9047'
+  scheme: http
+  store_app_id: public-pool-node-rvh
+  tagline:
+    en_us: 'RavenHash (RVH) Node'
+  title:
+    custom: 'RavenHash (RVH) Node'
+    en_us: 'RavenHash (RVH) Node'

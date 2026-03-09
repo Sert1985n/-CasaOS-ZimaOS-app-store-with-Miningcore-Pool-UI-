@@ -45,7 +45,7 @@ x-casaos:
   scheme: http
   store_app_id: solopool-web-ui
   tagline:
-    en_us: SoloPool.org — порт 84
+    en_us: SoloPool — Solo Mining Pools For Professional Miners
   title:
-    custom: Web UI SoloPool.org (порт 84)
-    en_us: Web UI SoloPool.org (порт 84)
+    custom: SoloPool
+    en_us: SoloPool

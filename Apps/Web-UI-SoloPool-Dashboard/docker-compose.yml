@@ -45,7 +45,7 @@ x-casaos:
   scheme: http
   store_app_id: solo-pool-dashboard-ui
   tagline:
-    en_us: Solo-Pool Dashboard — порт 83
+    en_us: Solo Pool Dashboard — Network Stats & Mining Info
   title:
-    custom: Web UI Solo-Pool Dashboard (порт 83)
-    en_us: Web UI Solo-Pool Dashboard (порт 83)
+    custom: Solo Pool Dashboard
+    en_us: Solo Pool Dashboard

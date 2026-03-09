@@ -1,4 +1,4 @@
-name: public-pool-btc.ru
+name: public-pool-zephyr
 services:
   app:
     cpu_shares: 90

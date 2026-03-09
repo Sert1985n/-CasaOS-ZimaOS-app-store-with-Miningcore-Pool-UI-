@@ -1,4 +1,4 @@
-name: public-pool-btc.ru
+name: public-pool-zcash
 services:
   app:
     cpu_shares: 90

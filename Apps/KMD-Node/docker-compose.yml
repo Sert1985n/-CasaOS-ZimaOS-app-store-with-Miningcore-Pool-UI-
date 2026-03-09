@@ -1,0 +1,73 @@
+name: public-pool-komodo
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-KMD
+    hostname: Node-KMD
+    image: marinescuadrian/komodod:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/kmd
+      target: /root/.komodo
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9030
+      published: '9030'
+      protocol: tcp
+    - target: 7030
+      published: '7030'
+      protocol: tcp
+    - target: 7770
+      published: '7770'
+      protocol: tcp
+    command:
+    - komodod
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -zmqpubhashblock=tcp://0.0.0.0:7030
+    - -rpcbind=0.0.0.0
+    - -rpcport=9030
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/kmd.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-komodo_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Komodo (KMD) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/kmd. Ports: P2P 7770, RPC 9030, ZMQ 7030.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/kmd.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/kmd.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9030'
+  scheme: http
+  store_app_id: public-pool-node-kmd
+  tagline:
+    en_us: 'Komodo (KMD) Node'
+  title:
+    custom: 'Komodo (KMD) Node'
+    en_us: 'Komodo (KMD) Node'

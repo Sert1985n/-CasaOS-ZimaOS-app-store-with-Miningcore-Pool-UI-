@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-HUSH
     hostname: Node-HUSH
-    image: myhush/hush3:latest
+    image: marinescuadrian/komodod:latest
     deploy:
       resources:
         limits:
@@ -28,10 +28,16 @@ services:
       published: '18030'
       protocol: tcp
     command:
-    - hushd
+    - komodod
     - -printtoconsole
     - -server
     - -prune=550
+    - -ac_name=HUSH3
+    - -ac_supply=0
+    - -ac_halving=129
+    - -ac_private=1
+    - -ac_reward=0
+    - -ac_end=128
     - -zmqpubhashblock=tcp://0.0.0.0:7031
     - -rpcbind=0.0.0.0
     - -rpcport=9031

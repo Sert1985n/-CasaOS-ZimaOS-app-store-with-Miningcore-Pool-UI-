@@ -4,7 +4,8 @@ services:
     cpu_shares: 90
     container_name: Node-DEM
     hostname: Node-DEM
-    image: theretromike/nodes:dem
+    build: .
+    image: pool-node-dem:latest
     deploy:
       resources:
         limits:

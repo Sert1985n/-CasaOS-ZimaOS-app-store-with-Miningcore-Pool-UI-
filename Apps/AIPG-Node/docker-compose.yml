@@ -4,7 +4,8 @@ services:
     cpu_shares: 90
     container_name: Node-AIPG
     hostname: Node-AIPG
-    image: theretromike/nodes:aipg
+    build: .
+    image: pool-node-aipg:latest
     deploy:
       resources:
         limits:

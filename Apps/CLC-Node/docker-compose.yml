@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-CLC
     hostname: Node-CLC
-    image: komodoplatform/komodo:latest
+    image: marinescuadrian/komodod:latest
     deploy:
       resources:
         limits:
@@ -32,6 +32,8 @@ services:
     - -printtoconsole
     - -server
     - -prune=550
+    - -ac_name=CLC
+    - -ac_supply=3000000000
     - -ac_name=CLC
     - -zmqpubhashblock=tcp://0.0.0.0:7035
     - -rpcbind=0.0.0.0

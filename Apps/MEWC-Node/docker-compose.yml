@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-MEWC
     hostname: Node-MEWC
-    image: theretromike/nodes:meowcoin
+    image: ahmedbodi/meowcoin:latest
     deploy:
       resources:
         limits:
@@ -28,10 +28,11 @@ services:
       published: '8790'
       protocol: tcp
     command:
-    - meowcoind
+    - /opt/meowcoin-Meow-v3.0.4/bin/meowcoind
     - -printtoconsole
     - -server
     - -prune=550
+    - -wallet=default
     - -wallet=default
     - -zmqpubhashblock=tcp://0.0.0.0:7042
     - -rpcbind=0.0.0.0

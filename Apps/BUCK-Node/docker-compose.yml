@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-BUCK
     hostname: Node-BUCK
-    image: komodoplatform/komodo:latest
+    image: marinescuadrian/komodod:latest
     deploy:
       resources:
         limits:
@@ -32,6 +32,8 @@ services:
     - -printtoconsole
     - -server
     - -prune=550
+    - -ac_name=BUCK
+    - -ac_supply=10000000
     - -ac_name=BUCK
     - -zmqpubhashblock=tcp://0.0.0.0:7036
     - -rpcbind=0.0.0.0

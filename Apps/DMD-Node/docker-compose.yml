@@ -4,7 +4,8 @@ services:
     cpu_shares: 90
     container_name: Node-DMD
     hostname: Node-DMD
-    image: theretromike/nodes:diamond
+    build: .
+    image: pool-node-dmd:latest
     deploy:
       resources:
         limits:

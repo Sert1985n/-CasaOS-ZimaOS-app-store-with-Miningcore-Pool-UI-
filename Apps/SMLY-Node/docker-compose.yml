@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-SMLY
     hostname: Node-SMLY
-    image: smileycoin/smileycoin:latest
+    image: ingimarsson/smileycoin:latest
     deploy:
       resources:
         limits:
@@ -32,6 +32,7 @@ services:
     - -printtoconsole
     - -server
     - -prune=550
+    - -wallet=default
     - -wallet=default
     - -zmqpubhashblock=tcp://0.0.0.0:7066
     - -rpcbind=0.0.0.0

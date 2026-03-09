@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-TKL
     hostname: Node-TKL
-    image: komodoplatform/komodo:latest
+    image: marinescuadrian/komodod:latest
     deploy:
       resources:
         limits:
@@ -32,6 +32,10 @@ services:
     - -printtoconsole
     - -server
     - -prune=550
+    - -ac_name=TKL
+    - -ac_supply=0
+    - -ac_reward=100000000
+    - -ac_halving=525600
     - -ac_name=TKL
     - -zmqpubhashblock=tcp://0.0.0.0:7037
     - -rpcbind=0.0.0.0

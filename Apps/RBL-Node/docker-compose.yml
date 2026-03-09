@@ -4,7 +4,8 @@ services:
     cpu_shares: 90
     container_name: Node-RBL
     hostname: Node-RBL
-    image: theretromike/nodes:rebelcoin
+    build: .
+    image: pool-node-rbl:latest
     deploy:
       resources:
         limits:

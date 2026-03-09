@@ -4,7 +4,8 @@ services:
     cpu_shares: 90
     container_name: Node-SATOX
     hostname: Node-SATOX
-    image: theretromike/nodes:satoxcoin
+    build: .
+    image: pool-node-satox:latest
     deploy:
       resources:
         limits:

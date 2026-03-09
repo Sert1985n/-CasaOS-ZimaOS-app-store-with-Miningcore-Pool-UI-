@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-ARRR
     hostname: Node-ARRR
-    image: piratecash/pirated:latest
+    image: marinescuadrian/komodod:latest
     deploy:
       resources:
         limits:
@@ -28,10 +28,15 @@ services:
       published: '7771'
       protocol: tcp
     command:
-    - pirated
+    - komodod
     - -printtoconsole
     - -server
     - -prune=550
+    - -ac_name=PIRATE
+    - -ac_supply=0
+    - -ac_reward=25600000000
+    - -ac_halving=77777
+    - -ac_private=1
     - -ac_name=PIRATE
     - -ac_supply=0
     - -ac_reward=25600000000

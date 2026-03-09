@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-KMD
     hostname: Node-KMD
-    image: komodoplatform/komodo:latest
+    image: marinescuadrian/komodod:latest
     deploy:
       resources:
         limits:

@@ -4,7 +4,8 @@ services:
     cpu_shares: 90
     container_name: Node-RVH
     hostname: Node-RVH
-    image: theretromike/nodes:rvh
+    build: .
+    image: pool-node-rvh:latest
     deploy:
       resources:
         limits:

@@ -4,7 +4,7 @@ services:
     cpu_shares: 90
     container_name: Node-MCL
     hostname: Node-MCL
-    image: komodoplatform/komodo:latest
+    image: marinescuadrian/komodod:latest
     deploy:
       resources:
         limits:
@@ -32,6 +32,10 @@ services:
     - -printtoconsole
     - -server
     - -prune=550
+    - -ac_name=MCL
+    - -ac_supply=2000000
+    - -ac_cc=2
+    - -ac_staked=50
     - -ac_name=MCL
     - -zmqpubhashblock=tcp://0.0.0.0:7038
     - -rpcbind=0.0.0.0

@@ -33,6 +33,7 @@ services:
     - -server
     - -prune=550
     - -wallet=default
+    - -wallet=default
     - -zmqpubhashblock=tcp://0.0.0.0:7040
     - -rpcbind=0.0.0.0
     - -rpcport=9040

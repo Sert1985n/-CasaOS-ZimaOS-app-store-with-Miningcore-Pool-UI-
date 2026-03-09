@@ -4,7 +4,8 @@ services:
     cpu_shares: 90
     container_name: Node-MARKS
     hostname: Node-MARKS
-    image: theretromike/nodes:marks
+    build: .
+    image: pool-node-marks:latest
     deploy:
       resources:
         limits:

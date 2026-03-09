@@ -1,7 +1,8 @@
 name: retro-mike-ravencoin
 services:
   app:
-    container_name: rvn
+    container_name: Node-RVN
+    hostname: Node-RVN
     image: theretromike/nodes:ravencoin
     restart: always
     volumes:

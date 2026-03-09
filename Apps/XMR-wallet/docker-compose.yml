@@ -3,8 +3,8 @@ services:
   app:
     cpu_shares: 90
     image: monero:latest
-    container_name: Wallet-XMR
-    hostname: Wallet-XMR
+    container_name: Node-XMR-Wallet
+    hostname: Node-XMR-Wallet
     restart: unless-stopped
     deploy:
       resources:
@@ -43,7 +43,7 @@ x-casaos:
     en_us: Monero wallet RPC (monero-wallet-rpc). Stores wallets in /media/ZimaOS-HD/nodes/xmr-wallet.
       Connects to Monero daemon via host.docker.internal:18081. Exposes wallet RPC
       on 18083 (auth enabled).
-  hostname: ''
+  hostname: Node-XMR-Wallet
   icon: https://cryptologos.cc/logos/monero-xmr-logo.png
   thumbnail: https://cryptologos.cc/logos/monero-xmr-logo.png
   index: /

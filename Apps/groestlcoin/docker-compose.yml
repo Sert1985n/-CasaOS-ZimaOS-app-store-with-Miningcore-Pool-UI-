@@ -1,7 +1,8 @@
 name: retro-mike-groestlcoin
 services:
   app:
-    container_name: grs
+    container_name: Node-GRS
+    hostname: Node-GRS
     image: theretromike/nodes:groestlcoin
     restart: always
     volumes:

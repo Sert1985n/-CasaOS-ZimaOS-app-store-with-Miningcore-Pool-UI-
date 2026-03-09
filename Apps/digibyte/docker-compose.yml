@@ -1,7 +1,8 @@
 name: retro-mike-digibyte
 services:
   app:
-    container_name: dgb
+    container_name: Node-DGB
+    hostname: Node-DGB
     image: theretromike/nodes:digibyte
     restart: always
     volumes:

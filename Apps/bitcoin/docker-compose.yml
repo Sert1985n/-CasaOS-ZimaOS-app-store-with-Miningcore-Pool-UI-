@@ -1,7 +1,8 @@
 name: retro-mike-bitcoin
 services:
   app:
-    container_name: btc
+    container_name: Node-BTC
+    hostname: Node-BTC
     image: theretromike/nodes:bitcoin
     restart: always
     volumes:

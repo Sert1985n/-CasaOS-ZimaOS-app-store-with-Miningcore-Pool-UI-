@@ -1,7 +1,8 @@
 name: monero
 services:
   app:
-    container_name: xmr
+    container_name: Node-XMR
+    hostname: Node-XMR
     image: theretromike/nodes:monero
     restart: always
     volumes:

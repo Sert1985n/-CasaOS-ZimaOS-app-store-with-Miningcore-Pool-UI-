@@ -1,7 +1,8 @@
 name: retro-mike-bitcoin-ii
 services:
   app:
-    container_name: bc2
+    container_name: Node-BC2
+    hostname: Node-BC2
     image: theretromike/nodes:bitcoinii
     restart: always
     volumes:

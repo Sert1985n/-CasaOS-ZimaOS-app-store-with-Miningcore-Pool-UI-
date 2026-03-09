@@ -5,6 +5,7 @@ services:
     container_name: Node-SPACE
     hostname: Node-SPACE
     image: spaceworksco/spacecoin:latest
+    entrypoint: /root/spacecoin/src/komodod
     deploy:
       resources:
         limits:
@@ -21,6 +22,18 @@ services:
     - target: 9133
       published: '9133'
       protocol: tcp
+    command:
+    - -ac_name=SPACE
+    - -ac_supply=0
+    - -ac_reward=100000000
+    - -ac_halving=525600
+    - -printtoconsole
+    - -server
+    - -rpcbind=0.0.0.0
+    - -rpcport=9133
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
     labels:
       icon: https://cryptologos.cc/logos/spacecoin-space-logo.png
     networks:
@@ -39,7 +52,7 @@ x-casaos:
   category: Cryptocurrency Nodes
   developer: public-pool-btc.ru
   description:
-    en_us: Spacecoin (SPACE) full node for Miningcore pool. RPC 9133.
+    en_us: "Spacecoin (SPACE) full node. Komodo asset chain. RPC 9133."
   hostname: ''
   icon: https://cryptologos.cc/logos/spacecoin-space-logo.png
   thumbnail: https://cryptologos.cc/logos/spacecoin-space-logo.png

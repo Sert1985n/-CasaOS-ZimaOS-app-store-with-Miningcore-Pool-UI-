@@ -36,7 +36,7 @@ services:
     - --confirm-external-bind
     - --rpc-login=pooluser:poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+      icon: https://cryptologos.cc/logos/monero-xmr-logo.png
     networks:
     - pool_network
     - default
@@ -58,8 +58,8 @@ x-casaos:
     en_us: 'Monero full node (monerod) with RPC auth. Data: /media/ZimaOS-HD/nodes/xmr.
       Ports: P2P 18080, RPC 18081 (restricted RPC).'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  icon: https://cryptologos.cc/logos/monero-xmr-logo.png
+  thumbnail: https://cryptologos.cc/logos/monero-xmr-logo.png
   index: /
   is_uncontrolled: false
   main: app

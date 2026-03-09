@@ -55,8 +55,8 @@ x-casaos:
     en_us: Dogecoin (DOGE) Node full node (Docker).
   developer: public-pool-btc.ru
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
+  icon: https://cryptologos.cc/logos/dogecoin-doge-logo.png
+  thumbnail: https://cryptologos.cc/logos/dogecoin-doge-logo.png
   index: /
   is_uncontrolled: false
   main: app

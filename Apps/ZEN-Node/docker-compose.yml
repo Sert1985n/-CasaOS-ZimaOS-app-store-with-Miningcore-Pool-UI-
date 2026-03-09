@@ -40,8 +40,8 @@ x-casaos:
     en_us: 'Horizen zend node (image: zencash/zen-node). Configure as needed; data
       at /data.'
   developer: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zen.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zen.png
+  icon: https://cryptologos.cc/logos/horizen-zen-logo.png
+  thumbnail: https://cryptologos.cc/logos/horizen-zen-logo.png
   index: /
   is_uncontrolled: false
   main: app

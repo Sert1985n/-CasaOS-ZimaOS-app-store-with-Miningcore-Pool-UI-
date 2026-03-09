@@ -45,7 +45,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/hush.png
+      icon: https://cryptologos.cc/logos/hush-hush-logo.png
     networks:
     - pool_network
     - default
@@ -64,8 +64,8 @@ x-casaos:
   description:
     en_us: 'Hush (HUSH) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/hush. Ports: P2P 18030, RPC 9031, ZMQ 7031.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/hush.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/hush.png
+  icon: https://cryptologos.cc/logos/hush-hush-logo.png
+  thumbnail: https://cryptologos.cc/logos/hush-hush-logo.png
   index: /
   is_uncontrolled: false
   main: app

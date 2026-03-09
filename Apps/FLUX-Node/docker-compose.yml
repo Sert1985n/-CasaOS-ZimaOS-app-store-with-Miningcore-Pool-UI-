@@ -39,8 +39,8 @@ x-casaos:
   description:
     en_us: Skeleton for Flux (FLUX). Use RunOnFlux multitool/ArcaneOS. RPC 16124. No simple Docker image.
   developer: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/flux.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/flux.png
+  icon: https://cryptologos.cc/logos/flux-flux-logo.png
+  thumbnail: https://cryptologos.cc/logos/flux-flux-logo.png
   index: /
   is_uncontrolled: false
   main: app

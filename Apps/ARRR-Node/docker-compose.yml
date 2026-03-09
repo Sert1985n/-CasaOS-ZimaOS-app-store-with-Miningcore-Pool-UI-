@@ -49,7 +49,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arrr.png
+      icon: https://cryptologos.cc/logos/pirate-chain-arrr-logo.png
     networks:
     - pool_network
     - default
@@ -68,8 +68,8 @@ x-casaos:
   description:
     en_us: 'Pirate Chain (ARRR) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/arrr. Ports: P2P 7771, RPC 9032, ZMQ 7032.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arrr.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/arrr.png
+  icon: https://cryptologos.cc/logos/pirate-chain-arrr-logo.png
+  thumbnail: https://cryptologos.cc/logos/pirate-chain-arrr-logo.png
   index: /
   is_uncontrolled: false
   main: app

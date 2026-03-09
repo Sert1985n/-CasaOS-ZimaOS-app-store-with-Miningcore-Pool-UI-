@@ -23,7 +23,7 @@ services:
     hostname: Miningcore-Web-UI
     image: theretromike/miningcorewebui:latest
     labels:
-      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+      icon: https://raw.githubusercontent.com/TheRetroMike/retromike-umbrel-app-store/master/retro-mike-miningcore-webui/webui.png
     ports:
     - mode: ingress
       target: 8080
@@ -55,7 +55,7 @@ x-casaos:
     en_us: "Web UI for Miningcore. POOL_NAME/STRATUM_HOST=public-pool-btc.ru. Set SERVER_IP to your server IP for MININGCORE_HOST, POSTGRES_HOST, API_BASE_URL (default: host.docker.internal)."
   developer: public-pool-btc.ru
   hostname: ''
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+  icon: https://raw.githubusercontent.com/TheRetroMike/retromike-umbrel-app-store/master/retro-mike-miningcore-webui/webui.png
   index: /
   is_uncontrolled: false
   main: app
@@ -64,7 +64,7 @@ x-casaos:
   store_app_id: public-pool-miningcore-webui
   tagline:
     en_us: Веб-панель Miningcore
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+  thumbnail: https://raw.githubusercontent.com/TheRetroMike/retromike-umbrel-app-store/master/retro-mike-miningcore-webui/webui.png
   title:
     custom: Miningcore Web UI
     en_us: Miningcore Web UI

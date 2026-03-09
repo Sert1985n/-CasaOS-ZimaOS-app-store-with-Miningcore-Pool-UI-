@@ -39,7 +39,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/kmd.png
+      icon: https://cryptologos.cc/logos/komodo-kmd-logo.png
     networks:
     - pool_network
     - default
@@ -58,8 +58,8 @@ x-casaos:
   description:
     en_us: 'Komodo (KMD) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/kmd. Ports: P2P 7770, RPC 9030, ZMQ 7030.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/kmd.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/kmd.png
+  icon: https://cryptologos.cc/logos/komodo-kmd-logo.png
+  thumbnail: https://cryptologos.cc/logos/komodo-kmd-logo.png
   index: /
   is_uncontrolled: false
   main: app

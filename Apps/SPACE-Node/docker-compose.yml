@@ -4,43 +4,45 @@ services:
     cpu_shares: 90
     container_name: Node-SPACE
     hostname: Node-SPACE
+    image: spaceworksco/spacecoin:latest
     deploy:
       resources:
         limits:
           memory: 4096M
           cpus: '2'
-    image: spaceworksco/spacecoin:latest
-    ports:
-      - target: 9133
-        published: '9133'
-        protocol: tcp
-    volumes:
-      - type: bind
-        source: /media/ZimaOS-HD/nodes/space
-        target: /root/.komodo/SPACE
-        bind:
-          create_host_path: true
     restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/space
+      target: /root/.komodo/SPACE
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9133
+      published: '9133'
+      protocol: tcp
+    labels:
+      icon: https://cryptologos.cc/logos/spacecoin-space-logo.png
     networks:
-      - pool_network
-      - default
-
+    - pool_network
+    - default
+    privileged: false
 networks:
   default:
-    name: public-pool-btc.ru_default
+    name: public-pool-spacecoin_default
   pool_network:
     external: true
-
 x-casaos:
   architectures:
-    - amd64
+  - amd64
   author: public-pool-btc.ru
   category: Cryptocurrency Nodes
-  description:
-    en_us: Spacecoin full node for Miningcore pool. RPC 9133. Data at /media/ZimaOS-HD/nodes/space
   developer: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/space.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/space.png
+  description:
+    en_us: Spacecoin (SPACE) full node for Miningcore pool. RPC 9133.
+  hostname: ''
+  icon: https://cryptologos.cc/logos/spacecoin-space-logo.png
+  thumbnail: https://cryptologos.cc/logos/spacecoin-space-logo.png
   index: /
   is_uncontrolled: false
   main: app

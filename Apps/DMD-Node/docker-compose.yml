@@ -41,7 +41,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dmd.png
+      icon: https://cryptologos.cc/logos/diamond-dmd-logo.png
     networks:
     - pool_network
     - default
@@ -60,8 +60,8 @@ x-casaos:
   description:
     en_us: 'Diamond (DMD) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/dmd. Ports: P2P 17771, RPC 9058, ZMQ 7058.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dmd.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dmd.png
+  icon: https://cryptologos.cc/logos/diamond-dmd-logo.png
+  thumbnail: https://cryptologos.cc/logos/diamond-dmd-logo.png
   index: /
   is_uncontrolled: false
   main: app

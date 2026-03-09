@@ -1,28 +1,70 @@
 name: retro-mike-pepepow
 services:
   app:
-    container_name: pepew
+    cpu_shares: 90
+    container_name: Node-PEPEW
+    hostname: Node-PEPEW
     image: theretromike/nodes:pepew
-    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
     volumes:
-      - /media/ZimaOS-HD/pepew:/root/.PEPEPOWcore
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/pepew
+      target: /root/.PEPEPOWcore
+      bind:
+        create_host_path: true
     ports:
-      - "7014:7014"
-      - "9014:9014"
-    command: "/app/PEPEPOWd -printtoconsole -server -wallet=default -zmqpubhashblock=tcp://127.0.0.1:7014 -rpcbind=0.0.0.0 -rpcport=9014 -rpcallowip=0.0.0.0/0 -rpcuser=pooluser -rpcpassword=poolpassword"
+    - target: 7014
+      published: '7014'
+      protocol: tcp
+    - target: 9014
+      published: '9014'
+      protocol: tcp
+    command:
+    - /app/PEPEPOWd
+    - -printtoconsole
+    - -server
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7014
+    - -rpcbind=0.0.0.0
+    - -rpcport=9014
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cryptologos.cc/logos/pepe-pepe-logo.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: retro-mike-pepepow_default
+  pool_network:
+    external: true
 x-casaos:
   architectures:
-    - amd64
-  main: app
-  description:
-    en_us: PepePOW Cryptocurrency Node. Can be used in conjunction with Miningcore Apps to solo mine.
-  tagline:
-    en_us: PepePOW Cryptocurrency Node.
-  developer: public-pool-btc.ru
+  - amd64
   author: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/doge.png
-  title:
-    en_us: PepePOW (PEPEW) Node
   category: Cryptocurrency Nodes
-  port_map: "8888"
+  developer: public-pool-btc.ru
+  description:
+    en_us: PepePOW (PEPEW) full node with RPC+ZMQ. Ports RPC 9014, ZMQ 7014.
+  hostname: ''
+  icon: https://cryptologos.cc/logos/pepe-pepe-logo.png
+  thumbnail: https://cryptologos.cc/logos/pepe-pepe-logo.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9014'
+  scheme: http
+  store_app_id: retro-mike-pepepow
+  tagline:
+    en_us: PepePOW (PEPEW) Node
+  title:
+    custom: PepePOW (PEPEW) Node
+    en_us: PepePOW (PEPEW) Node

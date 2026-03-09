@@ -12,7 +12,7 @@ services:
     hostname: miningcore
     image: theretromike/miningcore:latest
     labels:
-      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-main.png
+      icon: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
     ports:
     - mode: ingress
       target: 4000

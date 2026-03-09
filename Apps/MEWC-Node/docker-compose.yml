@@ -41,7 +41,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mewc.png
+      icon: https://cryptologos.cc/logos/meowcoin-mewc-logo.png
     networks:
     - pool_network
     - default
@@ -60,8 +60,8 @@ x-casaos:
   description:
     en_us: 'MeowCoin (MEWC) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/mewc. Ports: P2P 8790, RPC 9042, ZMQ 7042.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mewc.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/mewc.png
+  icon: https://cryptologos.cc/logos/meowcoin-mewc-logo.png
+  thumbnail: https://cryptologos.cc/logos/meowcoin-mewc-logo.png
   index: /
   is_uncontrolled: false
   main: app

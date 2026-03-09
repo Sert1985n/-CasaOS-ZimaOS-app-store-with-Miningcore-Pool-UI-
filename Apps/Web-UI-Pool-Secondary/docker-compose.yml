@@ -27,7 +27,7 @@ x-casaos:
     - amd64
   main: app
   description:
-    en_us: MiningCore Web UI с PoolConfiguration: Setup Database Schema, Refresh Master Coin List, Generate Pool Config File. Управление монетами. Порт 85.
+    en_us: "Miningcore Web UI with PoolConfiguration, Database Schema Setup, Coin List Management"
   tagline:
     en_us: Miningcore Web UI — Pool Configuration & Statistics
   developer: public-pool-btc.ru

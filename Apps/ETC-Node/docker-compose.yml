@@ -51,8 +51,8 @@ x-casaos:
   description:
     en_us: Ethereum Classic full node for Miningcore pool. RPC 8545. Data at /media/ZimaOS-HD/nodes/etc
   developer: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/etc.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/etc.png
+  icon: https://cryptologos.cc/logos/ethereum-classic-etc-logo.png
+  thumbnail: https://cryptologos.cc/logos/ethereum-classic-etc-logo.png
   index: /
   is_uncontrolled: false
   main: app

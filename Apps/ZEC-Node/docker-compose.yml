@@ -48,8 +48,8 @@ x-casaos:
   description:
     en_us: Zcash full node for Miningcore pool. RPC 8232. Data at /media/ZimaOS-HD/nodes/zec
   developer: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zec.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/zec.png
+  icon: https://cryptologos.cc/logos/zcash-zec-logo.png
+  thumbnail: https://cryptologos.cc/logos/zcash-zec-logo.png
   index: /
   is_uncontrolled: false
   main: app

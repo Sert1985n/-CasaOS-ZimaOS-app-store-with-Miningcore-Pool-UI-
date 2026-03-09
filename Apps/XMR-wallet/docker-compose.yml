@@ -31,7 +31,7 @@ services:
     - --confirm-external-bind
     - --rpc-login=walletuser:walletpass
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+      icon: https://cryptologos.cc/logos/monero-xmr-logo.png
     privileged: false
 x-casaos:
   architectures:
@@ -44,8 +44,8 @@ x-casaos:
       Connects to Monero daemon via host.docker.internal:18081. Exposes wallet RPC
       on 18083 (auth enabled).
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  icon: https://cryptologos.cc/logos/monero-xmr-logo.png
+  thumbnail: https://cryptologos.cc/logos/monero-xmr-logo.png
   index: /
   is_uncontrolled: false
   main: app

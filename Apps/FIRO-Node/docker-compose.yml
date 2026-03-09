@@ -40,8 +40,8 @@ x-casaos:
       at /data.'
   developer: public-pool-btc.ru
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/firo.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/firo.png
+  icon: https://cryptologos.cc/logos/firo-firo-logo.png
+  thumbnail: https://cryptologos.cc/logos/firo-firo-logo.png
   index: /
   is_uncontrolled: false
   main: app

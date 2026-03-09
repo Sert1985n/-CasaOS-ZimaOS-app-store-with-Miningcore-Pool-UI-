@@ -24,7 +24,7 @@ services:
     hostname: Node-BCH
     image: theretromike/nodes:bitcoincash
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/bch.png
+      icon: https://cryptologos.cc/logos/bitcoin-cash-bch-logo.png
     ports:
     - mode: ingress
       target: 7002
@@ -82,7 +82,7 @@ x-casaos:
       Apps to solo mine.
   developer: public-pool-btc.ru
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/bch.png
+  icon: https://cryptologos.cc/logos/bitcoin-cash-bch-logo.png
   index: /
   is_uncontrolled: false
   main: app
@@ -91,7 +91,7 @@ x-casaos:
   store_app_id: public-pool-bitcoin-cash
   tagline:
     en_us: Bitcoin Cash Cryptocurrency Node.
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/bch.png
+  thumbnail: https://cryptologos.cc/logos/bitcoin-cash-bch-logo.png
   title:
     custom: Bitcoin Cash (BCH) Node
     en_us: Bitcoin Cash (BCH) Node

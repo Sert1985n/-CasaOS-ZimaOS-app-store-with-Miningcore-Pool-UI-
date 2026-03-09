@@ -55,8 +55,8 @@ x-casaos:
   description:
     en_us: Создание wallet, вкл/выкл монет, config.json, coins.json. Генерация адресов. Min payout, Pool Fee 1.5%. Порт 4050.
   developer: public-pool-btc.ru
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-config.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-config.png
+  icon: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
+  thumbnail: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
   index: /
   is_uncontrolled: false
   main: app

@@ -29,8 +29,8 @@ x-casaos:
     en_us: Monero Cryptocurrency Node
   developer: public-pool-btc.ru
   author: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  icon: https://cryptologos.cc/logos/monero-xmr-logo.png
+  thumbnail: https://cryptologos.cc/logos/monero-xmr-logo.png
   title:
     en_us: Monero (XMR) Node
   category: Cryptocurrency Nodes

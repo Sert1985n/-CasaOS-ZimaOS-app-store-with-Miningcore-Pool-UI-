@@ -45,7 +45,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/bsv.png
+      icon: https://cryptologos.cc/logos/bitcoin-sv-bsv-logo.png
     networks:
     - pool_network
     - default
@@ -67,7 +67,7 @@ x-casaos:
     en_us: 'Bitcoin SV full node with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/bsv. Ports:
       P2P 8338, RPC 9005, ZMQ 7005.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/bsv.png
+  icon: https://cryptologos.cc/logos/bitcoin-sv-bsv-logo.png
   index: /
   is_uncontrolled: false
   main: app

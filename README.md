@@ -32,3 +32,5 @@
 
 Подробности и решение проблем — в [INSTALL.md](INSTALL.md).  
 **Полное руководство:** [PROJECT-GUIDE.md](PROJECT-GUIDE.md) — всё, что реализовано, настройка нод, установка без перезагрузки.
+
+**Полная настройка (команды, порты, wallet):** [SETUP-COMPLETE.md](SETUP-COMPLETE.md) — все команды по порядку, создание wallet скриптом, панель enable/disable.

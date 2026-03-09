@@ -25,7 +25,8 @@
       var st=statsById[p.id]||{};
       var miners=st.miners!=null?st.miners:(st.poolStats&&st.poolStats.connectedMiners);
       var hr=st.poolStats&&st.poolStats.poolHashrate;
-      var ports=(p.ports||[]).map(function(x){ return "<span class=\"tag\">:"+esc(x)+"</span>"; }).join(" ");
+      var portList=Object.keys(p.ports||{});
+      var ports=portList.map(function(x){ return "<span class=\"tag\">:"+esc(x)+"</span>"; }).join(" ");
       var statusTag=p.enabled?"<span class=\"tag tag--ok\">ON</span>":"<span class=\"tag tag--bad\">OFF</span>";
       return "<div class=\"pool\"><div class=\"pool__name\">"+esc(p.id)+" "+statusTag+"</div><div class=\"small\">"+esc(p.coin||"")+"</div><hr/><div class=\"kv\"><div><div class=\"k\">Порты</div><div class=\"v\">"+(ports||"—")+"</div></div><div><div class=\"k\">Miners</div><div class=\"v\">"+(miners!=null?miners:"—")+"</div></div><div><div class=\"k\">Hashrate</div><div class=\"v\">"+fmt(hr)+"</div></div></div></div>";
     }).join("");

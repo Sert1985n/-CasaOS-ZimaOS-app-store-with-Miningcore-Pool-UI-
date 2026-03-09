@@ -4,5 +4,5 @@ COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev || npm install --omit=dev
 COPY . .
 ENV NODE_ENV=production
-EXPOSE 8080
+EXPOSE 4050
 CMD ["node","server.js"]

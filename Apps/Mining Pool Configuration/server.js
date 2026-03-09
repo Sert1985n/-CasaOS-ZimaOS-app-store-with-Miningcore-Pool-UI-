@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { execFileSync } = require("child_process");
 const express = require("express");
 const helmet = require("helmet");
 
@@ -195,62 +194,29 @@ function ensurePoolShape(poolId, coinKey, stratumPort, walletAddress, feeWallet,
 function restartMiningcore() {
   const mc = process.env.MC_CONTAINER || process.env.MININGCORE_CONTAINER || MININGCORE_CONTAINER;
   try {
-    const out = execFileSync("docker", ["restart", mc], { encoding: "utf8" }).trim();
+    const { execSync } = require("child_process");
+    const out = execSync("docker restart " + mc, { encoding: "utf8" }).trim();
     return { ok:true, out };
   } catch (e) {
     return { ok:false, err: String(e?.stderr || e?.message || e) };
   }
 }
 
-/** CLI для getnewaddress по монетам (theretromike/nodes) */
-const WALLET_CLI_MAP = {
-  btc:"bitcoin-cli", bch:"bitcoin-cli", bsv:"bitcoin-cli", bc2:"bitcoin-cli", xec:"bitcoin-cli",
-  dgb:"digibyte-cli", ltc:"litecoin-cli", doge:"dogecoin-cli", rvn:"raven-cli", vtc:"vertcoin-cli",
-  ppc:"peercoin-cli", xna:"neurai-cli", grs:"groestlcoin-cli", pepw:"PEPEPOW-cli"
-};
-
-function updatePoolAddress(cfg, poolId, newAddress) {
+function updatePoolSettings(cfg, poolId, { address, feeAddress, feePercent, enabled }) {
   const idx = (cfg.pools||[]).findIndex(p=>p&&String(p.id).toLowerCase()===String(poolId).toLowerCase());
   if(idx<0) throw new Error("pool not found: "+poolId);
   const p = cfg.pools[idx];
-  const rr = p.rewardRecipients||[];
-  const feeEntries = rr.filter(r=>r&&(Number(r.percentage)||0)<50);
-  const feeSum = feeEntries.reduce((s,r)=>s+(Number(r.percentage)||0),0);
-  const mainPct = Math.max(0, 100-feeSum);
-  p.address = newAddress;
-  p.rewardRecipients = newAddress ? [{ address:newAddress, percentage:mainPct }, ...feeEntries] : feeEntries;
-  if(p.paymentProcessing) p.paymentProcessing.enabled = !!newAddress;
+  if (address !== undefined) p.address = String(address||"").trim();
+  if (enabled !== undefined) p.enabled = !!enabled;
+  if (feeAddress !== undefined || feePercent !== undefined) {
+    const rr = p.rewardRecipients||[];
+    const feeEntries = rr.filter(r=>r&&(Number(r.percentage)||0)<50);
+    const feePct = feePercent !== undefined ? Number(feePercent) : (feeEntries[0]?.percentage ?? 1.5);
+    const feeAddr = feeAddress !== undefined ? String(feeAddress||"").trim() : (feeEntries[0]?.address || "");
+    p.rewardRecipients = feeAddr ? [{ address: feeAddr, percentage: feePct }] : [];
+  }
+  if(p.paymentProcessing) p.paymentProcessing.enabled = !!p.address;
   return p;
-}
-
-function createWalletAndUpdate(poolId, options={}) {
-  const { applyToConfig=true, restartAfter=true } = options;
-  const id = String(poolId).toLowerCase();
-  const cfg = readConfig();
-  const pool = (cfg.pools||[]).find(p=>p&&String(p.id).toLowerCase()===id);
-  if(!pool) throw new Error("pool not found: "+poolId);
-  const daemon = (pool.daemons||[])[0];
-  if(!daemon||!daemon.host||!daemon.port) throw new Error("pool "+poolId+": no daemon (host/port)");
-  const cli = WALLET_CLI_MAP[id];
-  if(!cli) throw new Error("wallet creation not supported for "+poolId+". Use Panel 83 to paste address.");
-  const container = daemon.host;
-  const rpcPort = Number(daemon.port)||0;
-  const rpcUser = daemon.user||"pooluser";
-  const rpcPass = daemon.password||"poolpassword";
-  const cmd = [cli, "-rpcport="+rpcPort, "-rpcuser="+rpcUser, "-rpcpassword="+rpcPass, "getnewaddress"];
-  let address;
-  try {
-    address = execFileSync("docker", ["exec", container, ...cmd], { encoding:"utf8", timeout:30000 }).trim();
-    if(!address||address.length<10) throw new Error("empty address");
-  } catch (e) {
-    throw new Error("getnewaddress failed: "+(e.stderr||e.message||e)+". Ensure Node-"+id.toUpperCase()+" is running with -wallet=default.");
-  }
-  if(applyToConfig) {
-    updatePoolAddress(cfg, poolId, address);
-    writeConfig(cfg);
-    if(restartAfter) restartMiningcore();
-  }
-  return { address, ok:true };
 }
 
 const app = express();
@@ -261,14 +227,16 @@ app.use(express.static(path.join(__dirname, "web")));
 app.get("/api/health", (_req,res)=>res.json({ ok:true }));
 app.get("/api/coins", (_req,res)=>res.json({ ok:true, coins: loadCoins() }));
 
-app.get("/api/wallet/support", (_req,res)=>res.json({ supported: Object.keys(WALLET_CLI_MAP), map: WALLET_CLI_MAP }));
-app.post("/api/wallet/create", (req,res)=>{
-  const { poolId, applyToConfig=true, restartAfter=true } = req.body || {};
-  const id = (poolId||req.query.poolId||"").toString().toLowerCase();
-  if(!id) return res.status(400).json({ ok:false, error: "poolId required" });
+app.put("/api/pools/:id", (req,res)=>{
+  const poolId = (req.params.id||"").toString().toLowerCase();
+  const { address, feeAddress, feePercent, enabled, restart } = req.body || {};
+  if(!poolId) return res.status(400).json({ ok:false, error: "pool id required" });
   try {
-    const out = createWalletAndUpdate(id, { applyToConfig: !!applyToConfig, restartAfter: !!restartAfter });
-    res.json(out);
+    const cfg = readConfig();
+    updatePoolSettings(cfg, poolId, { address, feeAddress, feePercent, enabled });
+    writeConfig(cfg);
+    if(restart !== false) try{ restartMiningcore(); }catch(e){}
+    res.json({ ok:true });
   } catch (e) {
     res.status(500).json({ ok:false, error: String(e.message||e) });
   }
@@ -276,13 +244,10 @@ app.post("/api/wallet/create", (req,res)=>{
 app.post("/api/pools/:id/address", (req,res)=>{
   const poolId = (req.params.id||"").toString().toLowerCase();
   const { address, restart } = req.body || {};
-  if(!poolId) return res.status(400).json({ ok:false, error: "pool id required" });
   const newAddr = (typeof address==="string" ? address.trim() : "")||"";
   try {
     const cfg = readConfig();
-    const idx = (cfg.pools||[]).findIndex(p=>p&&String(p.id).toLowerCase()===poolId);
-    if(idx<0) return res.status(404).json({ ok:false, error: "pool not found: "+poolId });
-    updatePoolAddress(cfg, poolId, newAddr);
+    updatePoolSettings(cfg, poolId, { address: newAddr });
     writeConfig(cfg);
     if(restart !== false) try{ restartMiningcore(); }catch(e){}
     res.json({ ok:true, address: newAddr||null });
@@ -290,9 +255,26 @@ app.post("/api/pools/:id/address", (req,res)=>{
     res.status(500).json({ ok:false, error: String(e.message||e) });
   }
 });
+app.post("/api/pools/:id/remove", (req,res)=>{
+  const poolId = (req.params.id||"").toString().toLowerCase();
+  const { restart } = req.body || {};
+  try {
+    const cfg = readConfig();
+    cfg.pools = (cfg.pools||[]).filter(p=>String(p.id).toLowerCase()!==poolId);
+    writeConfig(cfg);
+    if(restart !== false) try{ restartMiningcore(); }catch(e){}
+    res.json({ ok:true, removed: true });
+  } catch (e) {
+    res.status(500).json({ ok:false, error: String(e.message||e) });
+  }
+});
 app.get("/api/status", (req,res)=>{
   const cfg = readConfig();
-  res.json({ clusterName: cfg.clusterName||POOL_NAME, pools: (cfg.pools||[]).map(p=>({ id:p.id, coin:p.coin, enabled:!!p.enabled, ports:p.ports||{}, address:(p.address||"").toString() })) });
+  const feeEntry = (rr)=> (rr||[]).find(r=>r&&(Number(r.percentage)||0)<50);
+  res.json({ clusterName: cfg.clusterName||POOL_NAME, pools: (cfg.pools||[]).map(p=>{
+    const fee = feeEntry(p.rewardRecipients);
+    return { id:p.id, coin:p.coin, enabled:!!p.enabled, ports:p.ports||{}, address:(p.address||"").toString(), feeAddress: fee?.address||"", feePercent: fee?.percentage??0 };
+  }) });
 });
 
 app.get("/api/config", (_req,res)=>{
@@ -357,10 +339,9 @@ app.post("/api/disable", async (req,res)=>{
   if(!coinId) return res.status(400).json({ ok:false, error:"coinId required" });
 
   const cfg = readConfig();
-  const before = Array.isArray(cfg.pools) ? cfg.pools.length : 0;
-  cfg.pools = Array.isArray(cfg.pools) ? cfg.pools.filter(p=>p.id!==coinId) : [];
-  const removed = before - cfg.pools.length;
-
+  const idx = (cfg.pools||[]).findIndex(p=>String(p.id).toLowerCase()===String(coinId).toLowerCase());
+  if(idx<0) return res.status(404).json({ ok:false, error:"pool not found: "+coinId });
+  cfg.pools[idx].enabled = false;
   writeConfig(cfg);
 
   let restartResult = null;
@@ -369,7 +350,7 @@ app.post("/api/disable", async (req,res)=>{
     catch(e){ restartResult = { ok:false, error:String(e && e.message || e) }; }
   }
 
-  return res.json({ ok:true, coinId, removed, restart: restartResult });
+  return res.json({ ok:true, coinId, disabled: true, restart: restartResult });
 });
 
 /* ---- Settings (persist next to config) ---- */

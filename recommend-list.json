@@ -1,0 +1,17 @@
+[
+  {
+    "store_app_id": "retro-mike-postgresql",
+    "title": "PostgreSQL",
+    "description": "БД для Miningcore — ставить первым"
+  },
+  {
+    "store_app_id": "public-pool-miningcore",
+    "title": "Miningcore + Pool UI",
+    "description": "Пул + веб-панель на порту 81"
+  },
+  {
+    "store_app_id": "public-pool-mining-pool-configuration",
+    "title": "Pool Configuration",
+    "description": "Настройка кошельков и монет — порт 4050"
+  }
+]

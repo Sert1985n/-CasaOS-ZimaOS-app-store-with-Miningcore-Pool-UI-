@@ -43,7 +43,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ltc.png
+      icon: https://cryptologos.cc/logos/litecoin-ltc-logo.png
     networks:
     - pool_network
     - default
@@ -65,8 +65,8 @@ x-casaos:
     en_us: 'Litecoin full node with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/ltc. Ports:
       P2P 9333, RPC 9020, ZMQ 7020.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ltc.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ltc.png
+  icon: https://cryptologos.cc/logos/litecoin-ltc-logo.png
+  thumbnail: https://cryptologos.cc/logos/litecoin-ltc-logo.png
   index: /
   is_uncontrolled: false
   main: app

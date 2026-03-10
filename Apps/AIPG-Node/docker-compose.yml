@@ -1,0 +1,75 @@
+name: public-pool-ai-power-grid
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-AIPG
+    hostname: Node-AIPG
+    build: .
+    image: pool-node-aipg:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/aipg
+      target: /root/.aipg
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9046
+      published: '9046'
+      protocol: tcp
+    - target: 7046
+      published: '7046'
+      protocol: tcp
+    - target: 8792
+      published: '8792'
+      protocol: tcp
+    command:
+    - aipgd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7046
+    - -rpcbind=0.0.0.0
+    - -rpcport=9046
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aipg.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-ai-power-grid_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'AI Power Grid (AIPG) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/aipg. Ports: P2P 8792, RPC 9046, ZMQ 7046.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aipg.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aipg.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9046'
+  scheme: http
+  store_app_id: public-pool-node-aipg
+  tagline:
+    en_us: 'AI Power Grid (AIPG) Node'
+  title:
+    custom: 'AI Power Grid (AIPG) Node'
+    en_us: 'AI Power Grid (AIPG) Node'

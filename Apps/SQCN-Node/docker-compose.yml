@@ -1,0 +1,75 @@
+name: public-pool-sequencecoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-SQCN
+    hostname: Node-SQCN
+    build: .
+    image: pool-node-sqcn:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/sqcn
+      target: /root/.sqcn
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9054
+      published: '9054'
+      protocol: tcp
+    - target: 7054
+      published: '7054'
+      protocol: tcp
+    - target: 8798
+      published: '8798'
+      protocol: tcp
+    command:
+    - sqcnd
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7054
+    - -rpcbind=0.0.0.0
+    - -rpcport=9054
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/sqcn.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-sequencecoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'SequenceCoin (SQCN) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/sqcn. Ports: P2P 8798, RPC 9054, ZMQ 7054.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/sqcn.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/sqcn.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9054'
+  scheme: http
+  store_app_id: public-pool-node-sqcn
+  tagline:
+    en_us: 'SequenceCoin (SQCN) Node'
+  title:
+    custom: 'SequenceCoin (SQCN) Node'
+    en_us: 'SequenceCoin (SQCN) Node'

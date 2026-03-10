@@ -42,7 +42,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ppc.png
+      icon: https://cryptologos.cc/logos/peercoin-ppc-logo.png
     networks:
     - pool_network
     - default
@@ -64,8 +64,8 @@ x-casaos:
     en_us: 'Peercoin full node with RPC+ZMQ (prune is NOT supported by this peercoind
       build). Data: /media/ZimaOS-HD/nodes/ppc. Ports: P2P 9901, RPC 9012, ZMQ 7012.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ppc.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/ppc.png
+  icon: https://cryptologos.cc/logos/peercoin-ppc-logo.png
+  thumbnail: https://cryptologos.cc/logos/peercoin-ppc-logo.png
   index: /
   is_uncontrolled: false
   main: app

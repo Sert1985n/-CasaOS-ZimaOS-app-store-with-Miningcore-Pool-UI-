@@ -2,7 +2,7 @@ name: public-pool-firo
 services:
   app:
     cpu_shares: 90
-    container_name: FIRO-Node
+    container_name: Node-FIRO
     deploy:
       resources:
         limits:
@@ -39,9 +39,9 @@ x-casaos:
     en_us: 'Firo daemon (image: firoorg/firod). Configure RPC/P2P as needed; data
       at /data.'
   developer: public-pool-btc.ru
-  hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/firo.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/firo.png
+  hostname: Node-FIRO
+  icon: https://cryptologos.cc/logos/firo-firo-logo.png
+  thumbnail: https://cryptologos.cc/logos/firo-firo-logo.png
   index: /
   is_uncontrolled: false
   main: app

@@ -44,7 +44,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/FB.png
+      icon: https://cryptologos.cc/logos/fractal-bitcoin-fb-logo.png
     networks:
     - pool_network
     - default
@@ -66,8 +66,8 @@ x-casaos:
     en_us: 'Fractal Bitcoin full node (UniSat image) with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/fb.
       Ports: P2P 8337, RPC 9021, ZMQ 7021.'
   hostname: ''
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/FB.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/FB.png
+  icon: https://cryptologos.cc/logos/fractal-bitcoin-fb-logo.png
+  thumbnail: https://cryptologos.cc/logos/fractal-bitcoin-fb-logo.png
   index: /
   is_uncontrolled: false
   main: app

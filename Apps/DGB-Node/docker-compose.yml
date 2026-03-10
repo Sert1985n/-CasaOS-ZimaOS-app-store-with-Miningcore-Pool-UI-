@@ -42,7 +42,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dgb.png
+      icon: https://cryptologos.cc/logos/digibyte-dgb-logo.png
     networks:
     - pool_network
     - default
@@ -65,7 +65,7 @@ x-casaos:
       P2P 12024, RPC 9001, ZMQ 7001. (If you mine DGB, set algo in digibyte.conf if
       needed.)'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/dgb.png
+  icon: https://cryptologos.cc/logos/digibyte-dgb-logo.png
   index: /
   is_uncontrolled: false
   main: app

@@ -1,0 +1,75 @@
+name: public-pool-rebelcoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-RBL
+    hostname: Node-RBL
+    build: .
+    image: pool-node-rbl:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/rbl
+      target: /root/.rebelcoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9065
+      published: '9065'
+      protocol: tcp
+    - target: 7065
+      published: '7065'
+      protocol: tcp
+    - target: 8803
+      published: '8803'
+      protocol: tcp
+    command:
+    - rebelcoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7065
+    - -rpcbind=0.0.0.0
+    - -rpcport=9065
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rbl.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-rebelcoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Rebelcoin (RBL) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/rbl. Ports: P2P 8803, RPC 9065, ZMQ 7065.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rbl.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rbl.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9065'
+  scheme: http
+  store_app_id: public-pool-node-rbl
+  tagline:
+    en_us: 'Rebelcoin (RBL) Node'
+  title:
+    custom: 'Rebelcoin (RBL) Node'
+    en_us: 'Rebelcoin (RBL) Node'

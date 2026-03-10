@@ -44,7 +44,7 @@ services:
     - -rpcpassword=poolpassword
     - --usecashaddr=0
     labels:
-      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/xec.png
+      icon: https://cryptologos.cc/logos/ecash-xec-logo.png
     networks:
     - pool_network
     - default
@@ -66,8 +66,8 @@ x-casaos:
     en_us: 'Bitcoin ABC (eCash) full node with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/xec.
       Ports: P2P 8336, RPC 9007, ZMQ 7007.'
   hostname: ''
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/xec.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/xec.png
+  icon: https://cryptologos.cc/logos/ecash-xec-logo.png
+  thumbnail: https://cryptologos.cc/logos/ecash-xec-logo.png
   index: /
   is_uncontrolled: false
   main: app

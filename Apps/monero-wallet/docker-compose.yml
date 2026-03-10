@@ -1,7 +1,8 @@
 name: monerowallet
 services:
   app:
-    container_name: xmr_wallet
+    container_name: Node-XMR-Wallet
+    hostname: Node-XMR-Wallet
     image: theretromike/nodes:monero
     restart: always
     volumes:
@@ -29,8 +30,8 @@ x-casaos:
     en_us: Monero Cryptocurrency Wallet
   developer: public-pool-btc.ru
   author: public-pool-btc.ru
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
-  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/xmr.png
+  icon: https://cryptologos.cc/logos/monero-xmr-logo.png
+  thumbnail: https://cryptologos.cc/logos/monero-xmr-logo.png
   title:
     en_us: Monero (XMR) Wallet
   category: Cryptocurrency Nodes

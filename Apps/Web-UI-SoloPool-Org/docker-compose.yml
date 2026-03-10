@@ -36,8 +36,8 @@ x-casaos:
   description:
     en_us: Панель solopool.org. Pool Hashrate | Blocks | Luck | Network Diff | Price | Block Reward | Min Payout | Pool Fee 1.5%. Порт 84. pool_network + Miningcore.
   developer: public-pool-btc.ru
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-solopool-org.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-solopool-org.png
+  icon: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
+  thumbnail: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
   index: /
   is_uncontrolled: false
   main: app
@@ -45,7 +45,7 @@ x-casaos:
   scheme: http
   store_app_id: solopool-web-ui
   tagline:
-    en_us: SoloPool.org — порт 84
+    en_us: SoloPool — Solo Mining Pools For Professional Miners
   title:
-    custom: Web UI SoloPool.org (порт 84)
-    en_us: Web UI SoloPool.org (порт 84)
+    custom: SoloPool
+    en_us: SoloPool

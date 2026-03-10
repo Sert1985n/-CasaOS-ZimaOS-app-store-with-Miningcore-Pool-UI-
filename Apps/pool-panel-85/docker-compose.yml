@@ -17,14 +17,14 @@ x-casaos:
     - amd64
   main: app
   description:
-    en_us: Панель пулов: просмотр и статистика в реальном времени. Порт 85.
+    en_us: "Pool Panel — real-time pool stats and management"
   tagline:
     en_us: Просмотр пулов и статистики
   developer: public-pool-btc.ru
   author: public-pool-btc.ru
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/pool-ui/img/favicon.png
+  icon: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
+  thumbnail: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
   title:
-    en_us: Panel пулов :85
+    en_us: Pool Panel
   category: Miningcore Pool UI
   port_map: "85"

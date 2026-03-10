@@ -2,7 +2,7 @@ name: public-pool-nexa
 services:
   app:
     cpu_shares: 90
-    container_name: NEXA-Node
+    container_name: Node-NEXA
     image: bchunlimited/nexad-rostrum
     deploy:
       resources:
@@ -39,9 +39,9 @@ x-casaos:
     en_us: 'Nexa node/rostrum container (image: bchunlimited/nexad-rostrum). Configure
       as needed; data at /data.'
   developer: public-pool-btc.ru
-  hostname: ''
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/nexa.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/nexa.png
+  hostname: Node-NEXA
+  icon: https://cryptologos.cc/logos/nexa-nexa-logo.png
+  thumbnail: https://cryptologos.cc/logos/nexa-nexa-logo.png
   index: /
   is_uncontrolled: false
   main: app

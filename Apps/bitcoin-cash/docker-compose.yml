@@ -1,7 +1,8 @@
 name: retro-mike-bitcoin-cash
 services:
   app:
-    container_name: bch
+    container_name: Node-BCH
+    hostname: Node-BCH
     image: theretromike/nodes:bitcoincash
     restart: always
     volumes:

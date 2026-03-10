@@ -1,7 +1,8 @@
 name: neurai
 services:
   app:
-    container_name: xna
+    container_name: Node-XNA
+    hostname: Node-XNA
     image: theretromike/nodes:neurai
     restart: always
     volumes:

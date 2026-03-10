@@ -2,7 +2,7 @@ name: public-pool-bitcoin-sv
 services:
   app:
     cpu_shares: 90
-    image: theretromike/nodes:bsv
+    image: theretromike/nodes:bitcoinsv
     container_name: Node-BSV
     hostname: Node-BSV
     restart: unless-stopped
@@ -28,12 +28,15 @@ services:
       published: '7005'
       protocol: tcp
     command:
-    - bitcoin-sv
+    - bitcoind
     - -printtoconsole
     - -server
     - -prune=550
     - -txindex=0
     - -wallet=default
+    - -excessiveblocksize=0
+    - -maxstackmemoryusageconsensus=0
+    - -minminingtxfee=0.00000001
     - -port=8338
     - -zmqpubhashblock=tcp://0.0.0.0:7005
     - -rpcbind=0.0.0.0
@@ -42,7 +45,7 @@ services:
     - -rpcuser=pooluser
     - -rpcpassword=poolpassword
     labels:
-      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/bsv.png
+      icon: https://cryptologos.cc/logos/bitcoin-sv-bsv-logo.png
     networks:
     - pool_network
     - default
@@ -64,7 +67,7 @@ x-casaos:
     en_us: 'Bitcoin SV full node with RPC+ZMQ. Data: /media/ZimaOS-HD/nodes/bsv. Ports:
       P2P 8338, RPC 9005, ZMQ 7005.'
   hostname: ''
-  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/bsv.png
+  icon: https://cryptologos.cc/logos/bitcoin-sv-bsv-logo.png
   index: /
   is_uncontrolled: false
   main: app

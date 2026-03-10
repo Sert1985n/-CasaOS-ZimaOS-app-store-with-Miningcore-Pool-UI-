@@ -1,0 +1,75 @@
+name: public-pool-auroracoin
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-AURE
+    hostname: Node-AURE
+    build: .
+    image: pool-node-aure:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/aure
+      target: /root/.auroracoin
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9059
+      published: '9059'
+      protocol: tcp
+    - target: 7059
+      published: '7059'
+      protocol: tcp
+    - target: 12340
+      published: '12340'
+      protocol: tcp
+    command:
+    - auroracoind
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://0.0.0.0:7059
+    - -rpcbind=0.0.0.0
+    - -rpcport=9059
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aure.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-auroracoin_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Auroracoin (AURE) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/aure. Ports: P2P 12340, RPC 9059, ZMQ 7059.'
+  hostname: ''
+  icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aure.png
+  thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/aure.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9059'
+  scheme: http
+  store_app_id: public-pool-node-aure
+  tagline:
+    en_us: 'Auroracoin (AURE) Node'
+  title:
+    custom: 'Auroracoin (AURE) Node'
+    en_us: 'Auroracoin (AURE) Node'

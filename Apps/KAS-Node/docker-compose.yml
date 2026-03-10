@@ -2,7 +2,7 @@ name: public-pool-kaspa
 services:
   app:
     cpu_shares: 90
-    container_name: KAS-Node
+    container_name: Node-KAS
     image: kaspanet/rusty-kaspad
     deploy:
       resources:
@@ -39,9 +39,9 @@ x-casaos:
     en_us: 'Kaspa node (image: kaspanet/rusty-kaspad). Configure as needed; data at
       /data.'
   developer: public-pool-btc.ru
-  hostname: ''
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/kas.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Assets/icons/kas.png
+  hostname: Node-KAS
+  icon: https://cryptologos.cc/logos/kaspa-kas-logo.png
+  thumbnail: https://cryptologos.cc/logos/kaspa-kas-logo.png
   index: /
   is_uncontrolled: false
   main: app

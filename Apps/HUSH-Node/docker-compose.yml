@@ -1,0 +1,79 @@
+name: public-pool-hush
+services:
+  app:
+    cpu_shares: 90
+    container_name: Node-HUSH
+    hostname: Node-HUSH
+    image: marinescuadrian/komodod:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/hush
+      target: /root/.hush
+      bind:
+        create_host_path: true
+    ports:
+    - target: 9031
+      published: '9031'
+      protocol: tcp
+    - target: 7031
+      published: '7031'
+      protocol: tcp
+    - target: 18030
+      published: '18030'
+      protocol: tcp
+    command:
+    - komodod
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -ac_name=HUSH3
+    - -ac_supply=0
+    - -ac_halving=129
+    - -ac_private=1
+    - -ac_reward=0
+    - -ac_end=128
+    - -zmqpubhashblock=tcp://0.0.0.0:7031
+    - -rpcbind=0.0.0.0
+    - -rpcport=9031
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    labels:
+      icon: https://cryptologos.cc/logos/hush-hush-logo.png
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-hush_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  developer: public-pool-btc.ru
+  description:
+    en_us: 'Hush (HUSH) full node with RPC+ZMQ. Pruned. Data: /media/ZimaOS-HD/nodes/hush. Ports: P2P 18030, RPC 9031, ZMQ 7031.'
+  hostname: ''
+  icon: https://cryptologos.cc/logos/hush-hush-logo.png
+  thumbnail: https://cryptologos.cc/logos/hush-hush-logo.png
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9031'
+  scheme: http
+  store_app_id: public-pool-node-hush
+  tagline:
+    en_us: 'Hush (HUSH) Node'
+  title:
+    custom: 'Hush (HUSH) Node'
+    en_us: 'Hush (HUSH) Node'

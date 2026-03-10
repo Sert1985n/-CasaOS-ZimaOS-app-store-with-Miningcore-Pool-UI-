@@ -10,6 +10,9 @@
     "bch": {
       "poolFeePercent": 0.05
     },
+    "bch2": {
+      "poolFeePercent": 0.05
+    },
     "fb": {
       "poolFeePercent": 0.05
     }

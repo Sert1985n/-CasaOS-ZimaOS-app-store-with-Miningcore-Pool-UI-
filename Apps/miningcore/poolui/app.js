@@ -188,8 +188,8 @@ function go(h){ location.hash=h; }
 
 /* ---------- prices (optional) ---------- */
 const META = {
-  btc:{gecko:"bitcoin"}, bch:{gecko:"bitcoin-cash"}, bsv:{gecko:"bitcoin-sv"},
-  bc2:{gecko:"bitcoin-ii"}, xec:{gecko:"ecash"}, fb:{gecko:"fractal-bitcoin"},
+  btc:{gecko:"bitcoin"}, bch:{gecko:"bitcoin-cash"}, bch2:{gecko:"bitcoin-cash"},
+  bsv:{gecko:"bitcoin-sv"}, bc2:{gecko:"bitcoin-ii"}, xec:{gecko:"ecash"}, fb:{gecko:"fractal-bitcoin"},
   dgb:{gecko:"digibyte"}, ltc:{gecko:"litecoin"}, doge:{gecko:"dogecoin"},
   rvn:{gecko:"ravencoin"}, vtc:{gecko:"vertcoin"}, ppc:{gecko:"peercoin"},
   xna:{gecko:"neurai"}, grs:{gecko:"groestlcoin"}, xmr:{gecko:"monero"},
@@ -614,7 +614,7 @@ async function renderCoin(poolId){
 
 /* ---------- block confirmations (maturation) ---------- */
 const CONFIRM_BY_COIN = {
-  btc:101, bch:10, bsv:101, bc2:101, dgb:101, doge:40, xec:10, xna:101, ppc:500,
+  btc:101, bch:10, bch2:10, bsv:101, bc2:101, dgb:101, doge:40, xec:10, xna:101, ppc:500,
   rvn:101, vtc:101, ltc:101, grs:101, fb:101, xmr:60, erg:720, etc:12, ethw:64,
   zeph:10, space:101, xel:10, octa:12, zec:10, zen:500, flux:100, firo:60,
   kas:24, nexa:12, btcs:101

@@ -1,0 +1,84 @@
+name: public-pool-bitcoin-cash-ii
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: local/node-bch2:v27.0.0
+    cpu_shares: 90
+    command:
+    - -printtoconsole
+    - -server
+    - -prune=550
+    - -wallet=default
+    - -zmqpubhashblock=tcp://127.0.0.1:7033
+    - -rpcbind=0.0.0.0
+    - -rpcport=9033
+    - -rpcallowip=0.0.0.0/0
+    - -rpcuser=pooluser
+    - -rpcpassword=poolpassword
+    - -port=8339
+    - -datadir=/root/.bitcoincashII
+    container_name: Node-BCH2
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
+          cpus: '2'
+    hostname: Node-BCH2
+    labels:
+      icon: https://bch2.org/favicon.ico
+    ports:
+    - mode: ingress
+      target: 7033
+      published: '7033'
+      protocol: tcp
+    - mode: ingress
+      target: 9033
+      published: '9033'
+      protocol: tcp
+    - mode: ingress
+      target: 8339
+      published: '8339'
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /media/ZimaOS-HD/nodes/bch2
+      target: /root/.bitcoincashII
+      bind:
+        create_host_path: true
+    devices: []
+    cap_add: []
+    environment: []
+    networks:
+    - pool_network
+    - default
+    privileged: false
+networks:
+  default:
+    name: public-pool-bitcoin-cash-ii_default
+  pool_network:
+    external: true
+x-casaos:
+  architectures:
+  - amd64
+  author: public-pool-btc.ru
+  category: Cryptocurrency Nodes
+  description:
+    en_us: Bitcoin Cash II (BCH2) Cryptocurrency Node. SHA-256d, can be used with Miningcore for solo mining.
+  developer: public-pool-btc.ru
+  hostname: ''
+  icon: https://bch2.org/favicon.ico
+  index: /
+  is_uncontrolled: false
+  main: app
+  port_map: '9033'
+  scheme: http
+  store_app_id: public-pool-bitcoin-cash-ii
+  tagline:
+    en_us: Bitcoin Cash II (BCH2) Node.
+  thumbnail: https://bch2.org/favicon.ico
+  title:
+    custom: Bitcoin Cash II (BCH2) Node
+    en_us: Bitcoin Cash II (BCH2) Node

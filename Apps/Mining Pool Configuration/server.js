@@ -26,6 +26,7 @@ function writeJsonAtomic(p, obj) {
 const DEFAULT_COINS = [
   { id:"btc", symbol:"BTC", coin:"bitcoin",            algo:"sha256d", stratum:6004, rpc:9004, zmq:7004, node:"Node-BTC" },
   { id:"bch", symbol:"BCH", coin:"bitcoin-cash",       algo:"sha256d", stratum:6002, rpc:9002, zmq:7002, node:"Node-BCH" },
+  { id:"bch2", symbol:"BCH2", coin:"bitcoincashii",   algo:"sha256d", stratum:6033, rpc:9033, zmq:7033, node:"Node-BCH2" },
   { id:"bsv", symbol:"BSV", coin:"bitcoin-sv",         algo:"sha256d", stratum:6005, rpc:9005, zmq:7005, node:"Node-BSV" },
   { id:"bc2", symbol:"BC2", coin:"bitcoin-ii",         algo:"sha256d", stratum:6006, rpc:9006, zmq:7006, node:"Node-BC2" },
   { id:"xec", symbol:"XEC", coin:"ecash",              algo:"sha256d", stratum:6007, rpc:9007, zmq:7007, node:"Node-XEC" },

@@ -95,6 +95,7 @@ function upsertPool(cfg, sym, wallet, ports){
 const WALLET_COIN_MAP = {
   btc:  { cli: "bitcoin-cli" },
   bch:  { cli: "bitcoin-cli" },
+  bch2: { cli: "bitcoincashII-cli", confPath: "/root/.bitcoincashII/bitcoincashII.conf" },
   bsv:  { cli: "bitcoin-cli" },
   bc2:  { cli: "bitcoin-cli" },
   xec:  { cli: "bitcoin-cli" },

@@ -12,6 +12,7 @@ NODES_DIR="${NODES_DIR:-/media/ZimaOS-HD/nodes}"
 get_cli() {
   case "$1" in
     btc|bch|bsv|bc2|xec|fb) echo "bitcoin-cli" ;;
+    bch2) echo "bitcoincashII-cli" ;;
     dgb) echo "digibyte-cli" ;;
     ltc) echo "litecoin-cli" ;;
     doge) echo "dogecoin-cli" ;;

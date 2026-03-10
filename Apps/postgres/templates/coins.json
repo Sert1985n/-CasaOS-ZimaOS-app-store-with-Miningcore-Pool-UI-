@@ -405,6 +405,34 @@
     "explorerTxLink": "https://bchblockexplorer.com/tx/{0}",
     "explorerAccountLink": "https://bchblockexplorer.com/address/{0}"
   },
+  "bitcoincashii": {
+    "name": "Bitcoin Cash II",
+    "canonicalName": "BitcoinCashII",
+    "symbol": "BCH2",
+    "family": "bitcoin",
+    "website": "https://github.com/BitcoincashII/bitcoincashII-core",
+    "market": "https://pool.bch2.org/",
+    "twitter": "",
+    "telegram": "",
+    "discord": "",
+    "coinbaseHasher": {
+      "hash": "sha256d"
+    },
+    "headerHasher": {
+      "hash": "sha256d"
+    },
+    "blockHasher": {
+      "hash": "reverse",
+      "args": [
+        {
+          "hash": "sha256d"
+        }
+      ]
+    },
+    "explorerBlockLink": "https://explorer.bch2.org/block/$hash$",
+    "explorerTxLink": "https://explorer.bch2.org/tx/{0}",
+    "explorerAccountLink": "https://explorer.bch2.org/address/{0}"
+  },
   "bitcoin-diamond": {
     "name": "Bitcoin Diamond",
     "canonicalName": "Bitcoin-Diamond",

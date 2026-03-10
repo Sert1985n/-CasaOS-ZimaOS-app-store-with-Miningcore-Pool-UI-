@@ -17,6 +17,14 @@
       "addressType": "bcash"
     },
     {
+      "id": "bch2",
+      "coin": "bitcoincashii",
+      "stratum": 6033,
+      "rpcPort": 9033,
+      "zmqPort": 7033,
+      "addressType": "bitcoincashii"
+    },
+    {
       "id": "bc2",
       "coin": "bitcoin-ii",
       "stratum": 6006,

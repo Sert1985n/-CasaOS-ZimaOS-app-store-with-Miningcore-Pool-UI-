@@ -13,10 +13,11 @@ foreach ($c in $coins) {
   }
 }
 # Aliases for coins not in pack (copy from similar coin)
-@("bc2","xna","fb","ethw","zeph","space","xel","octa","nexa","btcs","xec","erg","firo","kas") | ForEach-Object {
+@("bc2","bch2","xna","fb","ethw","zeph","space","xel","octa","nexa","btcs","xec","erg","firo","kas") | ForEach-Object {
   $c = $_
   $src = switch ($c) {
     "bc2" { "btc" }
+    "bch2" { "bch" }
     "xna" { "btc" }
     "fb"  { "btc" }
     "ethw"{ "eth" }

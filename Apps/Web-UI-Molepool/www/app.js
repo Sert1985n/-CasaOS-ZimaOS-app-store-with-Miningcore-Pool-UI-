@@ -19,7 +19,7 @@ function fmtCompact(n){
 function fmtUsd(n){const x=asNum(n);return x==null?'—':'$'+(x<1?x.toFixed(4):x.toLocaleString(undefined,{maxFractionDigits:2}))}
 function fmtPct(p){const x=asNum(p);return x==null?'':(x>=0?'+':'')+x.toFixed(2)+'%'}
 
-const META={btc:{gecko:"bitcoin"},bch:{gecko:"bitcoin-cash"},bsv:{gecko:"bitcoin-sv"},bc2:{gecko:"bitcoin-ii"},xec:{gecko:"ecash"},fb:{gecko:"fractal-bitcoin"},dgb:{gecko:"digibyte"},ltc:{gecko:"litecoin"},doge:{gecko:"dogecoin"},rvn:{gecko:"ravencoin"},vtc:{gecko:"vertcoin"},ppc:{gecko:"peercoin"},xna:{gecko:"neurai"},grs:{gecko:"groestlcoin"},etc:{gecko:"ethereum-classic"},erg:{gecko:"ergo"},bitcoin:{gecko:"bitcoin"},'bitcoin-cash':{gecko:"bitcoin-cash"}};
+const META={btc:{gecko:"bitcoin"},bch:{gecko:"bitcoin-cash"},bch2:{gecko:"bitcoin-cash"},bsv:{gecko:"bitcoin-sv"},bc2:{gecko:"bitcoin-ii"},xec:{gecko:"ecash"},fb:{gecko:"fractal-bitcoin"},dgb:{gecko:"digibyte"},ltc:{gecko:"litecoin"},doge:{gecko:"dogecoin"},rvn:{gecko:"ravencoin"},vtc:{gecko:"vertcoin"},ppc:{gecko:"peercoin"},xna:{gecko:"neurai"},grs:{gecko:"groestlcoin"},etc:{gecko:"ethereum-classic"},erg:{gecko:"ergo"},bitcoin:{gecko:"bitcoin"},'bitcoin-cash':{gecko:"bitcoin-cash"}};
 let POOLS=[],POOL_BY_ID=new Map(),PRICE={};
 async function loadPools(){const d=await fetch(API+'/pools').then(r=>r.json());POOLS=d?.pools||[];POOL_BY_ID=new Map(POOLS.map(p=>[p.id,p]));return POOLS}
 async function loadPrices(){

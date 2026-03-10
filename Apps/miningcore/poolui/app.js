@@ -189,12 +189,13 @@ function go(h){ location.hash=h; }
 /* ---------- prices (optional) ---------- */
 const META = {
   btc:{gecko:"bitcoin"}, bch:{gecko:"bitcoin-cash"}, bsv:{gecko:"bitcoin-sv"},
-  doge:{gecko:"dogecoin"}, xec:{gecko:"ecash"}, xmr:{gecko:"monero"},
-  ltc:{gecko:"litecoin"}, rvn:{gecko:"ravencoin"}, etc:{gecko:"ethereum-classic"},
-  erg:{gecko:"ergo"}, flux:{gecko:"zel"}, zec:{gecko:"zcash"}, zen:{gecko:"horizen"},
-  dgb:{gecko:"digibyte"}, ppc:{gecko:"peercoin"}, firo:{gecko:"firo"},
+  bc2:{gecko:"bitcoin-ii"}, xec:{gecko:"ecash"}, fb:{gecko:"fractal-bitcoin"},
+  dgb:{gecko:"digibyte"}, ltc:{gecko:"litecoin"}, doge:{gecko:"dogecoin"},
+  rvn:{gecko:"ravencoin"}, vtc:{gecko:"vertcoin"}, ppc:{gecko:"peercoin"},
+  xna:{gecko:"neurai"}, grs:{gecko:"groestlcoin"}, xmr:{gecko:"monero"},
+  etc:{gecko:"ethereum-classic"}, erg:{gecko:"ergo"}, flux:{gecko:"zel"},
+  zec:{gecko:"zcash"}, zen:{gecko:"horizen"}, firo:{gecko:"firo"},
   kas:{gecko:"kaspa"}, nexa:{gecko:"nexa"}, btcs:{gecko:"bitcoin-cash-sv"},
-  fb:{gecko:"fractal-bitcoin"},
 };
 async function loadPrices(ids){
   const uniq=[...new Set(ids.filter(Boolean))];
@@ -419,7 +420,7 @@ async function renderPools(){
     const priceUsd=g?.usd ?? null;
     const chg=g?.usd_24h_change ?? null;
     const cls=(Number(chg)||0)>=0?'up':'down';
-    const chgHtml=(chg==null)?'':` <span class="chg ${cls}">(${fmtPct(Number(chg)||0)} ${cls==='down'?'v':'^'})</span>`;
+    const chgHtml=(chg==null)?'':` <span class="chg ${cls}">${fmtPct(Number(chg)||0)} ${cls==='down'?'↓':'↑'}</span>`;
 
     const reward = p.coin?.blockReward ?? ns.blockReward ?? ps.blockReward ?? null;
     let rewardNum = asNumberOrNull(reward);
@@ -538,39 +539,38 @@ async function renderCoin(poolId){
       <div class="grid-2">
         <div class="card">
           <div class="card__title">Pool Statistics</div>
-          <div class="card__body"><div class="kv">
+            <div class="card__body"><div class="kv">
             <div class="k">Miners</div><div class="v">${fmtNumber(miners)}</div>
             <div class="k">Hashrate</div><div class="v">${fmtHashrate(poolHash)}</div>
-          </div></div>
-        </div>
+            </div></div>
+          </div>
 
         <div class="card">
-          <div class="card__title">Block Statistics</div>
-          <div class="card__body"><div class="kv">
+          <div class="card__title">Статистика блоков</div>
+            <div class="card__body"><div class="kv">
             <div class="k">Current Effort</div><div class="v ${currentEffort!=null?'effort-blue':''}">${currentEffort!=null ? (Number(currentEffort).toFixed(0)+'%') : '—'}</div>
             <div class="k">Last Block</div><div class="v">${lastBlockAgo}</div>
             <div class="k">Blocks found</div><div class="v">${fmtNumber(blocksFound)}</div>
-          </div></div>
-        </div>
+            </div></div>
+          </div>
 
         <div class="card">
           <div class="card__title">Network Statistics</div>
-          <div class="card__body"><div class="kv">
+            <div class="card__body"><div class="kv">
             <div class="k">Network Difficulty</div><div class="v mono">${fmtCompact(netDiff)}</div>
             <div class="k">Network Hashrate</div><div class="v">${fmtHashrate(netHash)}</div>
             <div class="k">Current Height</div><div class="v">${fmtNumber(height)}</div>
-          </div></div>
-        </div>
+            </div></div>
+          </div>
 
         <div class="card">
           <div class="card__title">Current Price</div>
-          <div class="card__body"><div class="kv">
-            <div class="k">Price USD</div>
-            <div class="v">${priceUsd==null?'—':(fmtMoneyUsd(priceUsd) + (chgUsd==null?'':` <span class="chg ${clsUsd}">${fmtPct(Number(chgUsd)||0)} ${clsUsd==='down'?'v':'^'}</span>`))}</div>
-            <div class="k">Price BTC</div><div class="v mono">—</div>
-          </div></div>
+            <div class="card__body"><div class="kv">
+            <div class="k">Price</div>
+            <div class="v">${priceUsd==null?'—':(fmtMoneyUsd(priceUsd) + (chgUsd==null?'':` <span class="chg ${clsUsd}">${fmtPct(Number(chgUsd)||0)} ${clsUsd==='down'?'↓':'↑'}</span>`))}</div>
+            </div></div>
+          </div>
         </div>
-      </div>
 
       <div class="wallet-placeholder">
         <a href="#/help/${encodeURIComponent(poolId)}" class="wallet-placeholder__link">
@@ -725,8 +725,8 @@ async function renderBlocks(poolIdMaybe){
       ${coinSwitcher('blocks', poolId)}
       ${coinMenu(poolId,'blocks',{})}
       <div class="surface__head">
-        <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Block Statistics</h1>
-        <div class="hint">Latest 50</div>
+        <h1>${iconImg(pool)} ${pool.coin?.name||poolId} — Статистика блоков</h1>
+        <div class="hint"></div>
       </div>
 
       <div class="blocks-summary-wrap">
@@ -734,16 +734,24 @@ async function renderBlocks(poolIdMaybe){
           <thead><tr><th>Blocks</th><th>Effort</th><th>Orphan</th></tr></thead>
           <tbody>${statsRows}</tbody>
         </table>
-        <p class="blocks-maturation">Block maturation requires ${getBlockConfirmations(pool)} new blocks in the network.</p>
+        <p class="blocks-maturation">Для подтверждения блока требуется ${getBlockConfirmations(pool)} новых блоков в сети.</p>
       </div>
 
+      <div class="expander" aria-expanded="false">
+        <div class="expander__head" onclick="toggleExpander(this.parentElement)">
+          <div class="title">Список блоков (Latest 50)</div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="expander__body">
       <div class="table-wrap">
         <table class="table">
           <thead><tr>
-            <th>Height</th><th>Type</th><th>Time</th><th>Server</th><th>Miner</th><th>Effort</th><th>Solution</th><th>Status</th><th>Reward</th>
+                <th>Height</th><th>Type</th><th>Time</th><th>Server</th><th>Miner</th><th>Effort</th><th>Solution</th><th>Status</th><th>Reward</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
+          </div>
+        </div>
       </div>
     </section>
   `;
@@ -1121,7 +1129,7 @@ async function renderMiner(poolId, addr, tab='dashboard'){
           <span>Best Share: ${bestShareGlobal!=null ? fmtCompact(bestShareGlobal) : '—'}</span>
           <span>Network Difficulty: ${fmtCompact(netDiff)}</span>
           <span>Port Difficulty: ${portDiff!=null ? fmtNumber(portDiff) : '—'}</span>
-        </div>
+      </div>
       </div>
 
       <div class="table-wrap">
@@ -1170,7 +1178,7 @@ async function renderMiner(poolId, addr, tab='dashboard'){
           <thead><tr><th>Time</th><th>Amount ${sym}</th><th>TX (Transaction Hash)</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
-      </div>
+        </div>
       <div style="padding:0 14px 14px;color:var(--muted);font-size:12px">
         Если таблица пустая — проверь, что в Miningcore включён paymentProcessing и эндпоинты payments доступны.
       </div>

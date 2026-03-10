@@ -12,7 +12,7 @@ services:
     hostname: miningcore
     image: theretromike/miningcore:latest
     labels:
-      icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-main.png
+      icon: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
     ports:
     - mode: ingress
       target: 4000
@@ -144,7 +144,7 @@ x-casaos:
     en_us: Miningcore Mining Pool + your Pool UI (from www/poolui). Web UI installs with the app.
   developer: public-pool-btc.ru
   hostname: ''
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-main.png
+  icon: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
   index: /
   is_uncontrolled: false
   main: webui
@@ -152,8 +152,8 @@ x-casaos:
   scheme: http
   store_app_id: public-pool-miningcore
   tagline:
-    en_us: Пул + панель — порт 81 • Diff, Price, Reward, Min Payout, 1.5%
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-main.png
+    en_us: Miningcore Pool — порт 81 • Diff, Price, Reward, Min Payout, 1.5%
+  thumbnail: https://raw.githubusercontent.com/oliverw/miningcore/master/logo.png
   title:
-    custom: Miningcore + Pool UI (порт 81) — основная панель
-    en_us: Miningcore + Pool UI (порт 81) — основная панель
+    custom: Miningcore Pool (порт 81)
+    en_us: Miningcore Pool (порт 81)

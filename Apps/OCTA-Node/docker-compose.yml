@@ -1,4 +1,4 @@
-name: public-pool-btc.ru
+name: public-pool-btc-ru
 services:
   app:
     cpu_shares: 90
@@ -27,18 +27,18 @@ services:
 
 networks:
   default:
-    name: public-pool-btc.ru_default
+    name: public-pool-btc-ru_default
   pool_network:
     external: true
 
 x-casaos:
   architectures:
   - amd64
-  author: public-pool-btc.ru
+  author: public-pool-btc-ru
   category: Cryptocurrency Nodes
   description:
     en_us: Skeleton for OctaSpace (OCTA). EVM chain. Build from octaspace/orc. RPC 8547. No standalone node image.
-  developer: public-pool-btc.ru
+  developer: public-pool-btc-ru
   icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/eth.png
   thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/eth.png
   index: /

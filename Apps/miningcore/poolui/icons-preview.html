@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Иконки монет — предпросмотр</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0d1114; color: #e6edf3; padding: 24px; margin: 0; }
+    h1 { margin: 0 0 20px; font-size: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 12px;
+      background: rgba(25,28,32,.72); border: 1px solid rgba(255,255,255,.1);
+    }
+    .item img { width: 28px; height: 28px; border-radius: 8px; object-fit: contain; }
+    .item span { font-weight: 700; font-size: 14px; text-transform: uppercase; }
+    .item .sym { color: rgba(255,255,255,.6); font-size: 12px; font-weight: 400; }
+    .fallback { width:28px;height:28px;background:rgba(255,255,255,.15);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700; }
+  </style>
+</head>
+<body>
+  <h1>Иконки монет (pool UI)</h1>
+  <div class="grid" id="icons"></div>
+
+  <script>
+    const coins = ['btc','bch','bc2','bsv','dgb','doge','xec','xna','ppc','rvn','vtc','ltc','grs','fb','xmr','erg','etc','ethw','zeph','space','xel','octa','zec','zen','flux','firo','kas','nexa','btcs'];
+    const names = { btc:'Bitcoin', bch:'Bitcoin Cash', bc2:'Bitcoin II', bsv:'Bitcoin SV', dgb:'DigiByte', doge:'Dogecoin', xec:'eCash', xna:'Neurai', ppc:'Peercoin', rvn:'Ravencoin', vtc:'Vertcoin', ltc:'Litecoin', grs:'Groestlcoin', fb:'Fractal Bitcoin', xmr:'Monero', erg:'Ergo', etc:'Ethereum Classic', ethw:'EthereumPoW', zeph:'Zephyr', space:'Spacecoin', xel:'Xelis', octa:'OctaSpace', zec:'Zcash', zen:'Horizen', flux:'Flux', firo:'Firo', kas:'Kaspa', nexa:'Nexa', btcs:'Bitcoin Silver' };
+    const grid = document.getElementById('icons');
+    coins.forEach(id => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      const img = document.createElement('img');
+      img.src = 'assets/icons/' + id + '.png';
+      img.alt = id;
+      img.onerror = () => { img.outerHTML = '<span class="fallback">' + id[0].toUpperCase() + '</span>'; };
+      div.appendChild(img);
+      const s = document.createElement('span');
+      s.innerHTML = id.toUpperCase() + '<br><span class="sym">' + (names[id] || id) + '</span>';
+      div.appendChild(s);
+      grid.appendChild(div);
+    });
+  </script>
+</body>
+</html>

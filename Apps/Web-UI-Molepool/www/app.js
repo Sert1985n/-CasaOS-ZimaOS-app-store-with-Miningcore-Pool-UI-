@@ -19,10 +19,12 @@ function fmtCompact(n){
 function fmtUsd(n){const x=asNum(n);return x==null?'—':'$'+(x<1?x.toFixed(4):x.toLocaleString(undefined,{maxFractionDigits:2}))}
 function fmtPct(p){const x=asNum(p);return x==null?'':(x>=0?'+':'')+x.toFixed(2)+'%'}
 
+const META={btc:{gecko:"bitcoin"},bch:{gecko:"bitcoin-cash"},bsv:{gecko:"bitcoin-sv"},bc2:{gecko:"bitcoin-ii"},xec:{gecko:"ecash"},fb:{gecko:"fractal-bitcoin"},dgb:{gecko:"digibyte"},ltc:{gecko:"litecoin"},doge:{gecko:"dogecoin"},rvn:{gecko:"ravencoin"},vtc:{gecko:"vertcoin"},ppc:{gecko:"peercoin"},xna:{gecko:"neurai"},grs:{gecko:"groestlcoin"},etc:{gecko:"ethereum-classic"},erg:{gecko:"ergo"},bitcoin:{gecko:"bitcoin"},'bitcoin-cash':{gecko:"bitcoin-cash"}};
 let POOLS=[],POOL_BY_ID=new Map(),PRICE={};
 async function loadPools(){const d=await fetch(API+'/pools').then(r=>r.json());POOLS=d?.pools||[];POOL_BY_ID=new Map(POOLS.map(p=>[p.id,p]));return POOLS}
 async function loadPrices(){
-  const ids=['bitcoin','bitcoin-cash','ecash','ethereum-classic','ravencoin','ergo','litecoin','dogecoin','digibyte'];
+  const ids=[...new Set(POOLS.map(p=>META[(p?.coin?.type||p?.id||'').toLowerCase()]?.gecko).filter(Boolean))];
+  if(ids.length===0)ids=['bitcoin','bitcoin-cash','ecash','litecoin','dogecoin','digibyte','ravencoin'];
   try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+ids.join(',')+'&vs_currencies=usd&include_24hr_change=true');PRICE=await r.json()}catch(e){}
 }
 
@@ -37,7 +39,8 @@ function reward(p){
   const sym=(p?.coin?.symbol||p?.id||'').toUpperCase();
   const r=asNum(p?.coin?.blockReward??p?.networkStats?.blockReward)??asNum(p?.poolStats?.blockReward);
   if(r==null)return'—';
-  const pr=PRICE[(p?.coin?.type||p?.id||'').toLowerCase()]?.usd??PRICE['bitcoin-cash']?.usd;
+  const gId=META[(p?.coin?.type||p?.id||'').toLowerCase()]?.gecko;
+  const pr=gId?PRICE[gId]?.usd:null;
   const usd=pr!=null?r*pr:null;
   return usd!=null?`${r} ${sym} (${fmtUsd(usd)})`:`${r} ${sym}`
 }
@@ -52,11 +55,13 @@ function poolFee(p){
 }
 
 function priceStr(p){
-  const id=(p?.coin?.type||p?.id||'').toLowerCase().replace('bitcoin-cash','bitcoin-cash').replace('bitcoin','bitcoin');
-  const g=PRICE[id]||PRICE['bitcoin'];
+  const id=(p?.coin?.type||p?.id||'').toLowerCase();
+  const gId=META[id]?.gecko;
+  const g=gId?PRICE[gId]:null;
   if(!g)return'—';
   const chg=g.usd_24h_change??0;
-  return fmtUsd(g.usd)+(chg!=null?` <span class="chg ${chg>=0?'up':'down'}">${fmtPct(chg)}</span>`:'')
+  const arrow=chg>=0?'↑':'↓';
+  return fmtUsd(g.usd)+(chg!=null?` <span class="chg ${chg>=0?'up':'down'}">${fmtPct(chg)} ${arrow}</span>`:'')
 }
 
 async function renderPools(){
@@ -73,9 +78,11 @@ async function renderCoin(id){
   await loadPools();await loadPrices();
   const p=POOL_BY_ID.get(id);if(!p){renderPools();return}
   const n=poolNums(p);
+  const priceHtml=priceStr(p);
   $('#app').innerHTML=`<div class="coin-page">
     <h2>${icon(p)} ${p.coin?.name||p.coin?.type||id} (${p.coin?.symbol||id}) SOLO Mining Pool</h2>
     <div class="grid-stats">
+      <div class="stat-card"><div class="label">Current Price</div><div class="value">${priceHtml}</div></div>
       <div class="stat-card"><div class="label">Miners</div><div class="value">${fmtNum(n.miners)}</div></div>
       <div class="stat-card"><div class="label">Hashrate</div><div class="value">${fmtHash(n.poolHash)}</div></div>
       <div class="stat-card"><div class="label">Network Difficulty</div><div class="value">${fmtCompact(n.netDiff)}</div></div>

@@ -1,4 +1,4 @@
-name: public-pool-btc.ru
+name: public-pool-btc-ru
 services:
   app:
     cpu_shares: 90
@@ -42,18 +42,18 @@ services:
 
 networks:
   default:
-    name: public-pool-btc.ru_default
+    name: public-pool-btc-ru_default
   pool_network:
     external: true
 
 x-casaos:
   architectures:
     - amd64
-  author: public-pool-btc.ru
+  author: public-pool-btc-ru
   category: Cryptocurrency Nodes
   description:
     en_us: Ravencoin full node for Miningcore pool. RPC 9010, ZMQ 7010. Data at /media/ZimaOS-HD/nodes/rvn
-  developer: public-pool-btc.ru
+  developer: public-pool-btc-ru
   icon: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rvn.png
   thumbnail: https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/128/color/rvn.png
   index: /

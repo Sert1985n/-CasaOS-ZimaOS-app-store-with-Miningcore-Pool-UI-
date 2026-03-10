@@ -1,7 +1,7 @@
-name: web-ui-pool-secondary
+name: miningcore-webui-85
 services:
   app:
-    container_name: Web-UI-Pool-Secondary
+    container_name: Miningcore-Web-UI
     image: theretromike/miningcorewebui:latest
     restart: always
     volumes:
@@ -10,18 +10,26 @@ services:
       - "85:8080"
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - pool_network
+      - default
     environment:
-      - SERVER_IP=${SERVER_IP:-host.docker.internal}
-      - API_BASE_URL=http://${SERVER_IP:-host.docker.internal}:4000/api
-      - MININGCORE_HOST=${SERVER_IP:-host.docker.internal}
+      - SERVER_IP=${SERVER_IP:-miningcore}
+      - API_BASE_URL=http://${SERVER_IP:-miningcore}:4000/api
+      - MININGCORE_HOST=${SERVER_IP:-miningcore}
       - PLATFORM=ZIMAOS
       - POOL_NAME=public-pool-btc.ru
       - POSTGRES_DATABASE=miningcore
-      - POSTGRES_HOST=${SERVER_IP:-host.docker.internal}
+      - POSTGRES_HOST=${POSTGRES_HOST:-host.docker.internal}
       - POSTGRES_PASSWORD=miningcore
       - POSTGRES_USER=miningcore
       - PUID=1000
       - STRATUM_HOST=public-pool-btc.ru
+networks:
+  pool_network:
+    external: true
+  default:
+    name: miningcore-webui-85_default
 x-casaos:
   architectures:
     - amd64
@@ -32,10 +40,10 @@ x-casaos:
     en_us: Pool Configuration — порт 85
   developer: public-pool-btc.ru
   author: public-pool-btc.ru
-  icon: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
-  thumbnail: https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/img/icon-pool-secondary.png
-  store_app_id: public-pool-miningcore-webui-85
+  icon: https://raw.githubusercontent.com/TheRetroMike/retromike-umbrel-app-store/master/retro-mike-miningcore-webui/webui.png
+  thumbnail: https://raw.githubusercontent.com/TheRetroMike/retromike-umbrel-app-store/master/retro-mike-miningcore-webui/webui.png
+  store_app_id: miningcore-webui-85
   title:
-    en_us: Web UI — Вторичный пул — порт 85
+    en_us: Miningcore Web UI (порт 85)
   category: Miningcore Pool UI
   port_map: "85"

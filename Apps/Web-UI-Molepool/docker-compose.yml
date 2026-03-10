@@ -9,11 +9,12 @@ services:
     command: >
       sh -c 'apk add --no-cache nginx wget
       && B=https://raw.githubusercontent.com/Sert1985n/-CasaOS-ZimaOS-app-store-with-Miningcore-Pool-UI-/main/Apps/Web-UI-Molepool
-      && mkdir -p /usr/share/nginx/html /run/nginx /etc/nginx/conf.d
+      && mkdir -p /usr/share/nginx/html/assets/icons /run/nginx /etc/nginx/conf.d
       && wget -q $$B/nginx.conf -O /etc/nginx/nginx.conf
       && wget -q $$B/www/index.html -O /usr/share/nginx/html/index.html
       && wget -q $$B/www/app.js -O /usr/share/nginx/html/app.js
       && wget -q $$B/www/site.css -O /usr/share/nginx/html/site.css
+      && for c in btc bch bch2 bc2 bsv dgb doge xec xna ppc rvn vtc ltc grs fb xmr erg etc ethw zeph space xel octa zec zen flux firo kas nexa btcs; do wget -q $$B/www/assets/icons/$$c.png -O /usr/share/nginx/html/assets/icons/$$c.png 2>/dev/null || true; done
       && exec nginx -g "daemon off;"'
     networks:
       - pool_network
